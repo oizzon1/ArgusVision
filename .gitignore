@@ -1,0 +1,97 @@
+########################################
+# Model weights and checkpoints (HEAVY)
+########################################
+*.pt
+*.pth
+*.h5
+*.ckpt
+*.onnx
+
+########################################
+# Datasets / heavy raw data
+########################################
+data/
+datasets/
+AerialFuseCV/
+raw_data/
+ContextOnProject/
+
+# Keep placeholder files to preserve folder structure
+!data/.gitkeep
+!datasets/.gitkeep
+!AerialFuseCV/.gitkeep
+!raw_data/.gitkeep
+!**/.gitkeep
+
+########################################
+# Results / logs / experiment outputs
+########################################
+results/
+logs/
+runs/
+checkpoints/
+wandb/
+
+# Keep structure only
+!results/.gitkeep
+!results/**/.gitkeep
+!logs/.gitkeep
+!runs/.gitkeep
+!checkpoints/.gitkeep
+!wandb/.gitkeep
+!results/**/metrics.json
+
+########################################
+# Large imagery / geospatial (HEAVY)
+########################################
+*.tif
+*.tiff
+*.jp2
+*.img
+*.SAFE/
+*.zip
+*.7z
+*.png
+*.jpg
+*.jpeg
+
+# Allow small documentation / logo assets
+!assets/**
+
+########################################
+# Dataset labels / annotations
+########################################
+dataset/**/labels/
+
+########################################
+# Dataset heavy image / mask folders
+########################################
+dataset/**/images/
+dataset/**/semantic_masks/
+dataset/**/masks/
+dataset/iSAID/train/
+dataset/iSAID/val/
+dataset/iSAID/test/
+
+########################################
+# Python / build artifacts
+########################################
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+########################################
+# Jupyter noise (but ALLOW notebooks)
+########################################
+.ipynb_checkpoints/
+
+# (If you REALLY want to ignore notebooks, uncomment:)
+# *.ipynb
+
+########################################
+# Editor / OS crap
+########################################
+.vscode/
+.idea/
+.DS_Store

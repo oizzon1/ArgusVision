@@ -1,0 +1,25 @@
+name: thesis_env
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - pip
+  # Core numerical
+  - numpy>=1.23
+  - tqdm>=4.66
+  - shapely>=2.0
+  # PyTorch + CUDA (Windows, RTX 3090 Ti; CUDA 12.1 runtime)
+  - pytorch=2.5.1
+  - torchvision=0.20.1
+  - torchaudio=2.5.1
+  - pytorch-cuda=12.1  # from nvidia channel
+  # Optional but useful
+  - jupyterlab
+  - ipykernel
+  - matplotlib
+  - pip:
+      - ultralytics>=8.3.0,<9
+      - opencv-python>=4.8
