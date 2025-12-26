@@ -13,6 +13,16 @@ import warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 
+# ----------------------------- DICE (from IoU) -----------------------------
+def calculate_dice(iou: float) -> float:
+    """
+    Calculate DICE coefficient from IoU.
+    DICE = 2*IoU / (1 + IoU)
+    """
+    if iou <= 0:
+        return 0.0
+    return (2.0 * iou) / (1.0 + iou)
+
 # ----------------------------- IoU (Bounding Box) -----------------------------
 def calculate_iou(b1: List[float], b2: List[float]) -> float:
     """
@@ -85,13 +95,20 @@ def calculate_mask_dice(mask1: np.ndarray, mask2: np.ndarray) -> float:
 # --------------------------- Bounding Box Metrics ---------------------------
 def calculate_bbox_metrics(predictions: List[Dict],
                            ground_truth: List[Dict],
-                           num_classes: int) -> Dict[str, Union[float, List[float], Dict]]:
+                           num_classes: int,
+                           iou_threshold: float = 0.3) -> Dict[str, Union[float, List[float], Dict]]:
     """
     Returns (per-image) bounding box metrics:
       mean_iou, mean_dice,
       class_precision, class_recall, class_f1, class_aps (alias of class_f1),
       per_class_counts (tp/fp/fn for each class),
       map  (macro-avg of class_f1 **only over classes present in this image**)
+    
+    Args:
+        predictions: List of predicted bboxes
+        ground_truth: List of ground truth bboxes
+        num_classes: Number of classes
+        iou_threshold: IoU threshold for matching (default 0.3, standard for detection)
     """
     if not predictions and not ground_truth:
         return {
@@ -106,6 +123,8 @@ def calculate_bbox_metrics(predictions: List[Dict],
         }
 
     ious, dices = [], []
+    per_class_ious = [[] for _ in range(num_classes)]  # Track IoU per class
+    per_class_dices = [[] for _ in range(num_classes)]  # Track DICE per class
     counts = np.zeros((num_classes, 3), dtype=np.int64)  # (tp, fp, fn)
     matched_gt = set()
 
@@ -120,9 +139,12 @@ def calculate_bbox_metrics(predictions: List[Dict],
             if iou > best_iou:
                 best_iou, best_idx = iou, i
 
-        if best_iou >= 0.5 and best_idx >= 0:
+        if best_iou >= iou_threshold and best_idx >= 0:
             counts[pred_class, 0] += 1  # tp
             matched_gt.add(best_idx)
+            # Track per-class IoU/DICE for matched pairs only
+            per_class_ious[pred_class].append(best_iou)
+            per_class_dices[pred_class].append(calculate_dice(best_iou))
         else:
             counts[pred_class, 1] += 1  # fp
 
@@ -161,6 +183,8 @@ def calculate_bbox_metrics(predictions: List[Dict],
         "class_f1":        [float(x) if not np.isnan(x) else 0.0 for x in f1],
         "class_aps":       [float(x) if not np.isnan(x) else 0.0 for x in f1],  # alias
         "per_class_counts": [{"tp": int(t), "fp": int(p), "fn": int(n)} for t, p, n in counts],
+        "per_class_ious": per_class_ious,  # List of lists: IoU values per class
+        "per_class_dices": per_class_dices,  # List of lists: DICE values per class
         "map": map_val,
     }
 

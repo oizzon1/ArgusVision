@@ -7,7 +7,7 @@ channels:
 dependencies:
   - python=3.9
   - pip
-  # Core numerical
+  # Core numerical & utilities
   - numpy>=1.23
   - tqdm>=4.66
   - shapely>=2.0
@@ -16,10 +16,17 @@ dependencies:
   - torchvision=0.20.1
   - torchaudio=2.5.1
   - pytorch-cuda=12.1  # from nvidia channel
-  # Optional but useful
+  # Visualization & Image Processing
+  - matplotlib>=3.5
+  - pillow>=9.0
+  # Development tools
   - jupyterlab
   - ipykernel
-  - matplotlib
+  # Pip packages
   - pip:
+      # YOLO detection
       - ultralytics>=8.3.0,<9
+      # Computer vision
       - opencv-python>=4.8
+      # SAM segmentation
+      - segment-anything>=1.0

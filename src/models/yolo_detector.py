@@ -1,3 +1,5 @@
+import json
+from collections import defaultdict
 from typing import Dict, Iterable, List, Optional, Set, Tuple
 import numpy as np
 import cv2
@@ -31,7 +33,14 @@ class YOLODetector:
         self.allowed_class_ids: Optional[Set[int]] = (
             set(allowed_class_ids) if allowed_class_ids is not None else None
         )
-        self.class_names = class_names
+        self.class_names = class_names        
+        # Load GSD mapping
+        gsd_file = Path("dataset/dota_gsd_mapping.json")
+        self.gsd_mapping = {}
+        if gsd_file.exists():
+            with open(gsd_file) as f:
+                self.gsd_mapping = json.load(f)
+
 
         weights_path = self._resolve_weights(weights_path)
         self.model = YOLO(weights_path)
@@ -163,9 +172,9 @@ class YOLODetector:
         all_metrics: List[Dict] = []
         per_image_counts: List[List[Dict]] = []
         names = class_names or self.class_names
-
-        examples_dir = Path(results_dir) / "examples" / self.model_name
-        examples_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Store examples for later filtering (10 best + 10 worst)
+        examples_data = []
 
         # Use DataLoader if provided, otherwise fall back to legacy path lists
         if dataloader is not None:
@@ -179,14 +188,22 @@ class YOLODetector:
                     gts = batch["labels"][i]
                     image_id = batch["image_ids"][i]
                     
-                    m = self.evaluate_image(
-                        img, gts, num_classes,
-                        save_dir=str(examples_dir),
-                        image_id=image_id,
-                        class_names=names,
-                    )
+                    # Get predictions
+                    preds, inf_ms = self.predict(img)
+                    m = calculate_bbox_metrics(preds, gts, num_classes)
+                    m["inference_time_ms"] = inf_ms
+                    
                     all_metrics.append(m)
                     per_image_counts.append(m["per_class_counts"])
+                    
+                    # Store for visualization
+                    examples_data.append({
+                        'image_id': image_id,
+                        'image': img.copy(),
+                        'predictions': preds,
+                        'ground_truth': gts,
+                        'metrics': m
+                    })
                     
         else:
             # Legacy API: use image_paths and label_paths
@@ -229,24 +246,43 @@ class YOLODetector:
                                 "class_id": cid
                             })
 
-                m = self.evaluate_image(
-                    img,
-                    gts,
-                    num_classes,
-                    save_dir=str(examples_dir),
-                    image_id=Path(img_path).stem,
-                    class_names=names,
-                )
+                # Get predictions
+                preds, inf_ms = self.predict(img)
+                m = calculate_bbox_metrics(preds, gts, num_classes)
+                m["inference_time_ms"] = inf_ms
+                
                 all_metrics.append(m)
                 per_image_counts.append(m["per_class_counts"])
+                
+                # Store for visualization
+                examples_data.append({
+                    'image_id': Path(img_path).stem,
+                    'image': img.copy(),
+                    'predictions': preds,
+                    'ground_truth': gts,
+                    'metrics': m
+                })
 
         # -------- aggregate (dataset-level) --------
         mean_iou_values = [m["mean_iou"] for m in all_metrics]
         mean_dice_values = [m["mean_dice"] for m in all_metrics]
         times = [m.get("inference_time_ms", 0.0) for m in all_metrics]
 
+        # Collect per-class IoU/DICE values across all images
+        per_class_ious_aggregated = [[] for _ in range(num_classes)]
+        per_class_dices_aggregated = [[] for _ in range(num_classes)]
+        
+        for img_metrics in all_metrics:
+            # Aggregate per-class IoU/DICE from each image
+            for class_id in range(num_classes):
+                if "per_class_ious" in img_metrics and "per_class_dices" in img_metrics:
+                    per_class_ious_aggregated[class_id].extend(img_metrics["per_class_ious"][class_id])
+                    per_class_dices_aggregated[class_id].extend(img_metrics["per_class_dices"][class_id])
+        
         overall_mean_iou = float(np.mean(mean_iou_values)) if mean_iou_values else 0.0
         overall_mean_dice = float(np.mean(mean_dice_values)) if mean_dice_values else 0.0
+        overall_std_iou = float(np.std(mean_iou_values)) if len(mean_iou_values) > 1 else 0.0
+        overall_std_dice = float(np.std(mean_dice_values)) if len(mean_dice_values) > 1 else 0.0
         overall_avg_time = float(np.mean(times)) if times else 0.0
 
         # sum tp/fp/fn across images
@@ -254,6 +290,11 @@ class YOLODetector:
                           dtype=np.int64)  # (N, C, 3)
         summed = counts.sum(axis=0) if len(counts) else np.zeros((num_classes, 3), dtype=np.int64)
         tp, fp, fn = summed[:, 0].astype(float), summed[:, 1].astype(float), summed[:, 2].astype(float)
+
+        # Calculate total counts
+        total_gt = int((tp + fn).sum())
+        total_detections = int((tp + fp).sum())
+        matched_pairs = int(tp.sum())
 
         with np.errstate(divide="ignore", invalid="ignore"):
             precision = np.divide(tp, tp + fp, where=(tp + fp) > 0)
@@ -264,21 +305,155 @@ class YOLODetector:
         allowed_ids = self.allowed_class_ids if self.allowed_class_ids is not None else set(range(num_classes))
         existed = ((tp + fp + fn) > 0) & np.isin(np.arange(num_classes), list(allowed_ids))
         dataset_map = float(np.nanmean(f1[existed])) if np.any(existed) else 0.0
+        
+        # Calculate mean detection metrics across all classes
+        mean_recall = float(np.nanmean(recall[existed])) if np.any(existed) else 0.0
+        mean_precision = float(np.nanmean(precision[existed])) if np.any(existed) else 0.0
+        mean_f1 = dataset_map  # Same as mAP
 
-        # expose class_aps as dict keyed by class name
-        class_aps_named = {
-            (names[i] if names is not None and i < len(names) else str(i)):
-                float(f1[i]) if not np.isnan(f1[i]) else 0.0
-            for i in range(num_classes) if i in allowed_ids
-        }
+        # Per-class metrics in new format (matching ArgusVision)
+        per_class_metrics = {}
+        for i in range(num_classes):
+            if i in allowed_ids and existed[i]:
+                class_name = names[i] if names is not None and i < len(names) else str(i)
+                # Calculate per-class bbox quality averages
+                class_bbox_iou = float(np.mean(per_class_ious_aggregated[i])) if per_class_ious_aggregated[i] else 0.0
+                class_bbox_dice = float(np.mean(per_class_dices_aggregated[i])) if per_class_dices_aggregated[i] else 0.0
+                
+                per_class_metrics[class_name] = {
+                    'recall': float(recall[i]) if not np.isnan(recall[i]) else 0.0,
+                    'precision': float(precision[i]) if not np.isnan(precision[i]) else 0.0,
+                    'f1': float(f1[i]) if not np.isnan(f1[i]) else 0.0,
+                    'bbox_iou': class_bbox_iou,  # Per-class average
+                    'bbox_dice': class_bbox_dice,  # Per-class average
+                    'tp': int(tp[i]),
+                    'fp': int(fp[i]),
+                    'fn': int(fn[i]),
+                }
 
+        # New format matching ArgusVision structure
         overall_metrics = {
-            "mean_iou": overall_mean_iou,
-            "mean_dice": overall_mean_dice,
-            "map": dataset_map,
-            "class_aps": class_aps_named,                # <- dict with names
-            "avg_inference_time_ms": overall_avg_time,
+            'config': {
+                'dataset': results_dir,
+                'num_images': len(all_metrics),
+                'total_gt': total_gt,
+                'total_detections': total_detections,
+                'matched_pairs': matched_pairs,
+            },
+            'overall': {
+                'bbox_iou': overall_mean_iou,
+                'bbox_dice': overall_mean_dice,
+                'std_bbox_iou': overall_std_iou,
+                'std_bbox_dice': overall_std_dice,
+                'mean_recall': mean_recall,
+                'mean_precision': mean_precision,
+                'mean_f1': mean_f1,
+            },
+            'per_class': per_class_metrics,
+            'timing': {
+                'avg_inference_ms': overall_avg_time,
+            },
+            # Legacy format for backward compatibility
+            'mean_iou': overall_mean_iou,
+            'mean_dice': overall_mean_dice,
+            'map': dataset_map,
+            'avg_inference_time_ms': overall_avg_time,
         }
+
+        # Save best and worst examples PER CLASS
+        if examples_data:
+            # Load GSD mapping
+            gsd_file = Path("dataset/dota_gsd_mapping.json")
+            gsd_mapping = {}
+            if gsd_file.exists():
+                with open(gsd_file) as f:
+                    gsd_mapping = json.load(f)
+            
+            # Group examples by classes present
+            per_class_examples = defaultdict(list)
+            for example in examples_data:
+                # Get unique classes in this image
+                classes_in_image = set()
+                for gt in example['ground_truth']:
+                    classes_in_image.add(gt['class_id'])
+                for pred in example['predictions']:
+                    classes_in_image.add(pred['class_id'])
+                
+                # Calculate per-class F1 for each class in this image
+                for class_id in classes_in_image:
+                    if 'per_class_counts' in example['metrics']:
+                        counts = example['metrics']['per_class_counts'][class_id]
+                        tp, fp, fn = counts['tp'], counts['fp'], counts['fn']
+                        
+                        # Calculate F1 for this class in this image
+                        precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+                        recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+                        class_f1 = (2 * precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+                        
+                        per_class_examples[class_id].append({
+                            'example': example,
+                            'class_f1': class_f1,
+                            'class_id': class_id
+                        })
+            
+            # Create directories for per-class examples
+            base_examples_dir = Path(results_dir) / "examples" / self.model_name
+            best_per_class_dir = base_examples_dir / "best_per_class"
+            worst_per_class_dir = base_examples_dir / "worst_per_class"
+            best_per_class_dir.mkdir(parents=True, exist_ok=True)
+            worst_per_class_dir.mkdir(parents=True, exist_ok=True)
+            
+            class_name_dict = {
+                i: (names[i] if names is not None and i < len(names) else str(i))
+                for i in range(num_classes)
+            }
+            
+            # For each class, save best and worst
+            for class_id, examples_list in per_class_examples.items():
+                if not examples_list:
+                    continue
+                
+                # Sort by class F1
+                examples_list.sort(key=lambda x: x['class_f1'])
+                
+                best_example = examples_list[-1]['example']  # Highest F1
+                worst_example = examples_list[0]['example']  # Lowest F1
+                
+                class_name = class_name_dict.get(class_id, str(class_id))
+                
+                # Get GSD for the images
+                best_gsd = gsd_mapping.get(best_example['image_id'], None)
+                worst_gsd = gsd_mapping.get(worst_example['image_id'], None)
+                
+                # Save best example for this class
+                best_filename = f"{class_name}_{best_example['image_id']}"
+                save_detection_examples(
+                    image_id=best_filename,
+                    model_name=self.model_name,
+                    image=best_example['image'],
+                    predictions=best_example['predictions'],
+                    ground_truth=best_example['ground_truth'],
+                    class_names=class_name_dict,
+                    metrics=best_example['metrics'],
+                    output_dir=str(best_per_class_dir),
+                    is_obb=(self.mode == "obb"),
+                    gsd=best_gsd,
+                )
+                
+                # Save worst example for this class
+                worst_filename = f"{class_name}_{worst_example['image_id']}"
+                save_detection_examples(
+                    image_id=worst_filename,
+                    model_name=self.model_name,
+                    image=worst_example['image'],
+                    predictions=worst_example['predictions'],
+                    ground_truth=worst_example['ground_truth'],
+                    class_names=class_name_dict,
+                    metrics=worst_example['metrics'],
+                    output_dir=str(worst_per_class_dir),
+                    is_obb=(self.mode == "obb"),
+                    gsd=worst_gsd,
+                )
 
         save_metrics(overall_metrics, self.model_name, results_dir)
         return overall_metrics
