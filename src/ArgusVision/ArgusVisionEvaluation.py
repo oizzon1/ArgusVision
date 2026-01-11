@@ -14,6 +14,7 @@ Features:
 import json
 import sys
 import gc
+import time
 import numpy as np
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -23,7 +24,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from scipy.ndimage import label
 from scipy.optimize import linear_sum_assignment
-from datetime import datetime
+from datetime import datetime, timedelta
 
 try:
     import torch
@@ -83,6 +84,9 @@ class ArgusVisionEvaluation:
         # Class color mapping for GT mask extraction (RGB to class_id)
         self.class_colors = self._load_class_colors()
         
+        # Load GSD mapping for visualization titles
+        self.gsd_mapping = self._load_gsd_mapping()
+        
     def _verify_dataset(self):
         """Verify dataset has required structure"""
         required = ['images', 'labels', 'semantic_masks']
@@ -91,6 +95,14 @@ class ArgusVisionEvaluation:
             if not folder_path.exists():
                 raise FileNotFoundError(f"Dataset missing required folder: {folder}")
                 
+    def _load_gsd_mapping(self) -> Dict:
+        """Load GSD (Ground Sampling Distance) mapping from JSON file."""
+        gsd_path = Path('dataset/dota_gsd_mapping.json')
+        if gsd_path.exists():
+            with open(gsd_path, 'r') as f:
+                return json.load(f)
+        return {}
+    
     def _load_class_colors(self) -> Dict:
         """
         Load class color mapping from iSAID color scheme.
@@ -220,7 +232,19 @@ class ArgusVisionEvaluation:
         
         # Check for existing restore point
         restore_data = self._load_latest_restore_point()
-        
+
+        # Avoid mixing restore points with test runs (or mismatched image counts)
+        if restore_data and restore_data.get('total_images') != total_images:
+            print(
+                f"\nRestore point ignored (different image count: "
+                f"{restore_data.get('total_images')} vs {total_images})"
+            )
+            restore_data = None
+
+        if restore_data and max_images is not None:
+            print("\nRestore point ignored (test run with --max-images)")
+            restore_data = None
+
         if restore_data:
             print(f"\n📂 Restore point found! Resuming from image {restore_data['last_index'] + 1}/{total_images}")
             print(f"   Previous session: {restore_data['timestamp']}")
@@ -229,7 +253,6 @@ class ArgusVisionEvaluation:
             examples_data = restore_data.get('examples_data', {} if save_visualizations else None)
             start_index = restore_data['last_index'] + 1
         else:
-            print(f"\n🆕 Starting fresh evaluation")
             # Initialize metrics storage
             metrics = {
                 'per_class': {class_id: {
@@ -250,15 +273,32 @@ class ArgusVisionEvaluation:
         # Track failed images
         failed_images = []
         
+        # Track timing for progress display
+        eval_start_time = time.time()
+        
         # Process images with restore points and memory management
         try:
             for idx in range(start_index, total_images):
                 img_path = images_to_process[idx]
                 
                 try:
-                    # Update progress bar manually
+                    # Calculate timing info
+                    elapsed = time.time() - eval_start_time
+                    images_done = idx - start_index + 1
+                    images_remaining = total_images - idx - 1
+                    
+                    if images_done > 1:
+                        avg_time_per_image = elapsed / (images_done - 1) if images_done > 1 else 0
+                        eta_seconds = avg_time_per_image * images_remaining
+                        elapsed_str = str(timedelta(seconds=int(elapsed)))
+                        eta_str = str(timedelta(seconds=int(eta_seconds)))
+                    else:
+                        elapsed_str = "00:00:00"
+                        eta_str = "calculating..."
+                    
+                    # Update progress bar with timing
                     progress_pct = (idx + 1) / total_images * 100
-                    print(f"\rEvaluating: {progress_pct:5.1f}% | {idx+1:4}/{total_images} | {img_path.name:<30}", end='', flush=True)
+                    print(f"\rEvaluating: {progress_pct:5.1f}% | {idx+1:4}/{total_images} | ⏱️ {elapsed_str} | ETA: {eta_str} | {img_path.name:<20}", end='', flush=True)
                     
                     result = self._evaluate_single_image(img_path, store_examples=save_visualizations)
                     
@@ -304,6 +344,16 @@ class ArgusVisionEvaluation:
                     print(f"\n💾 Restore point saved: {idx+1}/{total_images} images processed")
             
             print("\n")  # New line after progress
+            
+            # Calculate total runtime
+            total_runtime = time.time() - eval_start_time
+            total_runtime_str = str(timedelta(seconds=int(total_runtime)))
+            avg_time_per_img = total_runtime / (total_images - start_index) if (total_images - start_index) > 0 else 0
+            
+            print(f"\n🏁 Evaluation complete!")
+            print(f"   Total images processed: {total_images - start_index}")
+            print(f"   Total runtime: {total_runtime_str} ({total_runtime/60:.2f} minutes)")
+            print(f"   Avg per image: {avg_time_per_img:.2f} seconds")
             
             # Save final restore point
             self._save_restore_point(metrics, total_images - 1, examples_data, total_images, final=True)
@@ -391,6 +441,11 @@ class ArgusVisionEvaluation:
             for class_id in range(15):
                 gt_instances = self._extract_gt_instances(gt_mask_rgb, class_id)
                 gt_counts[class_id] = len(gt_instances)
+
+            # Count false negatives for classes with GT but no predictions
+            for class_id in range(15):
+                if class_id not in pred_by_class and gt_counts[class_id] > 0:
+                    detection_metrics_per_class[class_id] = (0, 0, gt_counts[class_id])
             
             # Second pass: Match predictions to GT
             for class_id, preds in pred_by_class.items():
@@ -418,25 +473,41 @@ class ArgusVisionEvaluation:
                     class_metrics.append((class_id, iou, dice))
                     
                     if store_examples:
-                        # Group examples by (image, class) for class-level visualization
+                        # Store METADATA ONLY (not images/masks) - saves ~48GB per restore point!
                         key = (img_name, class_id)
                         if key not in examples:
+                            # Calculate F1 score for this class on this image
+                            f1 = 0.0
+                            if n_tp > 0:
+                                img_recall = n_tp / len(gt_instances) if len(gt_instances) > 0 else 0.0
+                                img_precision = n_tp / len(preds) if len(preds) > 0 else 0.0
+                                f1 = 2 * (img_precision * img_recall) / (img_precision + img_recall) if (img_precision + img_recall) > 0 else 0.0
+                            
+                            # Get GSD for this image
+                            gsd = self.gsd_mapping.get(img_name, 1.0)  # Default to 1.0 if not found
+                            if gsd == 0:  # Fix for missing/zero GSD values
+                                gsd = 1.0
+                            
                             examples[key] = {
+                                'img_path': str(img_path),  # Path to reload image later
+                                'mask_path': str(mask_path),  # Path to reload GT mask
                                 'img_name': img_name,
                                 'class_id': class_id,
                                 'class_name': CLASS_NAMES.get(class_id, f'class_{class_id}'),
-                                'image_rgb': image_rgb.copy(),
-                                'detections': [],
-                                'gt_masks': [],
-                                'pred_masks': [],
-                                'ious': [],
-                                'n_gt': len(gt_instances)
+                                'detection_bboxes': [],  # Just bbox coordinates
+                                'ious': [],  # Just IoU values
+                                'dices': [],  # Also store DICE values!
+                                'n_gt': len(gt_instances),
+                                'n_detected': 0,
+                                'f1': f1,  # F1 score for this image+class
+                                'gsd': gsd  # Ground Sampling Distance in meters
                             }
                         
-                        examples[key]['detections'].append(pred['det']['bbox'])
-                        examples[key]['gt_masks'].append(gt_mask.copy())
-                        examples[key]['pred_masks'].append(pred['mask'].copy())
+                        # Store lightweight data only
+                        examples[key]['detection_bboxes'].append(pred['det']['bbox'])
                         examples[key]['ious'].append(iou)
+                        examples[key]['dices'].append(dice)  # Store DICE too!
+                        examples[key]['n_detected'] = len(preds)
             
             output = {
                 'class_metrics': class_metrics,
@@ -591,13 +662,16 @@ class ArgusVisionEvaluation:
         for class_id in range(15):
             class_ious = metrics['per_class'][class_id]['ious']
             class_dices = metrics['per_class'][class_id]['dices']
+            n_tp = metrics['per_class'][class_id]['tp']
+            n_fp = metrics['per_class'][class_id]['fp']
+            n_fn = metrics['per_class'][class_id]['fn']
             
-            if class_ious or metrics['per_class'][class_id]['tp'] > 0:
+            if class_ious or (n_tp + n_fp + n_fn) > 0:
                 # Compute detection metrics
                 det_metrics = self._compute_detection_metrics(
-                    metrics['per_class'][class_id]['tp'],
-                    metrics['per_class'][class_id]['fp'],
-                    metrics['per_class'][class_id]['fn']
+                    n_tp,
+                    n_fp,
+                    n_fn
                 )
                 
                 summary['per_class'][CLASS_NAMES.get(class_id, f'class_{class_id}')] = {
@@ -626,30 +700,51 @@ class ArgusVisionEvaluation:
     def _print_summary(self, summary: Dict):
         """Print evaluation summary to console"""
         print(f"\n{'='*80}")
-        print("ARGUSVISION EVALUATION SUMMARY")
+        print(f"{'ARGUSVISION EVALUATION SUMMARY':^80}")
         print(f"{'='*80}")
         
-        print(f"\nDataset: {summary['config']['dataset']}")
-        print(f"Images processed: {summary['config']['num_images']}")
-        print(f"Total GT instances: {summary['config']['total_gt']}")
-        print(f"Total detections: {summary['config']['num_prompts']}")
-        print(f"Matched pairs (TP): {summary['config']['matched_pairs']}")
+        # Dataset Information
+        dataset_block = (
+            f"\nDataset: {summary['config']['dataset']}\n"
+            f"Images processed: {summary['config']['num_images']}\n"
+            f"Total GT instances: {summary['config']['total_gt']}\n"
+            f"Total detections: {summary['config']['num_prompts']}\n"
+            f"Matched pairs (TP): {summary['config']['matched_pairs']}"
+        )
+        print(dataset_block)
         
-        print(f"\nOverall Segmentation Quality (for matched pairs):")
-        print(f"  Seg-IoU:  {summary['overall']['seg_iou']*100:.2f}% ± {summary['overall']['std_seg_iou']*100:.2f}%")
-        print(f"  Seg-DICE: {summary['overall']['seg_dice']*100:.2f}% ± {summary['overall']['std_seg_dice']*100:.2f}%")
+        # Compute overall detection metrics (robust to per-class filtering)
+        total_tp = int(summary['config']['matched_pairs'])
+        total_fp = int(summary['config']['num_prompts']) - total_tp
+        total_fn = int(summary['config']['total_gt']) - total_tp
+        
+        overall_recall = total_tp / (total_tp + total_fn) if (total_tp + total_fn) > 0 else 0.0
+        overall_precision = total_tp / (total_tp + total_fp) if (total_tp + total_fp) > 0 else 0.0
+        overall_f1 = 2 * (overall_precision * overall_recall) / (overall_precision + overall_recall) if (overall_precision + overall_recall) > 0 else 0.0
+        
+        detection_block = (
+            f"\nOverall Detection Quality:\n"
+            f"Recall:    {overall_recall*100:.2f}%\n"
+            f"Precision: {overall_precision*100:.2f}%\n"
+            f"F1 Score:  {overall_f1*100:.2f}%"
+        )
+        print(detection_block)
+        
+        print(f"\nOverall Segmentation Quality:")
+        print(f"IoU:  {summary['overall']['seg_iou']*100:.2f}% ± {summary['overall']['std_seg_iou']*100:.2f}%")
+        print(f"DICE: {summary['overall']['seg_dice']*100:.2f}% ± {summary['overall']['std_seg_dice']*100:.2f}%")
         
         print(f"\nTiming:")
         timing = summary['timing']
-        print(f"  Avg detection:     {timing['avg_detection_ms']:.2f} ms")
-        print(f"  Avg segmentation:  {timing['avg_segmentation_ms']:.2f} ms")
-        print(f"  Avg total:         {timing['avg_total_ms']:.2f} ms")
+        print(f"Avg detection:     {timing['avg_detection_ms']:.2f} ms")
+        print(f"Avg segmentation:  {timing['avg_segmentation_ms']:.2f} ms")
+        print(f"Avg total:         {timing['avg_total_ms']:.2f} ms")
         
         print(f"\n{'='*80}")
-        print("PER-CLASS PERFORMANCE")
+        print(f"{'PER-CLASS PERFORMANCE':^80}")
         print(f"{'='*80}")
         print(f"{'Class':<20} {'──Detection──':^21} | {'─Segmentation─':^19} | {'──Counts──':^14}")
-        print(f"{'Class':<20} {'Det-Recall':>10} {'Det-Prec':>9} {'Det-F1':>6} | {'Seg-IoU':>8} {'Seg-DICE':>9} | {'TP':>4} {'FP':>4} {'FN':>4}")
+        print(f"{'':<20} {'Recall':>10} {'Prec':>9} {'F1':>8} | {'IoU':>8} {'DICE':>9} | {'TP':>4} {'FP':>4} {'FN':>4}")
         print("-" * 80)
         
         for class_name, m in sorted(summary['per_class'].items(), 
@@ -657,7 +752,7 @@ class ArgusVisionEvaluation:
             print(f"{class_name:<20} "
                   f"{m['recall']*100:>6.2f}% "
                   f"{m['precision']*100:>6.2f}% "
-                  f"{m['f1']:>5.3f} | "
+                  f"{m['f1']*100:>6.2f}% | "
                   f"{m['seg_iou']*100:>7.2f}% "
                   f"{m['seg_dice']*100:>8.2f}% | "
                   f"{m['tp']:>4} "
@@ -667,7 +762,7 @@ class ArgusVisionEvaluation:
         print(f"{'='*80}\n")
     
     def _save_class_visualization(self, image_rgb, class_name, all_detections, all_gt_masks,
-                                  all_pred_masks, avg_iou, n_detected, n_gt, img_name, output_dir):
+                                  all_pred_masks, avg_iou, avg_dice, n_detected, n_gt, n_matched, recall, precision, f1, gsd, img_name, output_dir):
         """
         Save visualization showing ALL instances of ONE class in an image.
         
@@ -677,39 +772,22 @@ class ArgusVisionEvaluation:
             all_detections: List of bounding boxes for all detected instances
             all_gt_masks: List of GT masks for all instances
             all_pred_masks: List of predicted masks for matched instances
-            avg_iou: Average IoU across all instances
-            n_detected: Number of detections
-            n_gt: Number of GT instances
+            avg_iou: Average IoU across all instances (from evaluation)
+            avg_dice: Average DICE across all instances (from evaluation)
+            n_detected: Number of detections (from evaluation)
+            n_gt: Number of GT instances (from evaluation)
+            n_matched: Number of matched pairs / TP (from evaluation)
+            recall: Detection recall (from evaluation data)
+            precision: Detection precision (from evaluation data)
+            f1: F1 score (from evaluation data)
+            gsd: Ground Sampling Distance in meters
             img_name: Image filename
             output_dir: Output directory
         """
         fig, axes = plt.subplots(1, 3, figsize=(18, 6))
         
-        # Calculate metrics
-        recall = n_detected / n_gt if n_gt > 0 else 0.0
-        precision = len(all_pred_masks) / n_detected if n_detected > 0 else 0.0
-    def _save_class_visualization(self, image_rgb, class_name, all_detections, all_gt_masks,
-                                  all_pred_masks, avg_iou, n_detected, n_gt, img_name, output_dir):
-        """
-        Save visualization showing ALL instances of ONE class in an image.
-        
-        Args:
-            image_rgb: Original image (RGB)
-            class_name: Name of the class
-            all_detections: List of bounding boxes for all detected instances
-            all_gt_masks: List of GT masks for all instances
-            all_pred_masks: List of predicted masks for matched instances
-            avg_iou: Average IoU across all instances
-            n_detected: Number of detections
-            n_gt: Number of GT instances
-            img_name: Image filename
-            output_dir: Output directory
-        """
-        fig, axes = plt.subplots(1, 3, figsize=(18, 6))
-        
-        # Calculate metrics
-        recall = n_detected / n_gt if n_gt > 0 else 0.0
-        precision = len(all_pred_masks) / n_detected if n_detected > 0 else 0.0
+        # Use passed-in metrics (already calculated from evaluation data)
+        # recall and precision are now parameters
         
         # Panel 1: Original + all detection bboxes
         axes[0].imshow(image_rgb)
@@ -746,27 +824,23 @@ class ArgusVisionEvaluation:
         axes[2].set_title('Segmented Masks', fontsize=12, fontweight='bold')
         axes[2].axis('off')
         
-        # Calculate average DICE
-        avg_dice = 0.0
-        if all_pred_masks and all_gt_masks:
-            dices = []
-            for pred_mask, gt_mask in zip(all_pred_masks, all_gt_masks):
-                dices.append(calculate_mask_dice(pred_mask, gt_mask))
-            avg_dice = float(np.mean(dices)) if dices else 0.0
-        
-        # Title with metrics - separated by detection and segmentation
+        # New title format: Image Name | GSD = x.xx m/px | Class: {class name}
+        # GSD values are typically fractional for aerial imagery; keep 2 decimals for readability.
+        gsd_val = float(gsd) if gsd is not None else 0.0
+        if gsd_val <= 0:
+            gsd_val = 0.0
         fig.suptitle(
-            f'{img_name} | {class_name}\n'
-            f'Detected: {n_detected}/{n_gt} | Recall: {recall*100:.2f}% | Precision: {precision*100:.2f}%\n'
-            f'Segmented: {len(all_pred_masks)} | Avg IoU: {avg_iou*100:.2f}% | Avg DICE: {avg_dice*100:.2f}%',
+            f'{img_name} | GSD = {gsd_val:.2f} m/px | Class: {class_name}\n'
+            f'Detected: {n_detected}/{n_gt} (TP:{n_matched}) | Recall: {recall*100:.2f}% | Precision: {precision*100:.2f}% | F1: {f1*100:.2f}%\n'
+            f'Segmented: {n_matched} matched | Avg IoU: {avg_iou*100:.2f}% | Avg DICE: {avg_dice*100:.2f}%',
             fontsize=14, fontweight='bold'
         )
         
         plt.subplots_adjust(wspace=0.05, hspace=0)
         plt.tight_layout(rect=[0, 0, 1, 0.96])
         
-        # Save
-        filename = f"{img_name}_{class_name}_avgIoU_{avg_iou:.3f}_n{n_detected}.png"
+        # New filename format: imagename_class_f1score
+        filename = f"{img_name}_{class_name}_{f1*100:.2f}.png"
         save_path = Path(output_dir) / filename
         save_path.parent.mkdir(parents=True, exist_ok=True)
         plt.savefig(save_path, dpi=100, bbox_inches='tight')
@@ -841,60 +915,118 @@ class ArgusVisionEvaluation:
     
     def _save_visualizations(self, examples_data):
         """
-        Save 10 best and 10 worst class-level examples.
+        Save 1 best and 1 worst example PER CLASS.
+        Loads images from disk on-demand (not stored in restore points).
         
         Args:
-            examples_data: Dict keyed by (img_name, class_id) with class-level data
+            examples_data: Dict keyed by (img_name, class_id) with METADATA only
         """
         if not examples_data:
             return
         
-        # Convert dict to list and compute average IoU for each
-        examples_list = []
+        # Group examples by class_id
+        per_class_examples = {}
         for key, data in examples_data.items():
             data['avg_iou'] = float(np.mean(data['ious'])) if data['ious'] else 0.0
-            data['n_detected'] = len(data['detections'])
-            examples_list.append(data)
+            class_id = data['class_id']
+            if class_id not in per_class_examples:
+                per_class_examples[class_id] = []
+            per_class_examples[class_id].append(data)
         
-        # Sort by average IoU
-        examples_list.sort(key=lambda x: x['avg_iou'], reverse=True)
+        # Sort each class's examples by IoU
+        for class_id in per_class_examples:
+            per_class_examples[class_id].sort(key=lambda x: x['avg_iou'], reverse=True)
         
-        # Save top 10 (best)
-        num_best = min(10, len(examples_list))
-        if num_best > 0:
-            print(f"\n📸 Saving {num_best} best class-level examples...")
-            best_dir = self.output_dir / 'examples' / 'best'
-            for example in examples_list[:num_best]:
-                self._save_class_visualization(
-                    example['image_rgb'],
-                    example['class_name'],
-                    example['detections'],
-                    example['gt_masks'],
-                    example['pred_masks'],
-                    example['avg_iou'],
-                    example['n_detected'],
-                    example['n_gt'],
-                    example['img_name'],
-                    best_dir
-                )
+        best_dir = self.output_dir / 'examples' / 'best'
+        worst_dir = self.output_dir / 'examples' / 'worst'
         
-        # Save bottom 10 (worst)
-        num_worst = min(10, len(examples_list))
-        if num_worst > 0:
-            print(f"📸 Saving {num_worst} worst class-level examples...")
-            worst_dir = self.output_dir / 'examples' / 'worst'
-            for example in examples_list[-num_worst:]:
-                self._save_class_visualization(
-                    example['image_rgb'],
-                    example['class_name'],
-                    example['detections'],
-                    example['gt_masks'],
-                    example['pred_masks'],
-                    example['avg_iou'],
-                    example['n_detected'],
-                    example['n_gt'],
-                    example['img_name'],
-                    worst_dir
-                )
+        num_classes = len(per_class_examples)
+        print(f"\n📸 Generating 1 best + 1 worst per class ({num_classes} classes)...")
+        
+        # Save best and worst for each class
+        for class_id, examples in per_class_examples.items():
+            if len(examples) > 0:
+                # Best example (highest IoU)
+                best_example = examples[0]
+                self._generate_and_save_visualization(best_example, best_dir)
+                
+                # Worst example (lowest IoU) - only if different from best
+                if len(examples) > 1:
+                    worst_example = examples[-1]
+                    self._generate_and_save_visualization(worst_example, worst_dir)
+                else:
+                    # Only one example - save it as worst too
+                    self._generate_and_save_visualization(best_example, worst_dir)
         
         print(f"✅ Visualizations saved to: {self.output_dir / 'examples'}")
+        print(f"   Best examples: {best_dir}")
+        print(f"   Worst examples: {worst_dir}")
+    
+    def _generate_and_save_visualization(self, example_metadata: Dict, output_dir: Path):
+        """
+        Generate visualization by loading image from disk and re-running inference.
+        
+        Args:
+            example_metadata: Metadata dict with paths, not actual images
+            output_dir: Directory to save visualization
+        """
+        try:
+            # Load image from disk
+            img_path = Path(example_metadata['img_path'])
+            image = cv2.imread(str(img_path))
+            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            
+            # Load GT mask from disk
+            mask_path = Path(example_metadata['mask_path'])
+            gt_mask = cv2.imread(str(mask_path))
+            gt_mask_rgb = cv2.cvtColor(gt_mask, cv2.COLOR_BGR2RGB)
+            
+            # Re-run inference to get predictions
+            result = self.pipeline.run_inference(image_rgb)
+            
+            # Extract GT instances for this class
+            class_id = example_metadata['class_id']
+            gt_instances = self._extract_gt_instances(gt_mask_rgb, class_id)
+            
+            # Filter predictions for this class only
+            pred_masks_for_class = []
+            detections_for_class = []
+            for i, (pred_mask, pred_class_id, det) in enumerate(zip(
+                result['masks'], result['classes'], result['detections']
+            )):
+                if pred_class_id == class_id:
+                    pred_masks_for_class.append(pred_mask)
+                    detections_for_class.append(det['bbox'])
+            
+            # Match predictions to GT (to get actual pred masks for visualization)
+            matches = self._match_predictions_to_gt(pred_masks_for_class, gt_instances)
+            matched_pred_masks = [pred_masks_for_class[pred_idx] for pred_idx, _, _ in matches]
+            
+            # Calculate  metrics from stored metadata (not from fresh inference!)
+            n_matched = len(example_metadata['ious'])  # TP from evaluation
+            recall = n_matched / example_metadata['n_gt'] if example_metadata['n_gt'] > 0 else 0.0
+            precision = n_matched / example_metadata['n_detected'] if example_metadata['n_detected'] > 0 else 0.0
+            avg_dice = float(np.mean(example_metadata['dices'])) if example_metadata['dices'] else 0.0  # From evaluation
+            
+            # Generate visualization with metrics
+            self._save_class_visualization(
+                image_rgb,
+                example_metadata['class_name'],
+                detections_for_class,
+                gt_instances,
+                matched_pred_masks,
+                example_metadata['avg_iou'],  # From evaluation
+                avg_dice,                      # From evaluation
+                example_metadata['n_detected'],  # From evaluation
+                example_metadata['n_gt'],        # From evaluation
+                n_matched,                       # TP from evaluation
+                recall,                          # Calculated from evaluation data
+                precision,                       # Calculated from evaluation data
+                example_metadata['f1'],          # F1 score from evaluation
+                example_metadata['gsd'],         # GSD from mapping
+                example_metadata['img_name'],
+                output_dir
+            )
+            
+        except Exception as e:
+            print(f"\n⚠️  Warning: Could not generate visualization for {example_metadata['img_name']}: {e}")

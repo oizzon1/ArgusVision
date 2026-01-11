@@ -1,4 +1,4 @@
-"""
+-"""
 Class-specific prompt configuration for ArgusVision pipeline.
 
 This configuration determines which prompt type (box or point) to use for each class
@@ -34,10 +34,10 @@ CLASS_NAMES = {
 }
 
 # Class Prompt Configuration
-# Initially set to 'box' for all classes as baseline
-# Can be tuned based on per-class performance analysis
+# EXPERIMENT: Testing point prompts for small/challenging objects
+# Original baseline was 'box' for all classes
 CLASS_PROMPT_CONFIG = {
-    0: 'box',      # plane - large, complex shape → box works well
+    0: 'point',    # plane - EXPERIMENT: test point for small objects
     1: 'box',      # ship - variable shapes → box
     2: 'box',      # storage-tank - excluded but kept for completeness
     3: 'box',      # baseball-diamond - structured diamond shape → box
@@ -47,11 +47,11 @@ CLASS_PROMPT_CONFIG = {
     7: 'box',      # harbor - complex infrastructure → box
     8: 'box',      # bridge - excluded but kept for completeness
     9: 'box',      # large-vehicle - standard vehicle shape → box
-    10: 'box',     # small-vehicle - standard vehicle shape → box
-    11: 'box',     # helicopter - small, complex rotor shape → box
-    12: 'box',     # roundabout - CIRCULAR! (candidate for 'point' after testing)
+    10: 'point',   # small-vehicle - EXPERIMENT: test point for small objects
+    11: 'point',   # helicopter - EXPERIMENT: test point for small objects
+    12: 'point',   # roundabout - EXPERIMENT: test point for circular shape
     13: 'box',     # soccer-ball-field - rectangular → box
-    14: 'box',     # swimming-pool - often circular/irregular (candidate for 'point')
+    14: 'box',     # swimming-pool - often circular/irregular → box
 }
 
 # Future optimization candidates based on SAM Phase 2 results:

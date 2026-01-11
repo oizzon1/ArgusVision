@@ -1099,6 +1099,226 @@ Evaluation & Metrics
 
 ---
 
+## 7. THESIS STRUCTURE (FINAL — Writing Phase)
+
+### Target: ~60-70 pages (excluding appendices)
+
+---
+
+## **CHAPTER 1: INTRODUCTION** (~8 pages)
+
+### 1.1 Background & Motivation
+- Growth of aerial/satellite imagery (drones, satellites, surveillance)
+- Object detection vs segmentation: why detection alone is insufficient
+- Real-world applications requiring precise boundaries (GIS, urban planning, disaster response, agriculture)
+- Gap: Detection gives boxes, applications need masks
+
+### 1.2 Problem Statement
+- Challenge: Extracting precise object boundaries from aerial imagery
+- Current limitation: YOLO provides bounding boxes, not pixel-level masks
+- Opportunity: Foundation models (SAM) enable zero-shot segmentation
+- Research question: "Can SAM effectively segment aerial objects using YOLO detections as prompts?"
+
+### 1.3 Research Objectives & Contributions
+- **Objective 1:** Evaluate YOLO-OBB detection performance on aerial imagery (DOTA)
+- **Objective 2:** Benchmark SAM's zero-shot segmentation capability with GT prompts
+- **Objective 3:** Integrate YOLO→SAM pipeline and measure combined performance
+- **Contribution:** First systematic evaluation of YOLO→SAM for aerial object segmentation
+
+### 1.4 Thesis Structure
+- Brief roadmap of remaining chapters (1 paragraph)
+
+---
+
+## **CHAPTER 2: THEORETICAL BACKGROUND** (~15 pages)
+
+### 2.1 Object Detection in Aerial Imagery
+- Evolution: Traditional → CNN-based → Transformer-based
+- YOLO family overview (v1 → v11, focus on v11-OBB)
+- Oriented Bounding Boxes (OBB) vs Vertical (VBB): why rotation matters
+- Challenges specific to aerial imagery:
+  - Scale variation (objects span 10px to 500px)
+  - Rotation (arbitrary object orientations)
+  - Dense scenes (parking lots, harbors)
+  - Small objects (vehicles, swimming pools)
+
+### 2.2 Image Segmentation
+- Semantic vs Instance segmentation
+- Traditional approaches (FCN, U-Net, Mask R-CNN)
+- Foundation models paradigm shift
+- Segment Anything Model (SAM):
+  - Architecture (Image Encoder + Prompt Encoder + Mask Decoder)
+  - Training approach (1B+ masks)
+  - Prompt types: Point, Box, Text
+  - Zero-shot capability and limitations
+
+### 2.3 Two-Stage Detection-Segmentation Pipelines
+- Concept: Use detection to guide segmentation
+- Prompt engineering for foundation models
+- Related work in medical imaging, robotics
+- Gap: Limited research on aerial imagery + SAM
+
+### 2.4 Evaluation Metrics
+- Detection metrics: Precision, Recall, F1, mAP
+- Segmentation metrics: IoU (Jaccard), DICE coefficient
+- Why both matter for our pipeline
+
+---
+
+## **CHAPTER 3: DATASET & METHODOLOGY** (~12 pages)
+
+### 3.1 Dataset Description
+- **DOTA v1:** 2,806 images, 188K instances, 15 classes, OBB annotations
+- **iSAID:** Semantic segmentation masks for DOTA images
+- **AerialFuseCV:** Our fusion of DOTA + iSAID
+  - 1,783 images, 114,870 matched bbox-mask pairs
+  - 13 viable classes (storage-tank, bridge excluded)
+  - Instance-level bbox-mask correspondence
+- Class distribution and challenges (Table: class counts, sizes, characteristics)
+
+### 3.2 YOLO Detection Module
+- Model selection: YOLOv11x-OBB (best from Phase 1)
+- Pretrained weights: Ultralytics DOTA-trained
+- OBB output format: 8-coordinate rotated boxes
+- No fine-tuning rationale (zero-shot evaluation)
+
+### 3.3 SAM Segmentation Module
+- Model selection: SAM-ViT-L (best balance from Phase 2)
+- Pretrained weights: Meta's SA-1B trained
+- Prompt strategy: Box prompts (OBB→VBB conversion)
+- Zero-shot aerial segmentation
+
+### 3.4 ArgusVision Pipeline
+- Architecture diagram: Image → YOLO → SAM → Masks
+- OBB→VBB prompt conversion (why necessary, impact)
+- Per-class prompt configuration system
+- Inference workflow
+
+---
+
+## **CHAPTER 4: EXPERIMENTAL RESULTS** (~20 pages)
+
+### 4.1 YOLO-OBB Detection Baseline
+- **Overall performance:** 10 models compared (Table: mAP, Recall, Precision, IoU)
+- **Best model:** YOLOv11x-OBB (59.9% mAP, 64.6% bbox IoU)
+- **Per-class analysis:** Performance tiers (Excellent/Good/Moderate/Failed)
+- **Key findings:**
+  - Swimming-pool: 0% (too small)
+  - Tennis-court: 94% (simple geometry)
+  - Detection recall (52%) is the main bottleneck
+- **VBB domain transfer failure:** 220× worse than OBB (brief mention)
+
+### 4.2 SAM-Only Benchmark
+- **Configuration comparison:** 6 configs (ViT-H/L/B × Box/Point)
+- **Best configuration:** SAM-ViT-L-BOX (68.6% IoU, 954ms)
+- **Prompt strategy:** Box prompts +17% better than point prompts
+- **Model size impact:** Minimal (ViT-H vs ViT-B: only 0.9% difference)
+- **Per-class performance:** Table with IoU/DICE for 13 classes
+- **Key findings:**
+  - Sports fields: 82-86% IoU (excellent)
+  - Vehicles: 71-74% IoU (very good)
+  - Helicopter: 41% IoU (challenging)
+
+### 4.3 ArgusVision Pipeline Results
+- **Overall performance:** 67.7% IoU, 79.4% DICE
+- **Comparison with SAM-only:** Only -0.9% degradation from GT prompts!
+- **Detection vs Segmentation breakdown:**
+  - Detection recall: 64.4% (15,101 TP / 23,463 GT)
+  - Segmentation quality: Preserved (near GT-prompt level)
+- **Per-class results:** Table with Det-Recall, Det-Precision, Seg-IoU, Seg-DICE
+- **Speed analysis:** 787ms total (YOLO 164ms + SAM 617ms)
+- **Best/worst classes:** Visual examples
+
+### 4.4 Ablation: Point vs Box Prompts
+- **Experiment:** 4 complex-shape classes with point prompts
+- **Result:** Box prompts better overall (-0.2% IoU, -7% recall)
+- **Per-class:** Point improves IoU (+2-9%) but drops recall (-7-12%)
+- **Conclusion:** Box prompts optimal for YOLO→SAM pipeline
+
+---
+
+## **CHAPTER 5: DISCUSSION** (~8 pages)
+
+### 5.1 Key Findings
+- **Finding 1:** SAM is remarkably robust to noisy YOLO prompts (0.9% IoU loss)
+- **Finding 2:** Detection recall (64.4%) is the true bottleneck, not segmentation
+- **Finding 3:** Box prompts consistently outperform point prompts
+- **Finding 4:** Simple geometric objects segment better than complex shapes
+
+### 5.2 Limitations
+- Swimming-pool class: Complete YOLO failure (0% detection)
+- OBB→VBB conversion: Adds 20-40% background noise
+- Speed: 787ms not suitable for real-time (offline processing only)
+- SAM's axis-aligned box constraint
+
+### 5.3 Future Work
+- Improve YOLO recall (fine-tuning on DOTA)
+- Rotation-aware SAM prompt encoder
+- MobileSAM/FastSAM for real-time applications
+- Multi-scale processing for small objects
+
+---
+
+## **CHAPTER 6: CONCLUSION** (~3 pages)
+
+### 6.1 Summary
+- Developed and evaluated YOLO→SAM pipeline for aerial object segmentation
+- Achieved 67.7% mask IoU (only 0.9% below SAM with perfect prompts)
+- Demonstrated SAM's robustness to detection noise
+- Identified detection recall as the key bottleneck
+
+### 6.2 Contributions
+- First systematic evaluation of YOLO→SAM on aerial imagery
+- AerialFuseCV dataset with 114,870 matched bbox-mask pairs
+- Comprehensive benchmark across 10 YOLO models and 6 SAM configs
+- Prompt strategy analysis (box vs point)
+
+### 6.3 Final Remarks
+- Foundation models enable practical aerial segmentation
+- Two-stage pipelines are viable with proper integration
+- Detection quality matters more than segmentation model choice
+
+---
+
+## **REFERENCES** (~3-4 pages)
+- YOLO papers (v1-v11)
+- SAM paper (Kirillov et al., 2023)
+- DOTA dataset papers
+- iSAID dataset paper
+- Related aerial detection papers
+
+---
+
+## **APPENDICES**
+
+### Appendix A: Additional Results Tables
+- Full per-class metrics for all configurations
+
+### Appendix B: Hyperparameters
+- YOLO inference settings
+- SAM configuration
+- Matching thresholds
+
+### Appendix C: Code Repository
+- GitHub link
+- Reproducibility instructions
+
+---
+
+## WRITING SCHEDULE (Suggested)
+
+| Week | Focus | Deliverable |
+|------|-------|-------------|
+| **Week 1** | Ch. 1-2 | Introduction + Theoretical Background |
+| **Week 2** | Ch. 3 | Dataset & Methodology |
+| **Week 3** | Ch. 4.1-4.2 | YOLO + SAM Results |
+| **Week 4** | Ch. 4.3-4.4 | ArgusVision + Ablation |
+| **Week 5** | Ch. 5-6 | Discussion + Conclusion |
+| **Week 6** | Polish | References, Appendices, Formatting |
+| **Week 7** | Review | Supervisor feedback, revisions |
+
+---
+
 ## 7. THESIS OUTLINE
 
 ### Chapter 1: Introduction (8-10 pages)
@@ -2721,9 +2941,231 @@ Total time per image:     954ms
 
 ---
 
+---
+
+## 17. ARGUSVISION PIPELINE RESULTS (Phase 3 Complete) ✅
+
+### 17.1 Evaluation Configuration
+
+**Dataset:** AerialFuseCV_Refined/val
+- **Images:** 438 (DOTA v1 validation split)
+- **Total GT instances:** 23,463
+- **Total YOLO detections:** 19,789
+- **Matched pairs (TP):** 15,101
+
+**Pipeline:**
+- **Detector:** YOLOv11x-OBB (59.9% mAP from Phase 1)
+- **Segmenter:** SAM-ViT-L-BOX (68.6% IoU from Phase 2)
+- **Prompt Type:** Box prompts (all classes)
+
+---
+
+### 17.2 Overall Performance Summary
+
+| Metric | ArgusVision | SAM-only (GT prompts) | Δ (Delta) |
+|--------|-------------|----------------------|-----------|
+| **Seg IoU** | **67.7%** | 68.6% | **-0.9%** |
+| **Seg DICE** | **79.4%** | 79.7% | **-0.3%** |
+| **Std IoU** | 17.4% | 18.9% | -1.5% |
+| **Detection Recall** | 64.4% | 100% | -35.6% |
+| **Detection Precision** | 76.3% | 100% | -23.7% |
+| **Avg Inference (ms)** | 786.6 | 954 | **-17.5%** |
+
+**Key Finding:** ArgusVision achieves **67.7% IoU on detected objects**, only **0.9% below SAM with perfect GT prompts** — demonstrating SAM's remarkable robustness to YOLO detection noise.
+
+---
+
+### 17.3 Per-Class Performance Table
+
+| Class | Seg IoU | Seg DICE | Recall | Precision | F1 | TP | FP | FN |
+|-------|---------|----------|--------|-----------|-----|-----|-----|------|
+| **soccer-ball-field** | **87.1%** | 92.2% | 41.1% | 65.2% | 50.4% | 58 | 31 | 83 |
+| **tennis-court** | **85.6%** | 91.5% | 90.4% | 97.7% | 93.9% | 678 | 16 | 72 |
+| **basketball-court** | **82.2%** | 89.1% | 47.0% | 70.1% | 56.3% | 54 | 23 | 61 |
+| **large-vehicle** | **79.4%** | 87.7% | 82.9% | 80.6% | 81.7% | 3097 | 744 | 640 |
+| **small-vehicle** | **70.6%** | 81.6% | 58.5% | 69.2% | 63.4% | 2626 | 1169 | 1863 |
+| **baseball-diamond** | **67.6%** | 79.7% | 66.4% | 86.6% | 75.1% | 142 | 22 | 72 |
+| **ship** | **63.2%** | 76.2% | 63.0% | 83.7% | 71.9% | 5020 | 976 | 2946 |
+| **harbor** | **61.1%** | 74.6% | 62.2% | 83.6% | 71.3% | 1640 | 322 | 996 |
+| **roundabout** | **60.5%** | 73.7% | 35.4% | 88.9% | 50.6% | 64 | 8 | 117 |
+| **ground-track-field** | **58.5%** | 72.0% | 48.9% | 82.1% | 61.3% | 69 | 15 | 72 |
+| **plane** | **54.1%** | 69.4% | 63.0% | 91.1% | 74.5% | 1632 | 159 | 959 |
+| **helicopter** | **41.0%** | 55.9% | 31.3% | 72.4% | 43.8% | 21 | 8 | 46 |
+| **swimming-pool** | **0.0%** | 0.0% | 0.0% | 0.0% | 0.0% | 0 | 5 | 435 |
+| storage-tank | 0.0% | 0.0% | — | — | — | 0 | 1052 | 0 |
+| bridge | 0.0% | 0.0% | — | — | — | 0 | 138 | 0 |
+
+**Notes:**
+- storage-tank & bridge: 0 GT in AerialFuseCV_Refined (excluded during refinement)
+- swimming-pool: **Complete YOLO failure** (0 detections out of 435 GT)
+
+---
+
+### 17.4 Performance Tiers
+
+#### ⭐⭐⭐ Excellent (IoU > 80%)
+| Class | IoU | Remarks |
+|-------|-----|---------|
+| soccer-ball-field | 87.1% | Best segmentation despite moderate detection (41% recall) |
+| tennis-court | 85.6% | Excellent detection (90%) + excellent segmentation |
+| basketball-court | 82.2% | Good segmentation despite detection struggles (47% recall) |
+
+#### ⭐⭐ Good (IoU 60-80%)
+| Class | IoU | Remarks |
+|-------|-----|---------|
+| large-vehicle | 79.4% | Best detection (83% recall) + very good segmentation |
+| small-vehicle | 70.6% | Good despite small size and crowding |
+| baseball-diamond | 67.6% | Distinctive shape helps SAM |
+| ship | 63.2% | High volume (5020 TP), moderate segmentation |
+| harbor | 61.1% | Complex boundaries challenge SAM |
+| roundabout | 60.5% | Circular shape, low recall (35%) |
+
+#### ⭐ Moderate (IoU 40-60%)
+| Class | IoU | Remarks |
+|-------|-----|---------|
+| ground-track-field | 58.5% | Variable shapes reduce consistency |
+| plane | 54.1% | Large objects but complex shapes |
+| helicopter | 41.0% | Smallest objects, lowest recall (31%) |
+
+#### ❌ Failed (IoU = 0%)
+| Class | IoU | Remarks |
+|-------|-----|---------|
+| swimming-pool | 0.0% | **YOLO completely fails** (0 TP, 435 FN) |
+| storage-tank | — | Excluded from dataset (0% bbox-mask match) |
+| bridge | — | Excluded from dataset (0% bbox-mask match) |
+
+---
+
+### 17.5 Timing Analysis
+
+| Component | Time (ms) | % of Total |
+|-----------|-----------|------------|
+| **Detection (YOLO)** | 164.0 | **20.8%** |
+| **Segmentation (SAM)** | 617.1 | **78.4%** |
+| **Overhead** | 5.5 | 0.7% |
+| **Total** | **786.6** | 100% |
+
+**Speed:** 1.27 FPS (suitable for offline batch processing)
+
+**Comparison:**
+- SAM-only: 954 ms/image
+- ArgusVision: 787 ms/image (**17.5% faster** due to fewer prompts)
+
+---
+
+### 17.6 Key Conclusions
+
+#### 1. **SAM Robustness Validated** ✅
+> ArgusVision achieves **67.7% IoU** on detected objects, only **0.9% below SAM with GT prompts** (68.6%). This demonstrates SAM's remarkable robustness to YOLO detection noise — noisy bounding boxes barely degrade segmentation quality.
+
+#### 2. **Detection is the Bottleneck** ⚠️
+> With 64.4% recall, **35.6% of objects are never detected** and therefore never segmented. Improving YOLO recall would have more impact than improving SAM.
+
+#### 3. **Segmentation Quality Preserved** ✅
+> For detected objects, SAM maintains near-GT-prompt quality:
+> - Sports fields: 82-87% IoU (excellent)
+> - Vehicles: 70-79% IoU (very good)
+> - Ships/harbors: 61-63% IoU (good)
+
+#### 4. **Swimming-pool Catastrophic Failure** ❌
+> YOLO detects **0 out of 435** swimming pools (0% recall). This class requires:
+> - Specialized small-object detector
+> - Multi-scale processing
+> - Or exclusion from benchmark
+
+#### 5. **Practical Viability** ✅
+> At **787 ms per image** (~1.3 FPS), ArgusVision is suitable for:
+> - Offline batch processing ✅
+> - GIS integration ✅
+> - Change detection workflows ✅
+> - **Not** real-time applications (requires optimization)
+
+---
+
+### 17.7 Comparison: YOLO-Only vs ArgusVision
+
+| Metric | YOLO-OBB (Detection) | ArgusVision (Det+Seg) | Δ |
+|--------|---------------------|-----------------------|---|
+| **Output** | Bounding boxes | Pixel masks | +precise boundaries |
+| **Bbox IoU** | 64.6% | — | — |
+| **Mask IoU** | — | 67.7% | +masks |
+| **Speed** | 68 ms | 787 ms | +719 ms (+10.5×) |
+| **Use case** | Counting, tracking | Area calc, GIS export | +applications |
+
+**Value Proposition:** ArgusVision adds **precise segmentation masks** at a **10× computational cost**, enabling applications that require exact object boundaries rather than bounding boxes.
+
+---
+
+---
+
+## 18. ABLATION STUDY: POINT VS BOX PROMPTS
+
+### 18.1 Experiment Design
+
+**Hypothesis:** Point prompts might improve segmentation for classes with complex/irregular shapes (plane, helicopter, roundabout) where the centroid is more reliable than bounding box edges.
+
+**Configuration:**
+- **Point prompt classes:** plane (0), small-vehicle (10), helicopter (11), roundabout (12)
+- **Box prompt classes:** All others (ship, large-vehicle, tennis-court, etc.)
+- **Dataset:** Same 438 images (AerialFuseCV_Refined/val)
+
+---
+
+### 18.2 Overall Results
+
+| Metric | Box Prompts (All) | Mixed (Point + Box) | Δ (Delta) |
+|--------|-------------------|---------------------|-----------|
+| **Seg IoU** | **67.7%** | 67.5% | **-0.2%** |
+| **Seg DICE** | **79.4%** | 79.2% | **-0.2%** |
+| **Matched Pairs (TP)** | **15,101** | 14,035 | **-1,066 (-7.1%)** |
+| **Avg Inference Time** | **787 ms** | 899 ms | **+112 ms (+14.2%)** |
+
+**Key Finding:** Box prompts outperform point prompts overall.
+
+---
+
+### 18.3 Per-Class Impact
+
+| Class | Prompt | Box IoU | Point IoU | Δ IoU | Box Recall | Point Recall | Δ Recall |
+|-------|--------|---------|-----------|-------|------------|--------------|----------|
+| **plane** | Point | 54.1% | 56.4% | **+2.3%** ✅ | 63.0% | 56.0% | **-7.0%** ❌ |
+| **small-vehicle** | Point | 70.6% | 68.8% | **-1.8%** ❌ | 58.5% | 48.6% | **-9.9%** ❌ |
+| **helicopter** | Point | 41.0% | 43.5% | **+2.5%** ✅ | 31.3% | 31.3% | 0% |
+| **roundabout** | Point | 60.5% | 69.5% | **+9.0%** ✅ | 35.4% | 23.2% | **-12.2%** ❌ |
+
+---
+
+### 18.4 Analysis
+
+#### ✅ **IoU Improvements:**
+- **Roundabout:** +9.0% IoU (circular shapes benefit from center point)
+- **Helicopter:** +2.5% IoU (complex rotor shapes)
+- **Plane:** +2.3% IoU (elongated shapes with clear center)
+
+#### ❌ **Recall Degradation:**
+- **Roundabout:** -12.2% recall (lost 22 detections)
+- **Small-vehicle:** -9.9% recall (lost 446 detections)
+- **Plane:** -7.0% recall (lost 181 detections)
+
+#### Why Recall Drops with Point Prompts:
+1. Point prompts require SAM to infer object boundaries from a single pixel
+2. More uncertain → SAM generates 3 mask candidates → NMS may select wrong one
+3. Matching threshold (IoU > 0.1) harder to meet with point-only masks
+4. Crowded scenes: point may belong to adjacent object
+
+---
+
+### 18.5 Conclusion
+
+> "Point prompts show marginal IoU improvements for complex shapes (+2-9%), but cause significant recall degradation (-7% to -12%), resulting in 1,066 fewer matched pairs. The 14% increase in inference time and overall worse performance make box prompts the clear winner for the YOLO→SAM pipeline."
+
+**Recommendation:** Use **box prompts for all classes**.
+
+---
+
 **END OF NOTES - WILL BE UPDATED CONTINUOUSLY**
 
-*Next update: After Phase 3 (Minimal ArgusVision Benchmark) completes*
+*Updated: Dec 27, 2025 — Phase 3 Complete + Point Prompt Ablation*
 
 
 ---

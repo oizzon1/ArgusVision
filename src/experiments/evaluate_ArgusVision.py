@@ -120,15 +120,6 @@ def main():
             save_visualizations=True
         )
         
-        print("\n✅ Evaluation complete!")
-        print(f"   Results saved to: {args.output_dir}")
-        
-        # Quick summary
-        print(f"\n📊 Quick Results:")
-        print(f"   Overall IoU:  {results['overall']['seg_iou']*100:.2f}%")
-        print(f"   Overall DICE: {results['overall']['seg_dice']*100:.2f}%")
-        print(f"   Avg Total Time: {results['timing']['avg_total_ms']:.2f} ms/image")
-        
     except KeyboardInterrupt:
         print("\n\n⚠️  Evaluation interrupted by user")
         sys.exit(0)

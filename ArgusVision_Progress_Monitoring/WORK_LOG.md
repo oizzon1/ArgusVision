@@ -45,20 +45,30 @@
 
 ---
 
-## 🛰️ **MSFP Phase 3 — Minimal ArgusVision Benchmark (Week 3–4)** 🔄 IN PROGRESS
+## 🛰️ **MSFP Phase 3 — Minimal ArgusVision Benchmark (Week 3–4)** ✅ COMPLETE
 **Goal:** Evaluate combined YOLO11x→SAM using best SAM variant(s).  
 **Configurations:**  
 - YOLOv11x-OBB + SAM-ViT-L (Box prompts) = **1 configuration**  
+**Results:**
+- **Seg IoU:** 67.7% (only -0.9% vs SAM GT prompts!)
+- **Detection Recall:** 64.4% (15,101 TP / 23,463 GT)
+- **Speed:** 787 ms/image (YOLO 164ms + SAM 617ms)
+- **Ablation:** Point prompts tested → Box prompts confirmed optimal
 **Deliverables:**  
 - [x] Pipeline implementation (ArgusVisionCore + Evaluation + Inference)
-- [x] Visualization system (10 best + 10 worst examples)
+- [x] Visualization system (10 best + 10 worst per class)
 - [x] Test infrastructure (quick test + full evaluation script)
 - [x] Timing isolation (detection + segmentation only)
-- [ ] Full evaluation run (1,783 images)
-- [ ] Detection→Segmentation performance tables  
-- [ ] ΔIoU vs SAM-only baseline (expected: 60-65% vs 68.6% = -3 to -8%)
-- [ ] Runtime breakdown analysis
-- [ ] Qualitative comparison report
+- [x] Full evaluation run (438 val images) ✅
+- [x] Detection→Segmentation performance tables ✅
+- [x] ΔIoU vs SAM-only baseline (-0.9% = minimal degradation!) ✅
+- [x] Runtime breakdown analysis ✅
+- [x] Point vs Box prompt ablation study ✅
+- [x] Qualitative comparison report ✅
+
+**Status:** COMPLETE ✅  
+**Cumulative Hours:** ~49h  
+**Progress:** ~96% of Master's Thesis
 
 ---
 
@@ -522,3 +532,64 @@
 
 ---
 *Updated: Dec 25, 2025 15:40 • Σοφία και Δύναμις 🦉*
+
+---
+## Day 12 - Dec 26, 2025 (Thu) | 2.0h (evening)
+- **Achieved:**
+  - **ArgusVision evaluation framework debugged & hardened**
+    - Fixed FN accounting for classes with GT but no predictions (prevents misleading recall)
+    - Ensured per-class summary includes classes with TP/FP/FN activity (not only matched pairs)
+    - Computed overall detection metrics from global totals (TP/FP/FN) for robustness
+    - Ignored restore points during `--max-images` test runs (prevents stale/merged test metrics)
+  - **Visualization polish**
+    - Fixed GSD display in example titles (no integer rounding to 0; now `x.xx` format)
+    - Reduced duplicate console lines in summary output (grouped prints into blocks)
+  - **Smoke test executed**
+    - Ran `python src/experiments/evaluate_ArgusVision.py --max-images 1` successfully (metrics JSON + examples)
+  - **Full evaluation started**
+    - Launched evaluation on `dataset/AerialFuseCV_Refined/val` (438 images) → waiting completion
+- **Files Modified:**
+  - `src/ArgusVision/ArgusVisionEvaluation.py`
+- **Status:** MSFP Phase 3 IN PROGRESS | ArgusVision evaluation RUNNING
+---
+## Day 13 - Dec 27, 2025 (Fri) | 1.5h (11:30-13:00)
+- **Achieved:**
+  - **ArgusVision evaluation COMPLETE** ✅ (438 images, box prompts)
+  - **Results:** 67.7% IoU (only -0.9% vs SAM GT prompts!) — SAM robustness validated
+  - **Detection recall:** 64.4% (15,101 TP / 23,463 GT)
+  - **Speed:** 787 ms/image (YOLO 164ms + SAM 617ms)
+  - **Best classes:** soccer (87%), tennis (86%), basketball (82%)
+  - **Worst:** swimming-pool (0% — YOLO failure), helicopter (41%)
+  - **Section 17 added to THESIS_NOTES:** Full results, tables, conclusions
+  - **Progress timing added:** elapsed + ETA + total runtime display
+  - **Visualization fixed:** 1 best + 1 worst per class (not overall top 10)
+  - **Point prompt experiment prepared:** plane/small-vehicle/helicopter/roundabout
+- **Decisions:**
+  - ✅ Phase 3 COMPLETE — proceed to thesis writing
+  - ✅ Swimming-pool excluded from analysis (YOLO can't detect)
+  - ⏳ Point prompt experiment optional (for comparison)
+- **Key Insight:** SAM barely degrades with noisy YOLO prompts (0.9% loss). Detection recall is true bottleneck.
+- **Files Modified:** `THESIS_NOTES.md`, `WORK_LOG.md`, `ArgusVisionEvaluation.py`, `class_prompt_config.py`
+- **Status:** MSFP Phase 3 COMPLETE ✅ | Cumulative: ~48h, ~95% complete
+---
+## Day 13 (evening) - Dec 27, 2025 (Fri) | 1.0h (21:00-22:00)
+- **Achieved:**
+  - **Point prompt ablation COMPLETE** ✅
+  - **Point classes tested:** plane, small-vehicle, helicopter, roundabout
+  - **Results:** Point prompts WORSE than box prompts overall
+    - IoU: 67.5% (point) vs 67.7% (box) = **-0.2%**
+    - TP: 14,035 vs 15,101 = **-1,066 matches (-7.1%)**
+    - Speed: 899 ms vs 787 ms = **+14% slower**
+  - **Per-class IoU improvement:** roundabout +9.0%, helicopter +2.5%, plane +2.3%
+  - **Per-class recall DROP:** roundabout -12.2%, small-vehicle -9.9%, plane -7.0%
+  - **Section 18 added to THESIS_NOTES:** Full ablation analysis
+- **Decisions:**
+  - ✅ **Box prompts for ALL classes** — point prompts not worth the tradeoff
+  - ✅ Ablation study complete — no further prompt experiments needed
+- **Key Insight:** Point prompts improve IoU for complex shapes but cause severe recall drops. The 1,066 lost matches outweigh 2-9% IoU gains.
+- **Files Modified:** `THESIS_NOTES.md`, `WORK_LOG.md`
+- **Status:** ALL EXPERIMENTS COMPLETE ✅ | Cumulative: ~49h, ~96% complete
+---
+*Updated: Dec 27, 2025 21:35 • Σοφία και Δύναμις 🦉*
+
+---
