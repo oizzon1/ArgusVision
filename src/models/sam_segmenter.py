@@ -16,15 +16,22 @@ class SAMSegmenter:
     def segment(self, image: np.ndarray, prompts: list, prompt_type: str = "box"):
         """
         Segment objects in image using SAM with either box or point prompts.
+        
+        OPTIMIZED: Image encoding (set_image) happens only ONCE per image,
+        then all prompts are processed sequentially. This is crucial for performance.
 
         Args:
             image (np.ndarray): Input image (H, W, 3)
-            prompts (list): List of prompts (boxes or points)
+            prompts (list): List of prompts
+                - For box: List of [x1, y1, x2, y2] arrays
+                - For point: List of [[x, y]] arrays (each point wrapped in a list)
             prompt_type (str): "box" or "point"
 
         Returns:
             masks (list): List of segmentation masks
         """
+        # CRITICAL: Set image ONCE - this encodes the image through ViT encoder
+        # This is the most expensive operation (~600ms for ViT-H)
         self.predictor.set_image(image)
         masks = []
 
@@ -37,9 +44,19 @@ class SAMSegmenter:
                 # Squeeze extra dimension: (1, H, W) → (H, W)
                 masks.append(mask.squeeze())
         elif prompt_type == "point":
-            # Each prompt is [x, y]
-            for point in prompts:
-                mask, _, _ = self.predictor.predict(point_coords=np.array([point]), point_labels=np.array([1]), multimask_output=False)
+            # Each prompt is [[x, y]] (point wrapped in list from evaluate_sam.py)
+            for point_list in prompts:
+                # Extract the point from the wrapper list
+                if isinstance(point_list, list) and len(point_list) > 0:
+                    point = point_list[0] if isinstance(point_list[0], (list, np.ndarray)) else point_list
+                else:
+                    point = point_list
+                
+                mask, _, _ = self.predictor.predict(
+                    point_coords=np.array([point]), 
+                    point_labels=np.array([1]), 
+                    multimask_output=False
+                )
                 # Squeeze extra dimension: (1, H, W) → (H, W)
                 masks.append(mask.squeeze())
         else:

@@ -119,7 +119,74 @@ CONFIDENCE_THRESHOLDS = {
 
 ---
 
-### **2.3 Visualization Quality Improvements** 🖼️
+### **2.3 Boundary F1 Metric Implementation** 📏
+**Context:** Current evaluation uses IoU and DICE for segmentation quality, which measure overall pixel overlap. Boundary F1 specifically evaluates edge alignment precision.
+
+**What is Boundary F1:**
+- Measures precision and recall of predicted mask EDGES compared to GT mask EDGES
+- More sensitive to boundary quality than IoU/DICE
+- Common in medical imaging and instance segmentation benchmarks
+- Useful for highlighting SAM's edge refinement capabilities
+
+**Implementation Overview:**
+```python
+def calculate_boundary_f1(pred_mask, gt_mask, tolerance=2):
+    """
+    Calculate Boundary F1 score.
+    
+    Args:
+        pred_mask: Binary predicted mask
+        gt_mask: Binary ground truth mask
+        tolerance: Distance threshold in pixels (default: 2)
+    
+    Returns:
+        f1, precision, recall
+    """
+    # Extract boundaries using morphological operations
+    pred_boundary = extract_boundary(pred_mask)  # cv2.Canny or morphology
+    gt_boundary = extract_boundary(gt_mask)
+    
+    # Distance transform
+    gt_dist = cv2.distanceTransform(~gt_boundary, cv2.DIST_L2, 3)
+    pred_dist = cv2.distanceTransform(~pred_boundary, cv2.DIST_L2, 3)
+    
+    # Precision: % pred boundary pixels within tolerance of GT
+    pred_near_gt = (gt_dist[pred_boundary > 0] <= tolerance).sum()
+    precision = pred_near_gt / (pred_boundary.sum() + 1e-6)
+    
+    # Recall: % GT boundary pixels within tolerance of pred
+    gt_near_pred = (pred_dist[gt_boundary > 0] <= tolerance).sum()
+    recall = gt_near_pred / (gt_boundary.sum() + 1e-6)
+    
+    # F1
+    f1 = 2 * (precision * recall) / (precision + recall + 1e-6)
+    return f1, precision, recall
+```
+
+**Action Items:**
+- [ ] Implement `calculate_boundary_f1()` in `src/utils/metrics.py`
+- [ ] Add `extract_boundary()` helper using morphological operations
+- [ ] Update SAM evaluation script to compute boundary F1
+- [ ] Update ArgusVision evaluation to include boundary metrics
+- [ ] Add boundary F1 to per-class metrics reporting
+- [ ] Document boundary F1 methodology in thesis (if time permits)
+
+**Effort Estimate:**
+- Implementation: 2-3 hours
+- Testing: 1 hour
+- Re-evaluation: 8-10 hours (SAM + ArgusVision experiments)
+
+**Priority:** LOW (Optional - Master's thesis has sufficient metrics)  
+**Recommendation:** Add to future work section in thesis, implement post-defense or for PhD
+
+**Related Literature:**
+- Common in Cityscapes, COCO, medical imaging benchmarks
+- Hausdorff distance is related metric (measures max boundary deviation)
+- Particularly valuable for applications requiring precise object delineation
+
+---
+
+### **2.4 Visualization Quality Improvements** 🖼️
 - [ ] Add legend to visualizations (GT color, Pred color)
 - [ ] Add class confidence scores to detection boxes
 - [ ] Improve font readability on dark backgrounds

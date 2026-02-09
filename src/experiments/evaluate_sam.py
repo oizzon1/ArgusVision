@@ -50,13 +50,13 @@ class SAMBenchmarkEvaluator:
         Args:
             dataset_root: Path to AerialFuseCV_Refined_Merged dataset
             sam_checkpoint_dir: Directory containing SAM checkpoints
-            excluded_classes: List of class IDs to exclude (e.g., [2, 8] for storage-tank & bridge)
+            excluded_classes: List of class IDs to exclude (optional)
         """
         self.dataset_root = Path(dataset_root)
         self.sam_checkpoint_dir = Path(sam_checkpoint_dir)
         
-        # Classes to exclude (have 0% match rate in refined dataset)
-        self.excluded_classes = excluded_classes if excluded_classes is not None else [2, 8]  # storage-tank, bridge
+        # Classes to exclude (none by default - evaluate all 15 classes)
+        self.excluded_classes = excluded_classes if excluded_classes is not None else []
         
         # SAM model configurations
         self.sam_configs = {
@@ -91,13 +91,13 @@ class SAMBenchmarkEvaluator:
         self.class_color_mapping = {
             0: (0, 127, 255),    # plane
             1: (0, 0, 63),       # ship
-            2: (0, 63, 6),       # storage-tank
+            2: (0, 63, 63),      # storage-tank (FIXED: was 0,63,6)
             3: (0, 63, 0),       # baseball-diamond
             4: (0, 63, 127),     # tennis-court
             5: (0, 63, 191),     # basketball-court
             6: (0, 63, 255),     # ground-track-field
             7: (0, 100, 155),    # harbor
-            8: (0, 127, 163),    # bridge
+            8: (0, 127, 63),     # bridge (FIXED: was 0,127,163)
             9: (0, 127, 127),    # large-vehicle
             10: (0, 0, 127),     # small-vehicle
             11: (0, 0, 191),     # helicopter
@@ -437,13 +437,9 @@ class SAMBenchmarkEvaluator:
             # Run SAM inference
             start_time = time.time()
             try:
-                if prompt_type == 'box':
-                    masks = sam_segmenter.segment(image_rgb, prompts, prompt_type='box')
-                else:  # point
-                    masks = []
-                    for point in prompts:
-                        mask = sam_segmenter.segment(image_rgb, point, prompt_type='point')
-                        masks.extend(mask)
+                # Both box and point prompts now use batched processing
+                # This ensures image is encoded only ONCE per image (not per prompt)
+                masks = sam_segmenter.segment(image_rgb, prompts, prompt_type=prompt_type)
             except Exception as e:
                 print(f"Error processing {img_name}: {e}")
                 continue
@@ -548,48 +544,66 @@ class SAMBenchmarkEvaluator:
                     print(f"Metric calculation error for {img_name}, class {self.class_names[class_id]}: {e}")
                     continue
         
-        # Save visualization examples
+        # Save visualization examples - PER CLASS (best and worst for each class)
         if save_examples and examples_data:
             examples_dir = Path(output_dir) / config_name / 'examples'
             
-            # Sort by IoU to get best and worst examples
-            examples_data.sort(key=lambda x: x['iou'], reverse=True)
+            # Group examples by class
+            from collections import defaultdict
+            per_class_examples = defaultdict(list)
+            for example in examples_data:
+                per_class_examples[example['class_name']].append(example)
             
-            # Save top examples (best)
-            num_best = min(num_examples // 2, len(examples_data))
-            print(f"\nSaving {num_best} best examples...")
-            for example in examples_data[:num_best]:
-                self.save_visualization(
-                    example['image_rgb'],
-                    example['gt_mask'],
-                    example['pred_mask'],
-                    example['class_name'],
-                    example['iou'],
-                    example['dice'],
-                    example['img_name'],
-                    config_name,
-                    examples_dir / 'best',
-                    prompts=example.get('prompts'),
-                    prompt_type=example.get('prompt_type', prompt_type)
-                )
+            # Save best and worst for each class
+            print(f"\nSaving per-class best/worst examples (15 classes × 2)...")
+            saved_best = 0
+            saved_worst = 0
             
-            # Save worst examples
-            num_worst = min(num_examples // 2, len(examples_data))
-            print(f"Saving {num_worst} worst examples...")
-            for example in examples_data[-num_worst:]:
-                self.save_visualization(
-                    example['image_rgb'],
-                    example['gt_mask'],
-                    example['pred_mask'],
-                    example['class_name'],
-                    example['iou'],
-                    example['dice'],
-                    example['img_name'],
-                    config_name,
-                    examples_dir / 'worst',
-                    prompts=example.get('prompts'),
-                    prompt_type=example.get('prompt_type', prompt_type)
-                )
+            for class_name in self.class_names:
+                if class_name not in per_class_examples:
+                    continue
+                
+                class_examples = per_class_examples[class_name]
+                class_examples.sort(key=lambda x: x['iou'], reverse=True)
+                
+                # Save best for this class
+                if class_examples:
+                    best_example = class_examples[0]
+                    self.save_visualization(
+                        best_example['image_rgb'],
+                        best_example['gt_mask'],
+                        best_example['pred_mask'],
+                        best_example['class_name'],
+                        best_example['iou'],
+                        best_example['dice'],
+                        best_example['img_name'],
+                        config_name,
+                        examples_dir / 'best',
+                        prompts=best_example.get('prompts'),
+                        prompt_type=best_example.get('prompt_type', prompt_type)
+                    )
+                    saved_best += 1
+                
+                # Save worst for this class
+                if class_examples:
+                    worst_example = class_examples[-1]
+                    self.save_visualization(
+                        worst_example['image_rgb'],
+                        worst_example['gt_mask'],
+                        worst_example['pred_mask'],
+                        worst_example['class_name'],
+                        worst_example['iou'],
+                        worst_example['dice'],
+                        worst_example['img_name'],
+                        config_name,
+                        examples_dir / 'worst',
+                        prompts=worst_example.get('prompts'),
+                        prompt_type=worst_example.get('prompt_type', prompt_type)
+                    )
+                    saved_worst += 1
+            
+            print(f"Saved {saved_best} best examples (1 per class)")
+            print(f"Saved {saved_worst} worst examples (1 per class)")
         
         # Print diagnostic statistics
         match_rate = (total_matched_prompts / total_prompts * 100) if total_prompts > 0 else 0
@@ -625,24 +639,36 @@ class SAMBenchmarkEvaluator:
         
         return results
     
-    def run_full_benchmark(self, output_dir='results/sam_benchmark', test_mode=False, save_examples=True):
+    def run_full_benchmark(self, output_dir='results/sam_benchmark', test_mode=False, save_examples=True, prompt_type=None):
         """
-        Run the complete SAM-only benchmark (6 configurations).
+        Run the complete SAM-only benchmark (3 or 6 configurations).
         
         Args:
             output_dir: Directory to save results
             test_mode: If True, run in test mode (10 images only)
             save_examples: If True, save visualization examples
+            prompt_type: If specified, only evaluate this prompt type ('box' or 'point'). 
+                        If None, evaluate both (6 configurations total)
         """
         output_path = Path(output_dir)
         output_path.mkdir(parents=True, exist_ok=True)
         
         all_results = []
         
-        # Run all 6 configurations
+        # Determine which prompt types to evaluate
+        if prompt_type is not None:
+            if prompt_type not in ['box', 'point']:
+                raise ValueError(f"Invalid prompt_type: {prompt_type}. Must be 'box' or 'point'.")
+            prompt_types = [prompt_type]
+            print(f"\n🎯 Evaluating with {prompt_type.upper()} prompts only")
+        else:
+            prompt_types = ['box', 'point']
+            print(f"\n🎯 Evaluating with both BOX and POINT prompts")
+        
+        # Run all configurations
         for sam_key in ['vit_h', 'vit_l', 'vit_b']:
-            for prompt_type in ['box', 'point']:
-                results = self.evaluate_configuration(sam_key, prompt_type, str(output_path), test_mode=test_mode, save_examples=save_examples)
+            for pt in prompt_types:
+                results = self.evaluate_configuration(sam_key, pt, str(output_path), test_mode=test_mode, save_examples=save_examples)
                 all_results.append(results)
                 
                 # Save individual result in config subfolder
@@ -677,19 +703,32 @@ def main():
     
     parser = argparse.ArgumentParser(description='SAM Benchmark Evaluation')
     parser.add_argument('--test', action='store_true', help='Run in test mode (process only 10 images)')
-    parser.add_argument('--dataset', type=str, default='dataset/AerialFuseCV_Refined_Merged', 
-                       help='Path to refined merged dataset')
-    parser.add_argument('--output', type=str, default='results/sam_evaluation_refined', 
+    parser.add_argument('--dataset', type=str, default='dataset/AerialFuseCV_Refined/val', 
+                       help='Path to refined dataset validation split')
+    parser.add_argument('--output', type=str, default='results/sam_evaluation', 
                        help='Output directory')
     parser.add_argument('--no-examples', action='store_true', help='Disable saving visualization examples')
+    parser.add_argument('--prompt-type', type=str, choices=['box', 'point'], default=None,
+                       help='Prompt type to evaluate (box or point). If not specified, evaluates both.')
+    parser.add_argument('--exclude-classes', type=int, nargs='*', default=None,
+                       help='Class IDs to exclude from evaluation (e.g., --exclude-classes 2 8)')
     args = parser.parse_args()
     
-    # Initialize evaluator (excludes storage-tank [id=2] and bridge [id=8] - 0% match in refined dataset)
-    evaluator = SAMBenchmarkEvaluator(args.dataset, excluded_classes=[2, 8])
+    # Initialize evaluator (no excluded classes by default)
+    evaluator = SAMBenchmarkEvaluator(args.dataset, excluded_classes=args.exclude_classes)
     
     print(f"\n📊 Dataset: {args.dataset}")
-    print(f"⚠️  Excluded classes: storage-tank, bridge (0% match rate in refined dataset)")
-    print(f"✅ Evaluating 13 viable classes with perfect bbox-mask alignment\n")
+    if args.exclude_classes:
+        excluded_names = [evaluator.class_names[i] for i in args.exclude_classes if i < len(evaluator.class_names)]
+        print(f"⚠️  Excluded classes: {', '.join(excluded_names)}")
+        print(f"✅ Evaluating {15 - len(args.exclude_classes)} classes")
+    else:
+        print(f"✅ Evaluating all 15 DOTA classes")
+    
+    if args.prompt_type:
+        print(f"🎯 Prompt type: {args.prompt_type.upper()} only")
+    else:
+        print(f"🎯 Prompt types: BOX and POINT (both)")
     
     if args.test:
         print("\n" + "="*60)
@@ -697,7 +736,12 @@ def main():
         print("="*60 + "\n")
     
     # Run benchmark
-    results = evaluator.run_full_benchmark(args.output, test_mode=args.test, save_examples=not args.no_examples)
+    results = evaluator.run_full_benchmark(
+        args.output, 
+        test_mode=args.test, 
+        save_examples=not args.no_examples,
+        prompt_type=args.prompt_type
+    )
     
     print("\n🎯 SAM Benchmark Summary:")
     print("-" * 60)

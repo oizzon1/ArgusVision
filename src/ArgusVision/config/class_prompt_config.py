@@ -1,4 +1,4 @@
--"""
+"""
 Class-specific prompt configuration for ArgusVision pipeline.
 
 This configuration determines which prompt type (box or point) to use for each class
@@ -18,13 +18,13 @@ Usage:
 CLASS_NAMES = {
     0: 'plane',
     1: 'ship',
-    2: 'storage-tank',      # Excluded in AerialFuseCV_Refined (0% match)
+    2: 'storage-tank',      
     3: 'baseball-diamond',
     4: 'tennis-court',
     5: 'basketball-court',
     6: 'ground-track-field',
     7: 'harbor',
-    8: 'bridge',            # Excluded in AerialFuseCV_Refined (0% match)
+    8: 'bridge',           
     9: 'large-vehicle',
     10: 'small-vehicle',
     11: 'helicopter',
@@ -37,7 +37,7 @@ CLASS_NAMES = {
 # EXPERIMENT: Testing point prompts for small/challenging objects
 # Original baseline was 'box' for all classes
 CLASS_PROMPT_CONFIG = {
-    0: 'point',    # plane - EXPERIMENT: test point for small objects
+    0: 'box',    # plane - EXPERIMENT: test point for small objects
     1: 'box',      # ship - variable shapes → box
     2: 'box',      # storage-tank - excluded but kept for completeness
     3: 'box',      # baseball-diamond - structured diamond shape → box
@@ -47,9 +47,9 @@ CLASS_PROMPT_CONFIG = {
     7: 'box',      # harbor - complex infrastructure → box
     8: 'box',      # bridge - excluded but kept for completeness
     9: 'box',      # large-vehicle - standard vehicle shape → box
-    10: 'point',   # small-vehicle - EXPERIMENT: test point for small objects
-    11: 'point',   # helicopter - EXPERIMENT: test point for small objects
-    12: 'point',   # roundabout - EXPERIMENT: test point for circular shape
+    10: 'box',   # small-vehicle - EXPERIMENT: test point for small objects
+    11: 'box',   # helicopter - EXPERIMENT: test point for small objects
+    12: 'box',   # roundabout - EXPERIMENT: test point for circular shape
     13: 'box',     # soccer-ball-field - rectangular → box
     14: 'box',     # swimming-pool - often circular/irregular → box
 }

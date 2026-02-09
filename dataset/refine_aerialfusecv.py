@@ -37,17 +37,18 @@ class AerialFuseCVRefiner:
         # Class name to ID mapping
         self.class_name_to_id = {name: i for i, name in enumerate(self.class_names)}
         
-        # Class color mapping for AerialFuseCV RGB masks
+        # Class color mapping for AerialFuseCV RGB masks (iSAID colors)
+        # FIXED 2026-01-14: Corrected storage-tank (was 0,63,6) and bridge (was 0,127,163)
         self.class_color_mapping = {
             0: (0, 127, 255),    # plane
             1: (0, 0, 63),       # ship
-            2: (0, 63, 6),       # storage-tank
+            2: (0, 63, 63),      # storage-tank (FIXED: was 0,63,6)
             3: (0, 63, 0),       # baseball-diamond
             4: (0, 63, 127),     # tennis-court
             5: (0, 63, 191),     # basketball-court
             6: (0, 63, 255),     # ground-track-field
             7: (0, 100, 155),    # harbor
-            8: (0, 127, 163),    # bridge
+            8: (0, 127, 63),     # bridge (FIXED: was 0,127,163)
             9: (0, 127, 127),    # large-vehicle
             10: (0, 0, 127),     # small-vehicle
             11: (0, 0, 191),     # helicopter

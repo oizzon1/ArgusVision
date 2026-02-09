@@ -96,7 +96,7 @@ def calculate_mask_dice(mask1: np.ndarray, mask2: np.ndarray) -> float:
 def calculate_bbox_metrics(predictions: List[Dict],
                            ground_truth: List[Dict],
                            num_classes: int,
-                           iou_threshold: float = 0.3) -> Dict[str, Union[float, List[float], Dict]]:
+                           iou_threshold: float = 0.1) -> Dict[str, Union[float, List[float], Dict]]: #NOTE IoU threshold is lowered to 0.1 to account for DOTA annotation errors
     """
     Returns (per-image) bounding box metrics:
       mean_iou, mean_dice,
@@ -108,7 +108,7 @@ def calculate_bbox_metrics(predictions: List[Dict],
         predictions: List of predicted bboxes
         ground_truth: List of ground truth bboxes
         num_classes: Number of classes
-        iou_threshold: IoU threshold for matching (default 0.3, standard for detection)
+        iou_threshold: IoU threshold for matching (default 0.1, too lenient, due to DOTA wide annotation errors. Standard would be 0.5 or 0.3)
     """
     if not predictions and not ground_truth:
         return {
