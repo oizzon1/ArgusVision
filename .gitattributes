@@ -1,0 +1,18 @@
+# Line-ending policy for ArgusVision
+#
+# This worktree is shared between Windows editors and WSL-side agents reading
+# through /mnt/d. Without a committed policy, every OS switch rewrites all line
+# endings and buries real diffs in phantom churn (69 files / 15,962 lines, Jul 2026).
+# .gitattributes travels with the repo; core.autocrlf would not.
+
+* text=auto eol=lf
+
+# Binary assets — never normalize, never diff as text.
+*.pdf  binary
+*.docx binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.pth  binary
+*.pt   binary
+*.zip  binary
