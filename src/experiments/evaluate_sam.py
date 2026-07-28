@@ -21,6 +21,7 @@ import cv2
 from pathlib import Path
 from tqdm import tqdm
 from PIL import Image
+import warnings
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent.parent))
@@ -30,22 +31,32 @@ from src.utils.metrics import calculate_mask_iou, calculate_mask_dice
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
+warnings.filterwarnings(
+    "ignore",
+    category=FutureWarning,
+    module="segment_anything.build_sam"
+)
+
 
 class SAMBenchmarkEvaluator:
     """
-    Evaluates SAM models using ground truth prompts from AerialFuseCV dataset.
+    Evaluates SAM models using ground truth prompts from AerialFuseCV_Refined dataset.
     """
     
-    def __init__(self, dataset_root, sam_checkpoint_dir="model_checkpoints/SAM"):
+    def __init__(self, dataset_root, sam_checkpoint_dir="model_checkpoints/SAM", excluded_classes=None):
         """
         Initialize the SAM benchmark evaluator.
         
         Args:
-            dataset_root: Path to AerialFuseCV dataset
+            dataset_root: Path to AerialFuseCV_Refined_Merged dataset
             sam_checkpoint_dir: Directory containing SAM checkpoints
+            excluded_classes: List of class IDs to exclude (optional)
         """
         self.dataset_root = Path(dataset_root)
         self.sam_checkpoint_dir = Path(sam_checkpoint_dir)
+        
+        # Classes to exclude (none by default - evaluate all 15 classes)
+        self.excluded_classes = excluded_classes if excluded_classes is not None else []
         
         # SAM model configurations
         self.sam_configs = {
@@ -80,13 +91,13 @@ class SAMBenchmarkEvaluator:
         self.class_color_mapping = {
             0: (0, 127, 255),    # plane
             1: (0, 0, 63),       # ship
-            2: (0, 63, 6),       # storage-tank
+            2: (0, 63, 63),      # storage-tank (FIXED: was 0,63,6)
             3: (0, 63, 0),       # baseball-diamond
             4: (0, 63, 127),     # tennis-court
             5: (0, 63, 191),     # basketball-court
             6: (0, 63, 255),     # ground-track-field
             7: (0, 100, 155),    # harbor
-            8: (0, 127, 163),    # bridge
+            8: (0, 127, 63),     # bridge (FIXED: was 0,127,163)
             9: (0, 127, 127),    # large-vehicle
             10: (0, 0, 127),     # small-vehicle
             11: (0, 0, 191),     # helicopter
@@ -143,6 +154,10 @@ class SAMBenchmarkEvaluator:
                     if class_name not in class_name_to_id:
                         continue
                     class_id = class_name_to_id[class_name]
+                    
+                    # Skip excluded classes (no masks available in refined dataset)
+                    if class_id in self.excluded_classes:
+                        continue
                     
                     # Create axis-aligned bounding box for box prompt
                     x_min, x_max = min(x_coords), max(x_coords)
@@ -208,8 +223,47 @@ class SAMBenchmarkEvaluator:
         
         return mask_rgb
     
+    def match_prompt_to_gt_mask(self, box_prompt, gt_mask, iou_threshold=0.3):
+        """
+        Check if a bounding box prompt has a corresponding GT mask by spatial overlap.
+        
+        Args:
+            box_prompt: Bounding box [x1, y1, x2, y2]
+            gt_mask: Binary GT mask (H, W)
+            iou_threshold: Minimum IoU to consider a match
+            
+        Returns:
+            bool: True if prompt matches GT mask (IoU > threshold)
+        """
+        if gt_mask is None or gt_mask.sum() == 0:
+            return False
+        
+        # Create mask from bounding box
+        x1, y1, x2, y2 = box_prompt
+        h, w = gt_mask.shape
+        box_mask = np.zeros((h, w), dtype=bool)
+        
+        # Clip coordinates to image bounds
+        x1, y1 = max(0, int(x1)), max(0, int(y1))
+        x2, y2 = min(w, int(x2)), min(h, int(y2))
+        
+        if x2 <= x1 or y2 <= y1:
+            return False
+        
+        box_mask[y1:y2, x1:x2] = True
+        
+        # Calculate IoU between box and GT mask
+        intersection = np.logical_and(box_mask, gt_mask).sum()
+        union = np.logical_or(box_mask, gt_mask).sum()
+        
+        if union == 0:
+            return False
+        
+        iou = intersection / union
+        return iou >= iou_threshold
+    
     def save_visualization(self, image_rgb, gt_mask, pred_mask, class_name, 
-                          iou, dice, img_name, config_name, output_dir):
+                          iou, dice, img_name, config_name, output_dir, prompts=None, prompt_type='box'):
         """
         Save side-by-side visualization of GT mask and predicted mask.
         
@@ -223,6 +277,8 @@ class SAMBenchmarkEvaluator:
             img_name: Image filename
             config_name: Configuration name (e.g., SAM-ViT-H-BOX)
             output_dir: Output directory for visualizations
+            prompts: List of prompts (boxes or points) used for segmentation
+            prompt_type: Type of prompt ('box' or 'point')
         """
         output_path = Path(output_dir)
         output_path.mkdir(parents=True, exist_ok=True)
@@ -230,9 +286,30 @@ class SAMBenchmarkEvaluator:
         # Create figure with 3 subplots: Original, GT Mask, Predicted Mask
         fig, axes = plt.subplots(1, 3, figsize=(18, 6))
         
-        # Original image
+        # Original image with prompts
         axes[0].imshow(image_rgb)
-        axes[0].set_title('Original Image', fontsize=12, fontweight='bold')
+        
+        # Draw prompts on the original image
+        if prompts is not None:
+            if prompt_type == 'box':
+                # Draw bounding boxes
+                for box in prompts:
+                    x1, y1, x2, y2 = box
+                    rect = Rectangle((x1, y1), x2-x1, y2-y1, 
+                                   linewidth=2, edgecolor='cyan', facecolor='none')
+                    axes[0].add_patch(rect)
+            else:  # point
+                # Draw points
+                for point in prompts:
+                    if len(point) == 2:  # Single point
+                        x, y = point
+                        axes[0].plot(x, y, 'r*', markersize=15, markeredgewidth=2, markeredgecolor='yellow')
+                    else:  # List of points
+                        for p in point:
+                            x, y = p
+                            axes[0].plot(x, y, 'r*', markersize=15, markeredgewidth=2, markeredgecolor='yellow')
+        
+        axes[0].set_title('Original Image with Prompts', fontsize=12, fontweight='bold')
         axes[0].axis('off')
         
         # GT mask overlay
@@ -297,12 +374,20 @@ class SAMBenchmarkEvaluator:
             sam_type=config['type'],
             checkpoint_path=str(config['checkpoint'])
         )
-        print("✅ Model loaded")
         
-        # Prepare dataset paths
-        images_dir = self.dataset_root / split / 'images'
-        labels_dir = self.dataset_root / split / 'labels'
-        masks_dir = self.dataset_root / split / 'semantic_masks'
+        print(f"Using 🚀 \033[33mGPU\033[0m" if sam_segmenter.device == "cuda" else "💻 \033[33mCPU\033[0m")
+        
+        # Prepare dataset paths (merged dataset has no splits)
+        if (self.dataset_root / 'images').exists():
+            # Merged dataset structure (no split subdirectories)
+            images_dir = self.dataset_root / 'images'
+            labels_dir = self.dataset_root / 'labels'
+            masks_dir = self.dataset_root / 'semantic_masks'
+        else:
+            # Original split structure
+            images_dir = self.dataset_root / split / 'images'
+            labels_dir = self.dataset_root / split / 'labels'
+            masks_dir = self.dataset_root / split / 'semantic_masks'
         
         image_files = sorted(images_dir.glob('*.png'))
         
@@ -316,6 +401,11 @@ class SAMBenchmarkEvaluator:
         per_class_ious = {i: [] for i in range(15)}
         per_class_dices = {i: [] for i in range(15)}
         inference_times = []
+        
+        # Diagnostic counters
+        total_prompts = 0
+        total_matched_prompts = 0
+        total_unmatched_prompts = 0
         
         # Storage for visualization examples
         examples_data = []  # Store (iou, dice, image_rgb, gt_mask, pred_mask, class_name, img_name)
@@ -347,13 +437,9 @@ class SAMBenchmarkEvaluator:
             # Run SAM inference
             start_time = time.time()
             try:
-                if prompt_type == 'box':
-                    masks = sam_segmenter.segment(image_rgb, prompts, prompt_type='box')
-                else:  # point
-                    masks = []
-                    for point in prompts:
-                        mask = sam_segmenter.segment(image_rgb, point, prompt_type='point')
-                        masks.extend(mask)
+                # Both box and point prompts now use batched processing
+                # This ensures image is encoded only ONCE per image (not per prompt)
+                masks = sam_segmenter.segment(image_rgb, prompts, prompt_type=prompt_type)
             except Exception as e:
                 print(f"Error processing {img_name}: {e}")
                 continue
@@ -372,15 +458,19 @@ class SAMBenchmarkEvaluator:
                 print(f"Warning: No GT mask found for {img_name}")
                 continue
             
-            # Group masks by class for union-based evaluation
+            # Group masks by class for union-based evaluation (NO FILTERING)
+            # The issue: DOTA and iSAID are already aligned - they're from the same images
+            # We should evaluate ALL prompts, not filter them
             class_pred_masks = {}  # class_id -> list of predicted masks
-            class_gt_masks = {}    # class_id -> GT mask (already union of all instances)
+            class_labels = {}      # class_id -> list of labels
             
             for i, pred_mask in enumerate(masks):
                 if i >= len(gt_labels):
                     break
                 
-                class_id = gt_labels[i]['class_id']
+                total_prompts += 1
+                label = gt_labels[i]
+                class_id = label['class_id']
                 
                 # Ensure pred_mask is 2D
                 if pred_mask is not None and len(pred_mask.shape) == 3:
@@ -393,7 +483,10 @@ class SAMBenchmarkEvaluator:
                 # Group by class
                 if class_id not in class_pred_masks:
                     class_pred_masks[class_id] = []
+                    class_labels[class_id] = []
                 class_pred_masks[class_id].append(pred_mask)
+                class_labels[class_id].append(label)
+                total_matched_prompts += 1
             
             # Calculate metrics per class (union of instances)
             for class_id in class_pred_masks.keys():
@@ -425,8 +518,17 @@ class SAMBenchmarkEvaluator:
                     per_class_ious[class_id].append(iou)
                     per_class_dices[class_id].append(dice)
                     
-                    # Store for visualization (union masks)
+                    # Store for visualization (union masks) with prompts
                     if save_examples:
+                        # Get prompts for this class
+                        class_prompts = []
+                        for i, label in enumerate(gt_labels):
+                            if label['class_id'] == class_id:
+                                if prompt_type == 'box':
+                                    class_prompts.append(label['box_prompt'])
+                                else:
+                                    class_prompts.append(label['point_prompt'])
+                        
                         examples_data.append({
                             'iou': iou,
                             'dice': dice,
@@ -434,50 +536,81 @@ class SAMBenchmarkEvaluator:
                             'gt_mask': gt_class_mask_bool.copy(),
                             'pred_mask': pred_union.copy(),
                             'class_name': self.class_names[class_id],
-                            'img_name': img_name
+                            'img_name': img_name,
+                            'prompts': class_prompts,
+                            'prompt_type': prompt_type
                         })
                 except Exception as e:
                     print(f"Metric calculation error for {img_name}, class {self.class_names[class_id]}: {e}")
                     continue
         
-        # Save visualization examples
+        # Save visualization examples - PER CLASS (best and worst for each class)
         if save_examples and examples_data:
             examples_dir = Path(output_dir) / config_name / 'examples'
             
-            # Sort by IoU to get best and worst examples
-            examples_data.sort(key=lambda x: x['iou'], reverse=True)
+            # Group examples by class
+            from collections import defaultdict
+            per_class_examples = defaultdict(list)
+            for example in examples_data:
+                per_class_examples[example['class_name']].append(example)
             
-            # Save top examples (best)
-            num_best = min(num_examples // 2, len(examples_data))
-            print(f"\nSaving {num_best} best examples...")
-            for example in examples_data[:num_best]:
-                self.save_visualization(
-                    example['image_rgb'],
-                    example['gt_mask'],
-                    example['pred_mask'],
-                    example['class_name'],
-                    example['iou'],
-                    example['dice'],
-                    example['img_name'],
-                    config_name,
-                    examples_dir / 'best'
-                )
+            # Save best and worst for each class
+            print(f"\nSaving per-class best/worst examples (15 classes × 2)...")
+            saved_best = 0
+            saved_worst = 0
             
-            # Save worst examples
-            num_worst = min(num_examples // 2, len(examples_data))
-            print(f"Saving {num_worst} worst examples...")
-            for example in examples_data[-num_worst:]:
-                self.save_visualization(
-                    example['image_rgb'],
-                    example['gt_mask'],
-                    example['pred_mask'],
-                    example['class_name'],
-                    example['iou'],
-                    example['dice'],
-                    example['img_name'],
-                    config_name,
-                    examples_dir / 'worst'
-                )
+            for class_name in self.class_names:
+                if class_name not in per_class_examples:
+                    continue
+                
+                class_examples = per_class_examples[class_name]
+                class_examples.sort(key=lambda x: x['iou'], reverse=True)
+                
+                # Save best for this class
+                if class_examples:
+                    best_example = class_examples[0]
+                    self.save_visualization(
+                        best_example['image_rgb'],
+                        best_example['gt_mask'],
+                        best_example['pred_mask'],
+                        best_example['class_name'],
+                        best_example['iou'],
+                        best_example['dice'],
+                        best_example['img_name'],
+                        config_name,
+                        examples_dir / 'best',
+                        prompts=best_example.get('prompts'),
+                        prompt_type=best_example.get('prompt_type', prompt_type)
+                    )
+                    saved_best += 1
+                
+                # Save worst for this class
+                if class_examples:
+                    worst_example = class_examples[-1]
+                    self.save_visualization(
+                        worst_example['image_rgb'],
+                        worst_example['gt_mask'],
+                        worst_example['pred_mask'],
+                        worst_example['class_name'],
+                        worst_example['iou'],
+                        worst_example['dice'],
+                        worst_example['img_name'],
+                        config_name,
+                        examples_dir / 'worst',
+                        prompts=worst_example.get('prompts'),
+                        prompt_type=worst_example.get('prompt_type', prompt_type)
+                    )
+                    saved_worst += 1
+            
+            print(f"Saved {saved_best} best examples (1 per class)")
+            print(f"Saved {saved_worst} worst examples (1 per class)")
+        
+        # Print diagnostic statistics
+        match_rate = (total_matched_prompts / total_prompts * 100) if total_prompts > 0 else 0
+        print(f"\n📊 Dataset Alignment Statistics:")
+        print(f"   Total prompts: {total_prompts}")
+        print(f"   Matched prompts: {total_matched_prompts} ({match_rate:.1f}%)")
+        print(f"   Unmatched prompts: {total_unmatched_prompts} ({100-match_rate:.1f}%)")
         
         # Aggregate results
         results = {
@@ -490,6 +623,10 @@ class SAMBenchmarkEvaluator:
             'std_dice': float(np.std(all_dices)) if all_dices else 0.0,
             'avg_inference_time_ms': float(np.mean(inference_times)) if inference_times else 0.0,
             'num_samples': len(all_ious),
+            'total_prompts': total_prompts,
+            'matched_prompts': total_matched_prompts,
+            'unmatched_prompts': total_unmatched_prompts,
+            'match_rate_percent': float(match_rate),
             'per_class_iou': {
                 self.class_names[i]: float(np.mean(ious)) if ious else 0.0
                 for i, ious in per_class_ious.items()
@@ -502,24 +639,36 @@ class SAMBenchmarkEvaluator:
         
         return results
     
-    def run_full_benchmark(self, output_dir='results/sam_benchmark', test_mode=False, save_examples=True):
+    def run_full_benchmark(self, output_dir='results/sam_benchmark', test_mode=False, save_examples=True, prompt_type=None):
         """
-        Run the complete SAM-only benchmark (6 configurations).
+        Run the complete SAM-only benchmark (3 or 6 configurations).
         
         Args:
             output_dir: Directory to save results
             test_mode: If True, run in test mode (10 images only)
             save_examples: If True, save visualization examples
+            prompt_type: If specified, only evaluate this prompt type ('box' or 'point'). 
+                        If None, evaluate both (6 configurations total)
         """
         output_path = Path(output_dir)
         output_path.mkdir(parents=True, exist_ok=True)
         
         all_results = []
         
-        # Run all 6 configurations
+        # Determine which prompt types to evaluate
+        if prompt_type is not None:
+            if prompt_type not in ['box', 'point']:
+                raise ValueError(f"Invalid prompt_type: {prompt_type}. Must be 'box' or 'point'.")
+            prompt_types = [prompt_type]
+            print(f"\n🎯 Evaluating with {prompt_type.upper()} prompts only")
+        else:
+            prompt_types = ['box', 'point']
+            print(f"\n🎯 Evaluating with both BOX and POINT prompts")
+        
+        # Run all configurations
         for sam_key in ['vit_h', 'vit_l', 'vit_b']:
-            for prompt_type in ['box', 'point']:
-                results = self.evaluate_configuration(sam_key, prompt_type, str(output_path), test_mode=test_mode, save_examples=save_examples)
+            for pt in prompt_types:
+                results = self.evaluate_configuration(sam_key, pt, str(output_path), test_mode=test_mode, save_examples=save_examples)
                 all_results.append(results)
                 
                 # Save individual result in config subfolder
@@ -554,13 +703,32 @@ def main():
     
     parser = argparse.ArgumentParser(description='SAM Benchmark Evaluation')
     parser.add_argument('--test', action='store_true', help='Run in test mode (process only 10 images)')
-    parser.add_argument('--dataset', type=str, default='dataset/AerialFuseCV', help='Path to dataset')
-    parser.add_argument('--output', type=str, default='results/sam_evaluation', help='Output directory')
+    parser.add_argument('--dataset', type=str, default='dataset/AerialFuseCV_Refined/val', 
+                       help='Path to refined dataset validation split')
+    parser.add_argument('--output', type=str, default='results/sam_evaluation', 
+                       help='Output directory')
     parser.add_argument('--no-examples', action='store_true', help='Disable saving visualization examples')
+    parser.add_argument('--prompt-type', type=str, choices=['box', 'point'], default=None,
+                       help='Prompt type to evaluate (box or point). If not specified, evaluates both.')
+    parser.add_argument('--exclude-classes', type=int, nargs='*', default=None,
+                       help='Class IDs to exclude from evaluation (e.g., --exclude-classes 2 8)')
     args = parser.parse_args()
     
-    # Initialize evaluator
-    evaluator = SAMBenchmarkEvaluator(args.dataset)
+    # Initialize evaluator (no excluded classes by default)
+    evaluator = SAMBenchmarkEvaluator(args.dataset, excluded_classes=args.exclude_classes)
+    
+    print(f"\n📊 Dataset: {args.dataset}")
+    if args.exclude_classes:
+        excluded_names = [evaluator.class_names[i] for i in args.exclude_classes if i < len(evaluator.class_names)]
+        print(f"⚠️  Excluded classes: {', '.join(excluded_names)}")
+        print(f"✅ Evaluating {15 - len(args.exclude_classes)} classes")
+    else:
+        print(f"✅ Evaluating all 15 DOTA classes")
+    
+    if args.prompt_type:
+        print(f"🎯 Prompt type: {args.prompt_type.upper()} only")
+    else:
+        print(f"🎯 Prompt types: BOX and POINT (both)")
     
     if args.test:
         print("\n" + "="*60)
@@ -568,7 +736,12 @@ def main():
         print("="*60 + "\n")
     
     # Run benchmark
-    results = evaluator.run_full_benchmark(args.output, test_mode=args.test, save_examples=not args.no_examples)
+    results = evaluator.run_full_benchmark(
+        args.output, 
+        test_mode=args.test, 
+        save_examples=not args.no_examples,
+        prompt_type=args.prompt_type
+    )
     
     print("\n🎯 SAM Benchmark Summary:")
     print("-" * 60)

@@ -1,27 +1,9 @@
 """
 Experiment runners and evaluation scripts.
+
+This package contains evaluation scripts for YOLO, SAM, and ArgusVision.
+Imports are done directly in scripts to avoid circular dependencies.
 """
 
-from .evaluate_yolo_vbb import (
-    run_evaluation as run_vbb_evaluation,
-    YOLO_MODELS as YOLO_VBB_MODELS,
-    DOTA_CLASS_NAMES,
-    COCO_TO_DOTA,
-    VBB_EVAL_CLASS_IDS,
-    NUM_DOTA,
-)
-from .evaluate_yolo_obb import (
-    run_evaluation as run_obb_evaluation,
-    YOLO_OBB_MODELS,
-)
-
-__all__ = [
-    "run_vbb_evaluation",
-    "YOLO_VBB_MODELS",
-    "DOTA_CLASS_NAMES",
-    "COCO_TO_DOTA",
-    "VBB_EVAL_CLASS_IDS",
-    "NUM_DOTA",
-    "run_obb_evaluation",
-    "YOLO_OBB_MODELS",
-]
+# Minimal __init__ to avoid import errors
+# Scripts import directly from their respective modules

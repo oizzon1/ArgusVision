@@ -1,11 +1,30 @@
+"""
+YOLO-OBB Evaluation Script with Detection Metrics
+
+Evaluates YOLO-OBB models on DOTA dataset with:
+- Detection metrics: Recall, Precision, F1 (IoU threshold 0.5)
+- Bbox quality metrics: IoU, DICE (secondary)
+- Visualization examples (10 best + 10 worst per class)
+
+Usage:
+    python src/experiments/evaluate_yolo_obb.py
+"""
+
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Dict
 import traceback
+import json
+import sys
+import numpy as np
 import torch
 from tqdm import tqdm
-from ..models.yolo_detector import YOLODetector
-from ..utils.metrics import save_metrics_summary
-from ..utils.data_loader import create_dataloader, get_dataset_paths
+
+# Add project root to path
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root))
+
+from src.models.yolo_detector import YOLODetector
+from src.utils.data_loader import create_dataloader, get_dataset_paths
 
 # DOTA class names (DOTAv1.yaml standard)
 DOTA_CLASS_NAMES = [
@@ -17,23 +36,68 @@ DOTA_CLASS_NAMES = [
 NUM_DOTA = len(DOTA_CLASS_NAMES)
 ALL_DOTA_CLASS_IDS = set(range(NUM_DOTA))
 
-
 def identity_class_map(num_classes: int) -> dict:
     return {i: i for i in range(num_classes)}
 
 # YOLO OBB pretrained models (trained on DOTA+OBB)
 YOLO_OBB_MODELS = {
-    "YOLOv8n-obb": "yolov8n-obb.pt",
-    "YOLOv8s-obb": "yolov8s-obb.pt",
-    "YOLOv8m-obb": "yolov8m-obb.pt",
-    "YOLOv8l-obb": "yolov8l-obb.pt",
-    "YOLOv8x-obb": "yolov8x-obb.pt",
-    "YOLOv11n-obb": "yolo11n-obb.pt",
-    "YOLOv11s-obb": "yolo11s-obb.pt",
-    "YOLOv11m-obb": "yolo11m-obb.pt",
-    "YOLOv11l-obb": "yolo11l-obb.pt",
-    "YOLOv11x-obb": "yolo11x-obb.pt",
+    "YOLOv8n-OBB": "yolov8n-obb.pt",
+    "YOLOv8s-OBB": "yolov8s-obb.pt",
+    "YOLOv8m-OBB": "yolov8m-obb.pt",
+    "YOLOv8l-OBB": "yolov8l-obb.pt",
+    "YOLOv8x-OBB": "yolov8x-obb.pt",
+    "YOLOv11n-OBB": "yolo11n-obb.pt",
+    "YOLOv11s-OBB": "yolo11s-obb.pt",
+    "YOLOv11m-OBB": "yolo11m-obb.pt",
+    "YOLOv11l-OBB": "yolo11l-obb.pt",
+    "YOLOv11x-OBB": "yolo11x-obb.pt",
 }
+
+
+def print_summary(summary: Dict, model_name: str):
+    """Print evaluation summary in ArgusVision format"""
+    print(f"\n{'='*80}")
+    print(f"{model_name} EVALUATION SUMMARY")
+    print(f"{'='*80}")
+    
+    print(f"\nDataset: {summary['config']['dataset']}")
+    print(f"Images processed: {summary['config']['num_images']}")
+    print(f"Total GT instances: {summary['config']['total_gt']}")
+    print(f"Total detections: {summary['config']['total_detections']}")
+    print(f"Matched pairs (TP): {summary['config']['matched_pairs']}")
+    
+    print(f"\nOverall Detection Performance:")
+    print(f"  Mean Recall:    {summary['overall']['mean_recall']*100:.2f}%")
+    print(f"  Mean Precision: {summary['overall']['mean_precision']*100:.2f}%")
+    print(f"  Mean F1 (mAP):  {summary['overall']['mean_f1']*100:.2f}%")
+    
+    print(f"\nOverall Bbox Quality (for matched pairs):")
+    print(f"  Bbox-IoU:  {summary['overall']['bbox_iou']*100:.2f}% ± {summary['overall']['std_bbox_iou']*100:.2f}%")
+    print(f"  Bbox-DICE: {summary['overall']['bbox_dice']*100:.2f}% ± {summary['overall']['std_bbox_dice']*100:.2f}%")
+    
+    print(f"\nTiming:")
+    print(f"  Avg inference: {summary['timing']['avg_inference_ms']:.2f} ms")
+    
+    print(f"\n{'='*80}")
+    print("PER-CLASS PERFORMANCE")
+    print(f"{'='*80}")
+    print(f"{'Class':<20} {'──Detection──':^21} | {'──Bbox Quality──':^19} | {'──Counts──':^14}")
+    print(f"{'Class':<20} {'Recall':>10} {'Prec':>9} {'F1':>6} | {'IoU':>8} {'DICE':>9} | {'TP':>4} {'FP':>4} {'FN':>4}")
+    print("-" * 80)
+    
+    for class_name, m in sorted(summary['per_class'].items(), 
+                                key=lambda x: x[1]['f1'], reverse=True):
+        print(f"{class_name:<20} "
+              f"{m['recall']*100:>6.2f}% "
+              f"{m['precision']*100:>6.2f}% "
+              f"{m['f1']*100:>5.1f}% | "
+              f"{m['bbox_iou']*100:>7.2f}% "
+              f"{m['bbox_dice']*100:>8.2f}% | "
+              f"{m['tp']:>4} "
+              f"{m['fp']:>4} "
+              f"{m['fn']:>4}")
+    
+    print(f"{'='*80}\n")
 
 
 def run_evaluation(
@@ -45,25 +109,30 @@ def run_evaluation(
     num_workers: Optional[int] = None
 ):
     """
-    Run YOLO OBB model evaluation.
+    Run YOLO OBB model evaluation with detection metrics.
     """
     results_dir = Path(results_dir)
     results_dir.mkdir(parents=True, exist_ok=True)
 
-    print("\n--- YOLO Model Evaluation on Aerial Imagery (OBB) ---")
-    print("Using pretrained OBB models (DOTA)")
-    print(f"Dataset: {dataset_dir}")
-    print(f"Results: {results_dir}")
-    print(f"DataLoader: {'Enabled' if use_dataloader else 'Disabled'}")
+    print("\n" + "="*80)
+    print("YOLO-OBB EVALUATION MODE".center(80))
+    print("="*80)
+    print(f"\n⚙️  Configuration:")
+    print(f"    Dataset:      {dataset_dir}")
+    print(f"    Results:      {results_dir}")
+    print(f"    DataLoader:   {'Enabled' if use_dataloader else 'Disabled'}")
     if use_dataloader:
-        print(f"Batch size: {batch_size}, Workers: {num_workers if num_workers is not None else 'auto'}")
-    device_label = "GPU" if torch.cuda.is_available() else "CPU"
+        print(f"    Batch size:   {batch_size}")
+        print(f"    Workers:      {num_workers if num_workers is not None else 'auto'}")
+    
+    device_label = "CUDA 🚀" if torch.cuda.is_available() else "CPU 💻"
     device_name = f" ({torch.cuda.get_device_name(0)})" if torch.cuda.is_available() else ""
-    print(f"Using device: {device_label}{device_name}")
+    print(f"    Device:       {device_label}{device_name}")
 
     # Get dataset paths
     image_paths, label_paths = get_dataset_paths(dataset_dir)
-    print(f"Found {len(image_paths)} validation images")
+    print(f"\n⚙️  Dataset loaded")
+    print(f"✅ Found {len(image_paths)} validation images")
 
     models_to_evaluate = YOLO_OBB_MODELS
     if subset_models:
@@ -72,7 +141,10 @@ def run_evaluation(
     all_metrics = {}
 
     for model_name, weights_path in models_to_evaluate.items():
-        tqdm.write(f"\n--- Evaluating {model_name}")
+        print(f"\n{'='*80}")
+        print(f"Evaluating {model_name}")
+        print(f"{'='*80}")
+        
         try:
             detector = YOLODetector(
                 model_name=model_name,
@@ -85,7 +157,6 @@ def run_evaluation(
             )
 
             if use_dataloader:
-                # Use DataLoader for efficient data loading
                 dataloader = create_dataloader(
                     image_paths=image_paths,
                     label_paths=label_paths,
@@ -104,7 +175,6 @@ def run_evaluation(
                     class_names=DOTA_CLASS_NAMES,
                 )
             else:
-                # Use legacy path-based API
                 metrics = detector.evaluate_dataset(
                     image_paths=image_paths,
                     label_paths=label_paths,
@@ -114,27 +184,27 @@ def run_evaluation(
                 )
 
             all_metrics[model_name] = metrics
-
-            print(f"  Mean IoU : {metrics['mean_iou']*100:.2f}%")
-            print(f"  Mean DICE: {metrics['mean_dice']*100:.2f}%")
-            print(f"  mAP      : {metrics['map']*100:.2f}%")
-            print(f"  Avg Inference Time: {metrics['avg_inference_time_ms']:.2f} ms/image")
+            
+            # Print summary in new format
+            print_summary(metrics, model_name)
 
         except Exception as e:
-            print(f"Error evaluating {model_name}: {str(e)}")
+            print(f"❌ Error evaluating {model_name}: {str(e)}")
             traceback.print_exc()
             continue
 
-    save_metrics_summary(all_metrics, str(results_dir))
-    print("\nOBB Evaluation complete. Results saved to:", results_dir)
+    # Save combined summary
+    summary_path = results_dir / "metrics_summary.json"
+    with open(summary_path, "w") as f:
+        json.dump(all_metrics, f, indent=2)
+    
+    print(f"\n✅ Evaluation complete!")
+    print(f"   Results saved to: {results_dir}")
 
 
 if __name__ == "__main__":
     DATASET_DIR = "dataset/DOTA_v1_YOLO_oriented_bboxes_dataset"
     RESULTS_DIR = "results/yolo_evaluation/OBB"
     
-    # Run with DataLoader enabled (recommended for better performance)
+    # Run with DataLoader enabled (recommended)
     run_evaluation(DATASET_DIR, RESULTS_DIR, use_dataloader=True)
-    
-    # To use legacy mode without DataLoader, set use_dataloader=False:
-    # run_evaluation(DATASET_DIR, RESULTS_DIR, use_dataloader=False)

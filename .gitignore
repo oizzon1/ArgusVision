@@ -26,20 +26,30 @@ ContextOnProject/
 ########################################
 # Results / logs / experiment outputs
 ########################################
-results/
+# Ignore everything in results/
+results/*
+
+# BUT keep final metrics JSON files
+!results/**/metrics_summary.json
+!results/**/evaluation_metrics.json
+!results/**/*_metrics.json
+
+# Ignore huge restore points specifically
+results/**/restore_points/
+
+# Keep .gitkeep files for structure
+!results/.gitkeep
+!results/**/.gitkeep
+
+# Other experiment outputs
 logs/
 runs/
 checkpoints/
 wandb/
-
-# Keep structure only
-!results/.gitkeep
-!results/**/.gitkeep
 !logs/.gitkeep
 !runs/.gitkeep
 !checkpoints/.gitkeep
 !wandb/.gitkeep
-!results/**/metrics.json
 
 ########################################
 # Large imagery / geospatial (HEAVY)
@@ -59,19 +69,37 @@ wandb/
 !assets/**
 
 ########################################
-# Dataset labels / annotations
+# Dataset folder - ignore everything except docs
 ########################################
-dataset/**/labels/
+# Ignore all dataset contents (images, labels, masks)
+dataset/*
 
-########################################
-# Dataset heavy image / mask folders
-########################################
+# BUT keep documentation and config files
+!dataset/.gitkeep
+!dataset/**/.gitkeep
+!dataset/**/*.md
+!dataset/**/*.yaml
+!dataset/**/*.yml
+!dataset/**/*.txt
+!dataset/**/*.json
+!dataset/**/*.py
+!dataset/**/*.pdf
+
+# Specifically ignore heavy data folders even if matched above
 dataset/**/images/
+dataset/**/labels/
 dataset/**/semantic_masks/
 dataset/**/masks/
-dataset/iSAID/train/
-dataset/iSAID/val/
-dataset/iSAID/test/
+dataset/**/train/
+dataset/**/val/
+dataset/**/test/
+dataset/iSAID/
+dataset/DOTA_v1/
+dataset/AerialFuseCV/
+dataset/AerialFuseCV_Refined/
+dataset/AerialFuseCV_Refined_Merged/
+dataset/DOTA_v1_YOLO_oriented_bboxes_dataset/
+dataset/DOTA_v1_YOLO_vertical_bboxes_dataset/
 
 ########################################
 # Python / build artifacts
@@ -87,7 +115,7 @@ __pycache__/
 .ipynb_checkpoints/
 
 # (If you REALLY want to ignore notebooks, uncomment:)
-# *.ipynb
+*.ipynb
 
 ########################################
 # Editor / OS crap
