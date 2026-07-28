@@ -13,6 +13,7 @@ Usage:
 """
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -24,6 +25,26 @@ from src.ArgusVision.ArgusVisionEvaluationV2 import ArgusVisionEvaluatorV2
 from src.ArgusVision.branding import display_logo
 from src.models.yolo_detector import YOLODetector
 from src.models.sam_segmenter import SAMSegmenter
+
+
+ANSI_YELLOW = "\033[93m"
+ANSI_RESET = "\033[0m"
+COLOR_ENABLED = sys.stdout.isatty()
+
+
+def yellow(text: str) -> str:
+    """Return yellow-colored text when terminal supports ANSI colors."""
+    if not COLOR_ENABLED:
+        return text
+    return f"{ANSI_YELLOW}{text}{ANSI_RESET}"
+
+
+# Best-effort ANSI enablement on Windows terminals.
+if os.name == "nt":
+    try:
+        os.system("")
+    except Exception:
+        pass
 
 
 def main():
@@ -57,11 +78,11 @@ def main():
     display_logo()
     
     print("="*60)
-    print("EVALUATION MODE - V2 (Two-Level Metrics)".center(60))
+    print("EVALUATION MODE".center(60))
     print("="*60)
     
     # Configuration
-    print(f"\n⚙️⚙️  Configuration:")
+    print(f"\n{yellow('⚙️⚙️  Configuration:')}")
     print(f"    Dataset:          {args.dataset}")
     yolo_model_name = Path(args.yolo_model).stem.upper()
     print(f"    Detector Model:   {yolo_model_name} (Weights: {args.yolo_model})")
@@ -77,7 +98,7 @@ def main():
     print(f"    Metrics:          Detection (bbox) + Segmentation (mask)")
     
     # Initialize models
-    print(f"\n⚙️⚙️  Loading models...")
+    print(f"\n{yellow('⚙️⚙️  Loading models...')}")
     
     try:
         # Load detector (YOLO)
@@ -107,7 +128,7 @@ def main():
         sys.exit(1)
     
     # Initialize evaluation pipeline
-    print(f"\n⚙️⚙️  Initializing ArgusVision V2 evaluation pipeline...")
+    print(f"\n{yellow('⚙️⚙️  Initializing ArgusVision V2 evaluation pipeline...')}")
     try:
         evaluator = ArgusVisionEvaluatorV2(
             yolo_model=yolo,
@@ -126,7 +147,7 @@ def main():
         sys.exit(1)
     
     # Run evaluation
-    print(f"\n⚙️⚙️  Starting V2 evaluation...\n")
+    print(f"\n{yellow('⚙️⚙️  Starting V2 evaluation...')}\n")
     try:
         results = evaluator.evaluate(
             max_images=args.max_images,

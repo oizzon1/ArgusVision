@@ -26,6 +26,7 @@ import cv2
 import numpy as np
 from scipy.ndimage import label
 from scipy.optimize import linear_sum_assignment
+from tqdm import tqdm
 
 try:
     import torch
@@ -87,7 +88,7 @@ class ClassExample:
     img_name: str
     class_id: int
     class_name: str
-    gsd: float
+    gsd: Optional[float]
     n_gt: int
     n_det: int
     tp: int
@@ -372,8 +373,15 @@ class ArgusVisionEvaluatorV2:
 
         examples: Dict[int, List[ClassExample]] = {cid: [] for cid in CLASS_NAMES.keys()}
 
-        for idx, img_path in enumerate(images_to_process, start=1):
-            print(f"\n[{idx}/{len(images_to_process)}] Processing: {img_path.name}")
+        progress_bar = tqdm(
+            images_to_process,
+            total=len(images_to_process),
+            desc="Processing images",
+            unit="img",
+            ncols=90,
+        )
+        for idx, img_path in enumerate(progress_bar, start=1):
+            progress_bar.set_postfix_str(img_path.name)
             image_bgr = cv2.imread(str(img_path))
             if image_bgr is None:
                 print(f"⚠️ Could not read image: {img_path}")
@@ -401,7 +409,7 @@ class ArgusVisionEvaluatorV2:
                 class_det_bboxes = [detections[i]["bbox"] for i in class_det_indices]
                 class_gt_bboxes = self._load_gt_bboxes(img_name, class_id)
 
-                matches = self._match_bboxes(class_det_bboxes, class_gt_bboxes, threshold=0.5)
+                matches = self._match_bboxes(class_det_bboxes, class_gt_bboxes, threshold=0.1)
 
                 tp = len(matches)
                 fp = len(class_det_bboxes) - tp
@@ -472,13 +480,21 @@ class ArgusVisionEvaluatorV2:
                     for d_idx, _ in matches:
                         outcomes[d_idx] = "TP"
 
+                    gsd_raw = self.gsd_mapping.get(img_name)
+                    gsd_value: Optional[float] = None
+                    if gsd_raw is not None:
+                        try:
+                            gsd_value = float(gsd_raw)
+                        except (TypeError, ValueError):
+                            gsd_value = None
+
                     examples[class_id].append(
                         ClassExample(
                             image_path=img_path,
                             img_name=img_name,
                             class_id=class_id,
                             class_name=class_name,
-                            gsd=float(self.gsd_mapping.get(img_name, 1.0) or 1.0),
+                            gsd=gsd_value,
                             n_gt=len(class_gt_bboxes),
                             n_det=len(class_det_bboxes),
                             tp=tp,
@@ -552,7 +568,7 @@ class ArgusVisionEvaluatorV2:
             "config": {
                 "dataset": str(self.dataset_path),
                 "num_images": metrics["num_images"],
-                "detection_matching": "Hungarian on bbox IoU matrix (threshold=0.5)",
+                "detection_matching": "Hungarian on bbox IoU matrix (threshold=0.1)",
                 "gt_bbox_format": "DOTA x1 y1 x2 y2 x3 y3 x4 y4 class-name difficulty",
             },
             "overall": {
@@ -641,10 +657,25 @@ class ArgusVisionEvaluatorV2:
             if not exs:
                 continue
             exs_sorted = sorted(exs, key=lambda e: e.f1, reverse=True)
-            self._generate_visualization(exs_sorted[0], self.best_dir)
-            self._generate_visualization(exs_sorted[-1], self.worst_dir)
+            k = min(3, len(exs_sorted))
 
-    def _generate_visualization(self, example: ClassExample, output_dir: Path):
+            # Top-k best examples per class
+            for i in range(k):
+                self._generate_visualization(
+                    exs_sorted[i],
+                    self.best_dir,
+                    filename_suffix=f"BEST{i+1}",
+                )
+
+            # Top-k worst examples per class
+            for i in range(k):
+                self._generate_visualization(
+                    exs_sorted[-(i + 1)],
+                    self.worst_dir,
+                    filename_suffix=f"WORST{i+1}",
+                )
+
+    def _generate_visualization(self, example: ClassExample, output_dir: Path, filename_suffix: str = ""):
         """Reload image, re-run pipeline, and create 2x2 diagnostic collage."""
         image_bgr = cv2.imread(str(example.image_path))
         if image_bgr is None:
@@ -668,7 +699,7 @@ class ArgusVisionEvaluatorV2:
         metadata = {
             "image_id": example.img_name,
             "class_name": example.class_name,
-            "gsd": f"{example.gsd:.2f}",
+            "gsd": (f"{example.gsd:.2f}" if example.gsd is not None else "N/A"),
             "gt_count": example.n_gt,
             "det_count": example.n_det,
             "tp_count": example.tp,
@@ -698,7 +729,8 @@ class ArgusVisionEvaluatorV2:
         # Required conversion before save
         collage_bgr = cv2.cvtColor(collage_rgb, cv2.COLOR_RGB2BGR)
         f1_tag = f"{example.f1 * 100:.1f}"
-        filename = f"{example.img_name}_{example.class_name}_F1_{f1_tag}.png"
+        suffix_part = f"_{filename_suffix}" if filename_suffix else ""
+        filename = f"{example.img_name}_{example.class_name}{suffix_part}_F1_{f1_tag}.png"
         out_path = output_dir / filename
         cv2.imwrite(str(out_path), collage_bgr)
         print(f"[OK] Saved visualization: {filename}")
