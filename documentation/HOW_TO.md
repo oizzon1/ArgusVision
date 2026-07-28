@@ -8,7 +8,7 @@ This guide shows how to set up the environment, activate it, verify GPU, and run
 - Clone this repo (or open it in VS Code).
 
 ## 2) Create the Environment
-- From the repo root (`d:\Work\DSML`), create the conda env using the provided file:
+- From the repo root (`d:\Work\AV`), create the conda env using the provided file:
 
 ```cmd
 conda env create -f ArgusVision_environment.yml
@@ -19,12 +19,12 @@ This installs CUDA-enabled PyTorch + Ultralytics + SAM + all project dependencie
 ## 3) Activate the Environment
 - Command Prompt (cmd):
 ```cmd
-conda activate thesis_env
+conda activate AV_env
 set PYTHONNOUSERSITE=1
 ```
 - PowerShell:
 ```powershell
-conda activate thesis_env
+conda activate AV_env
 $env:PYTHONNOUSERSITE = "1"
 ```
 
@@ -92,10 +92,10 @@ python src/experiments/evaluate_ArgusVision.py
 Output: `results/ArgusVision_evaluation/` with metrics + 10 best/worst visualizations
 
 ## 8) VS Code Tips
-- Select Interpreter: Ctrl+Shift+P → "Python: Select Interpreter" → choose `thesis_env`.
+- Select Interpreter: Ctrl+Shift+P → "Python: Select Interpreter" → choose `AV_env`.
 - Default Terminal: Terminal → Select Default Profile → choose Command Prompt if you prefer `cmd`.
 
 ## 9) Troubleshooting
-- Torchvision/ops errors (e.g., missing `nms`): ensure you are in `thesis_env` and created it from `thesis_environment.yml`.
+- Torchvision/ops errors (e.g., missing `nms`): ensure you are in `AV_env` and created it from `ArgusVision_environment.yml`. Note that torch/torchvision must come from the PyTorch cu124 index, not PyPI — a plain `pip install torch` yields a CPU build and this is the usual cause.
 - Mixed packages from user site: make sure `PYTHONNOUSERSITE` is set for the session.
 - Slow runs on CPU: re-check GPU availability (`test_gpu`), and that the environment shows `cuda:0` when starting `evaluate_yolo_obb`.

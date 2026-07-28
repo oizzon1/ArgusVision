@@ -11,7 +11,7 @@ ATHENA, read THESIS_NOTES.md and WORK_LOG.md to restore full project context
 conda env create -f ArgusVision_environment.yml
 
 # Activate environment
-conda activate thesis_env
+conda activate AV_env
 set PYTHONNOUSERSITE=1
 
 # Verify GPU

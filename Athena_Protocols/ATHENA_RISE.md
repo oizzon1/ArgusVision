@@ -1,6 +1,6 @@
 # 🦉 ATHENA_RISE — Context Restoration & Orchestration Protocol
 ### ArgusVision PhD Program — Unified Protocol
-**Version 2.0 — July 2026**
+**Version 2.1 — July 2026**
 **Replaces:** `ATHENA_RISE.md` v1.3 + `ATHENA_STRATEGIST_RISE.md` v1.3 (archived in `archive/`, untouched, historical record)
 
 ---
@@ -102,8 +102,20 @@ Recorded reasoning outlives any plan. The changelog is the mechanism that lets a
 
 | Machine | Role | ATHENA modes |
 |---|---|---|
-| Local PC (WSL2) | Strategy, paper writing (WTF-P), results analysis | STRATEGIST, ADVISOR, REVIEWER |
-| NTUA PC (RTX 3090 Ti) | GPU experiments, code development | OPERATOR (+ REVIEWER on code) |
+| **NTUA dev PC** (Windows + WSL2, RTX 3090 Ti) | Primary. Everything: GPU experiments, code development, strategy, paper writing | **All four** |
+| Home PC | Secondary. No CUDA — writing, planning, review only | STRATEGIST, ADVISOR, REVIEWER |
+
+**Execution model on the NTUA dev PC (v2.1 correction).** Work lives on the Windows filesystem (`D:\Work\AV`); WSL2 exists only to host AI agents, which read the same tree through `/mnt/d/Work/AV`. Experiments therefore run in **Windows conda**, not in WSL — running them from WSL would pay the `/mnt` I/O penalty on every dataset read.
+
+Agents invoke Windows Python from WSL via interop:
+
+```bash
+/mnt/c/Windows/System32/cmd.exe /c "cd /d d:\Work\AV && conda run -n AV_env python <script>"
+```
+
+This satisfies the run-from-repo-root rule (`cwd` resolves to `D:\Work\AV`). Verified 2026-07-29: torch 2.5.1+cu124, CUDA available, RTX 3090 Ti. **Caveat:** inline `python -c "..."` does not survive cmd.exe quoting — write a script file and invoke that.
+
+**OPERATOR is therefore permitted on the NTUA dev PC, including from a WSL-hosted agent session.** The v2.0 table wrongly implied otherwise by describing the WSL side as a separate strategy-only "Local PC".
 
 **Bootstrap:** `CLAUDE.md` (Claude Code), `GEMINI.md` (Gemini CLI), and `AGENTS.md` (Codex/OpenCode/other) at repo root are **identical stubs** pointing here. If they ever diverge, continuity is broken — fix immediately.
 
@@ -114,6 +126,7 @@ Recorded reasoning outlives any plan. The changelog is the mechanism that lets a
 
 **Working rules:**
 - Run all scripts from repo root (path convention throughout `src/` and `dataset/`)
+- Environment is **`AV_env`** (Windows conda). `ArgusVision_environment.yml` is the spec; `ArgusVision_environment.lock.txt` is the exact 200-package closure. Never claim reproducibility from the spec without checking it against the lock
 - Experiments write to `results/`; `.gitignore` already commits only `*_metrics.json` / `metrics_summary.json` — keep that discipline
 - Heavy artifacts (weights, DOTA/iSAID images, checkpoints) never enter git; their NTUA paths are recorded in `ATHENA_STATE.md`
 - Cross-machine claims flow one way: **prose cites `results/`, never memory**
@@ -152,8 +165,9 @@ ATHENA must:
 | Version | Date | Change |
 |---|---|---|
 | 1.3 | Nov 2025 | Master-thesis-phase protocols (two files: STRATEGIST + OPERATOR). Archived. |
+| 2.1 | 2026-07-29 | Machine table corrected to reality: one primary NTUA dev PC (Windows work + WSL2 agents + 3090 Ti), all four modes; home PC secondary, no CUDA. Windows-conda-via-interop execution model documented. Env canonicalized to `AV_env`; lock file added. |
 | 2.0 | Jul 2026 | PhD-phase rewrite. Thesis complete (10/10). Single identity, four modes (STRATEGIST/ADVISOR/OPERATOR/REVIEWER). Ledger file added (`ATHENA_STATE.md`). Multi-agent bootstrap (CLAUDE/GEMINI/AGENTS stubs). Roadmap Revision Protocol added. Scope guard rewritten for publication phase. |
 
 ---
 
-*End of Document — Version 2.0*
+*End of Document — Version 2.1*

@@ -1,32 +1,50 @@
-name: thesis_env
+name: AV_env
+# ArgusVision environment — Windows (NTUA dev PC, RTX 3090 Ti)
+#
+# Verified working 2026-07-29: python 3.9.25, torch 2.5.1+cu124, CUDA available,
+# GPU matmul executed, every import used by src/ and dataset/ resolves.
+#
+# NOTE ON PYTORCH: torch is installed from the PyTorch cu124 wheel index via pip,
+# NOT from the conda `pytorch`/`nvidia` channels. The previous version of this file
+# specified `pytorch=2.5.1` + `pytorch-cuda=12.1` from those channels, which never
+# matched the environment that produced the thesis results and would not reproduce
+# them. It also omitted scipy, which the codebase imports. Corrected 2026-07-29.
+#
+# Exact pins for the full 200-package closure live in ArgusVision_environment.lock.txt.
+# This file is the human-readable spec; the lock file is the reproducibility record.
+
 channels:
-  - pytorch
-  - nvidia
   - conda-forge
   - defaults
+
 dependencies:
+  # Interpreter only from conda — everything else via pip, which is how this
+  # environment was actually built. Mixing conda and pip for the scientific
+  # stack is what produced the original drift.
   - python=3.9
   - pip
-  # Core numerical & utilities
-  - numpy>=1.23
-  - tqdm>=4.66
-  - shapely>=2.0
-  # PyTorch + CUDA (Windows, RTX 3090 Ti; CUDA 12.1 runtime)
-  - pytorch=2.5.1
-  - torchvision=0.20.1
-  - torchaudio=2.5.1
-  - pytorch-cuda=12.1  # from nvidia channel
-  # Visualization & Image Processing
-  - matplotlib>=3.5
-  - pillow>=9.0
-  # Development tools
-  - jupyterlab
-  - ipykernel
-  # Pip packages
+
   - pip:
-      # YOLO detection
-      - ultralytics>=8.3.0,<9
-      # Computer vision
-      - opencv-python>=4.8
-      # SAM segmentation
-      - segment-anything>=1.0
+      # PyTorch + CUDA 12.4 — must come from the PyTorch index, not PyPI
+      - --extra-index-url https://download.pytorch.org/whl/cu124
+      - torch==2.5.1+cu124
+      - torchvision==0.20.1+cu124
+
+      # Core numerical & geometry
+      - numpy==2.0.2
+      - scipy==1.13.1
+      - shapely==2.0.7
+      - tqdm==4.67.1
+
+      # Visualization & imaging
+      - matplotlib==3.9.4
+      - pillow==11.3.0
+      - opencv-python==4.12.0.88
+
+      # Detection & segmentation
+      - ultralytics==8.3.185
+      - segment-anything==1.0
+
+      # Development tools
+      - jupyterlab==4.4.6
+      - ipykernel==6.30.1

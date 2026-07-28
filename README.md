@@ -64,7 +64,7 @@ ArgusVision/
 
 ```bash
 conda env create -f ArgusVision_environment.yml
-conda activate argusvision
+conda activate AV_env
 ```
 
 Run everything from repo root (path convention), e.g.:
