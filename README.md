@@ -1,192 +1,99 @@
-<p align="center">`n  <img src="assets/ArgusVision_logo_4_Magenta.png" alt="ArgusVision Logo" width="320">`n</p>`n`n# 🛰️ **ArgusVision – Aerial Detection & Segmentation Research Platform**
-### *Master’s Thesis (Phase 0) → PhD System (Phase 1–5)*  
-**Author:** Panagiotis Fragkos (LtCol, Hellenic Army)  
-**Project Timeline:** Nov 2025 → 2030  
-**Current Phase:** Master’s Thesis (Phase 0)  
+<p align="center">
+  <img src="assets/ArgusVision_logo_4_Magenta.png" alt="ArgusVision Logo" width="320">
+</p>
+
+# 🛰️ **ArgusVision — Aerial Detection & Segmentation Research Platform**
+### *PhD in Photogrammetry, NTUA — Phase 1: Publication Sprint*
+**Author:** Panagiotis Fragkos (LtCol, Hellenic Army)
+**Supervisor:** Prof. Charalampos Ioannidis
+**Program timeline:** 2025 → 2030 | **Current phase:** PhD Year 1 (Phase 0 — Master Thesis — completed July 2026, 10/10)
 
 ---
 
 # 📘 Overview
 
-**ArgusVision** is a multi-stage research and development program for aerial computer vision, focused on:
+**ArgusVision** is a multi-phase research program for aerial computer vision:
 
-- **Aerial object detection** using YOLO (OBB + VBB)
-- **Segmentation refinement** using Meta’s **Segment Anything Model (SAM)**
-- **Dataset fusion and curation** (AerialFuseCV)
-- **Benchmarking**, **analysis**, and **modular pipeline design**
-- Future **dual-UAV cooperative perception** and **near real-time mapping**
+- **Aerial object detection** with YOLO (OBB representations)
+- **Prompt-driven segmentation** with Meta's Segment Anything Model (SAM)
+- **AerialFuseCV** — paired detection–segmentation dataset (DOTA v1.0 OBB + iSAID masks, instance-level reconciliation)
+- Systematic **benchmarking** of training-free vs supervised pipelines
+- Future: edge inference, dual-UAV cooperative perception, near-real-time mapping
 
-This repository supports **two parallel tracks**:
-
----
-
-# 🎓 **1. Master’s Thesis (Phase 0)**  
-*A minimal, clean, controlled evaluation to build foundational knowledge without revealing PhD-level system concepts.*
-
-### **Master Thesis Goals**
-- Benchmark **SAM variants (ViT-H/L/B)** with **ground-truth prompts**  
-- Benchmark **YOLOv11x → SAM** with minimal configurations  
-- Produce a rigorous but **non-exhaustive** evaluation  
-- Build all components needed for the future full benchmark  
-- Write a clean thesis and graduate  
-- Preserve novelty for PhD work  
+**Phase 0 headline results** (thesis, defended 8 Jul 2026): OBB is a prerequisite for aerial detection (VBB F1 0.34% vs OBB 62.4%); prompt quality dominates SAM model size (ViT-B 66.9% vs ViT-H 67.7% IoU); integrated pipeline 67.9% mask IoU with detection recall (62.1%) as the bottleneck. Full verified numbers: `Athena_Protocols/ATHENA_STATE.md`.
 
 ---
 
-# 🧪 **Master Thesis Benchmarks**
+# 🎯 Current Mission — Publication Roadmap v2.0
 
-## **A. SAM-Only Benchmark (6 configurations)**
-Using **ground-truth OBBs** to isolate SAM’s true segmentation capability:
+| # | Paper | Venue (primary) | Submit |
+|---|---|---|---|
+| P0 | AerialFuseCV Zenodo release (DOI) | Zenodo | Aug 2026 |
+| P1 | AerialFuseCV data descriptor | ISPRS Open Journal of P&RS | Sep 2026 |
+| P2 | Training-free detection→segmentation (flagship) | ISPRS Journal of P&RS | Feb 2027 |
+| P3 | Condensed pipeline findings (conference) | EarthVision @ CVPR 2027 / IGARSS 2027 | Nov 2026 / Jan 2027 |
+| P4 | ArgusVision full benchmark | IEEE TGRS | Sep–Oct 2027 |
 
-| SAM Variant | Box Prompt | Point Prompt |
-|-------------|------------|--------------|
-| ViT-H       | ✓          | ✓            |
-| ViT-L       | ✓          | ✓            |
-| ViT-B       | ✓          | ✓            |
-
-**Purpose:** Identify the best SAM model before integrating with YOLO.
-
----
-
-## **B. Minimal ArgusVision Benchmark (6 configurations)**
-
-Using **YOLOv11x-OBB** (best detector identified in Phase 0):
-
-| YOLO → SAM | Box Prompt | Point Prompt |
-|------------|------------|--------------|
-| v11x → ViT-H | ✓        | ✓            |
-| v11x → ViT-L | ✓        | ✓            |
-| v11x → ViT-B | ✓        | ✓            |
-
-Total Master Thesis runs: **12**
+Canonical plan: `ArgusVision_Strategic_Planning/PUBLICATION_ROADMAP.md` (living document, revision-controlled).
 
 ---
 
-# 🧬 **2. PhD Research Program (Phase 1–5)**  
-The full ArgusVision system will expand into:
-
-### **Full 180+ Configuration Benchmark**
-- All YOLOv8 + YOLOv11 OBB models  
-- SAM ViT-H/L/B + MobileSAM + FastSAM  
-- Box, Point, Hybrid prompts  
-- Cloud / Edge / Embedded device profiling  
-
-### **ArgusVision System Roadmap**
-- **Year 1:** Full benchmark + first publication  
-- **Year 2:** Embedded inference (Jetson Orin)  
-- **Year 3:** Dual-UAV cooperative perception  
-- **Year 4:** Real-time mapping + flight trials  
-- **Year 5:** ArgusVision v3.0 Demonstrator + PhD defense  
-
----
-
-# 🗂️ **Repository Structure**
+# 🗂️ Repository Structure
 
 ```
 ArgusVision/
-│
-├── src/
-│   ├── detection/           # YOLO inference, OBB/VBB converters
-│   ├── segmentation/        # SAM integration modules
-│   ├── benchmarks/          # Benchmark runners (SAM-only, Master, PhD)
-│   ├── datasets/            # AerialFuseCV dataloaders + utils
-│   ├── utils/               # Metrics, prompt generation, helpers
-│   ├── visualization/       # Overlay generation, plots, samples
-│   └── argus_vision/        # Core pipeline (YOLO → SAM)
-│
-├── data/
-│   ├── AerialFuseCV/        # Dataset (DOTA + iSAID fusion)
-│   └── ground_truth/        # GT OBBs + segmentation masks
-│
-├── results/
-│   ├── sam_only/
-│   ├── master_benchmark/
-│   └── phd_benchmark/
-│
-├── docs/
-│   ├── ArgusVision_Benchmark_Plan_MasterThesis.md
-│   ├── ArgusVision_Benchmark_Plan_PhD.md
-│   ├── ArgusVision_5Year_Roadmap.md
-│   ├── ArgusVision_SAM_Benchmark_Plan.md
-│   └── ArgusVision_Master_Roadmap.md
-│
-├── WORK_LOG.md
-├── ATHENA_RISE.md
-├── ATHENA_RISE_STRATEGIST.md
-└── README.md  ← (this file)
+├── CLAUDE.md / GEMINI.md / AGENTS.md    # ATHENA bootstrap stubs (identical) — any AI agent initializes from these
+├── Athena_Protocols/
+│   ├── ATHENA_RISE.md                   # ATHENA v2.0 — identity, modes, protocols
+│   ├── ATHENA_STATE.md                  # Program ledger — cross-environment source of truth
+│   └── archive/                         # v1.3 protocols (historical)
+├── ArgusVision_Strategic_Planning/      # Publication roadmap (canonical) + 5-year plan
+├── ArgusVision_for_Master_Thesis/       # Phase 0 archive — frozen
+├── papers/                              # WTF-P workspaces, one per paper (see papers/README.md)
+├── zenodo_release/                      # P0 packaging: annotations, script, checksums, licence
+├── src/                                 # Pipeline code (ArgusVision core, models, experiments, utils)
+├── dataset/                             # AerialFuseCV construction & visualization scripts
+├── results/                             # Experiment outputs — only *_metrics.json / summaries committed
+├── documentation/                       # HOW_TO, commands
+└── assets/                              # Branding, figures
 ```
 
 ---
 
-# 🚀 **Setup Instructions**
+# 🚀 Setup
 
-### **Install environment**
-```
-conda create -n argus python=3.10
-conda activate argus
-pip install -r requirements.txt
+```bash
+conda env create -f ArgusVision_environment.yml
+conda activate argusvision
 ```
 
-### **Run SAM-Only Benchmark**
-```
-python -m src.benchmarks.sam_benchmark --sam vit_l --prompt box
+Run everything from repo root (path convention), e.g.:
+
+```bash
+python src/experiments/evaluate_sam.py --output results/sam_evaluation
+python src/experiments/evaluate_ArgusVision.py
 ```
 
-### **Run Master Thesis Minimal Benchmark**
-```
-python -m src.benchmarks.master_benchmark --sam vit_l --prompt point
-```
+Heavy assets (datasets, weights, checkpoints) live on the NTUA GPU machine and never enter git — locations recorded in `ATHENA_STATE.md`.
 
 ---
 
-# 🧠 **ATHENA Integration**
+# 🦉 ATHENA
 
-The project includes two AI control layers:
+The project's AI layer. One identity, four modes — 🟢 STRATEGIST · 🔵 ADVISOR · 🟡 OPERATOR · 🔴 REVIEWER — defined in `Athena_Protocols/ATHENA_RISE.md`. Any supported AI CLI (Claude Code, Gemini CLI, Codex/OpenCode) auto-initializes as ATHENA via the root bootstrap stubs and restores full program state from `ATHENA_STATE.md`.
 
-- **ATHENA_STRATEGIST** → planning, roadmaps, Operator prompt generation  
-- **ATHENA Operator (VS Code AI)** → executes code, logs results, runs benchmarks  
-
-Documentation:  
-- `ATHENA_RISE_STRATEGIST.md`  
-- `ATHENA_RISE.md`  
+**Session ritual:** `git pull` → ATHENA announces state → work → update `ATHENA_STATE.md` on milestones → commit to `dev` → push. `ArgusVision_main` receives milestone merges only.
 
 ---
 
-# 🔐 **Strategic Boundaries (Master vs PhD)**
+# 🏁 Phases
 
-### **Master Thesis (Phase 0) includes:**
-- YOLOv11x-only  
-- SAM H/L/B  
-- Box & Point prompts  
-- 12 total runs  
-- No hybrid prompts  
-- No multi-UAV  
-- No real-time edge inference  
-- No full benchmark  
-
-### **PhD (Phase 1–5) includes:**
-- All YOLO models  
-- All SAM models  
-- Hybrid prompts  
-- Full 180+ configurations  
-- Dual-UAV systems  
-- Real-time onboard mapping  
-- SLAM + segmentation fusion  
+| Phase | Scope | Status |
+|---|---|---|
+| 0 — Master Thesis | Minimal controlled YOLO→SAM evaluation, AerialFuseCV, thesis | ✅ Complete (Jul 2026, 10/10) |
+| 1 — PhD Years 1–2 | Publication sprint P0–P4, P2/P4 experiment blocks | 🟢 **Active** |
+| 2 — PhD Years 2–5 | Edge Engine → dual-UAV cooperative perception → real-time mapping → v3.0 demonstrator | 🔒 Held until Phase 1 on track |
 
 ---
 
-# 🏁 **Outcome**
-
-This repository forms the backbone of:
-
-- A rigorous Master’s Thesis  
-- The future ArgusVision PhD system  
-- A dual-UAV real-time geospatial intelligence platform  
-
-You are currently in **Master Thesis Phase — MSFP Phase 2**:  
-**Implementing the SAM-only benchmark.**
-
----
-
-*Updated: Nov 21, 2025 — Maintained by ATHENA_STRATEGIST*  
-
+*Updated: 28 Jul 2026 — Maintained by ATHENA (v2.0)*

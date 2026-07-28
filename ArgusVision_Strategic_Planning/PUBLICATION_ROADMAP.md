@@ -4,6 +4,8 @@
 **Program:** PhD in Photogrammetry, NTUA | **Supervisor:** Prof. Charalampos Ioannidis
 **Roadmap version:** 2.0, July 2026 | **Replaces:** draft of July 2026 (four journal papers)
 
+> **Status: LIVING DOCUMENT.** Revised only through the Roadmap Revision Protocol in `Athena_Protocols/ATHENA_RISE.md` (triggers: supervisor instruction · new finding · milestone outcome · external event). Minor version bump for date/venue/scope changes, major bump for papers added/cancelled/merged. Every revision is recorded with reasoning in the changelog at the bottom of this file and mirrored to `ATHENA_STATE.md`.
+
 ---
 
 ## Strategy Change from v1
@@ -205,3 +207,13 @@ Late 2027  P2 expected acceptance after revisions (= papers #3, regulation met)
 - GPU: RTX 3090 Ti
 
 *Last updated: July 2026. Living document, update after each submission and major experimental decision.*
+
+---
+
+## Changelog
+
+| Version | Date | Trigger | Change & reasoning |
+|---|---|---|---|
+| v1 (draft) | Jul 2026 | — | Four journal papers, opening with VBB-vs-OBB letter at GRSL. |
+| v2.0 | Jul 2026 | Strategy review | Letter cancelled — COCO-VBB vs DOTA-OBB confounds representation with training domain; folded into P2 with VBB-on-DOTA-HBB ablation. Scientific Data dropped (4–8 mo reviews); ISPRS Open Journal primary for P1. P3 conference paper added (insurance, counts toward NTUA rule). RT-DETR-seg dropped (effort/value). No CVPR/ICCV gamble for P4. |
+| v2.0 (annot.) | 2026-07-28 | Environment restructure | Living-document header + this changelog added; content unchanged. Open item recorded in `ATHENA_STATE.md`: P2 exact scope (trim vs. as-written vs. +DIOR eval) deferred until supervisor input or P2 findings. |
