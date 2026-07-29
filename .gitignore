@@ -10,15 +10,15 @@
 ########################################
 # Datasets / heavy raw data
 ########################################
-data/
-datasets/
+/data/
+/datasets/
 AerialFuseCV/
 raw_data/
 ContextOnProject/
 
 # Keep placeholder files to preserve folder structure
-!data/.gitkeep
-!datasets/.gitkeep
+!/data/.gitkeep
+!/datasets/.gitkeep
 !AerialFuseCV/.gitkeep
 !raw_data/.gitkeep
 !**/.gitkeep
