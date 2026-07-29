@@ -3,6 +3,8 @@
 **Status: PLANNED, not started.** Full review done 2026-07-29 (ATHENA, REVIEWER pass over ~10.5k lines).
 **Deadline: complete before P2 experiments begin (Sep 2026).** P0 (Zenodo) is independent — touches `dataset/` scripts only — and may proceed in parallel.
 
+**Roadmap v2.1 sync (2026-07-29):** P2 scope finalized — pipeline vs **Mask R-CNN + YOLOv11-seg** supervised baselines (VBB-on-DOTA ablation parked; Mask2Former out). Consequences here: the `models/base.py` protocols must cover supervised instance segmenters, not just the detect→segment pipeline — both baselines' masks flow through the same `evaluation/` stack (that is F3's point, now load-bearing for P2's headline table). No VBB-training driver configs needed. Deadline unchanged.
+
 **Goals (user-stated, 2026-07-29):** modular — models will be added, but evaluation methods must always be the same; evaluation and operational modes for AV; clean and compartmentalized (data, results per experiment).
 
 ---
@@ -48,7 +50,7 @@ src/argusvision/                  # installable package: pyproject.toml + pip in
 └── viz/                          #   one module (V2 absorbs V1)
 
 experiments/                      # thin drivers + YAML configs, OUTSIDE the package
-├── configs/                      #   e.g. p2_vbb_on_dota_hbb.yaml
+├── configs/                      #   e.g. p2_confidence_filtering.yaml
 └── run_evaluation.py             #   generic: config in → results/<experiment>/<run_id>/
 
 results/<experiment>/<run_id>/    # every run writes manifest.json:
