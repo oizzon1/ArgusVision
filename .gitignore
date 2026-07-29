@@ -28,13 +28,18 @@
 ########################################
 # Results / logs / experiment outputs
 ########################################
-# Ignore everything in results/
-results/*
+# Ignore everything in results/, but keep directories traversable so the
+# metrics/manifest allowlist below actually works for NEW files (with the old
+# `results/*` form, git never descended into fresh run directories).
+results/**
+!results/**/
 
-# BUT keep final metrics JSON files
+# Keep final metrics JSON files + run provenance
 !results/**/metrics_summary.json
 !results/**/evaluation_metrics.json
 !results/**/*_metrics.json
+!results/**/metrics.json
+!results/**/manifest.json
 
 # Ignore huge restore points specifically
 results/**/restore_points/
