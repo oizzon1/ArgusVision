@@ -8,19 +8,19 @@ This package provides a dual-mode pipeline:
 Core Components:
 - ArgusVisionCore: Main pipeline logic
 - ArgusVisionInference: Inference mode wrapper
-- ArgusVisionEvaluation: Evaluation mode wrapper
+
 """
 
 from .ArgusVisionCore import ArgusVisionCore
 from .ArgusVisionInference import ArgusVisionInference
-from .ArgusVisionEvaluation import ArgusVisionEvaluation
+# V1 evaluator deleted at restructure Phase 3 (superseded by argusvision.evaluation)
 from .config.class_prompt_config import CLASS_PROMPT_CONFIG, CLASS_NAMES, get_prompt_type
 
 __version__ = '1.0.0'
 __all__ = [
     'ArgusVisionCore',
     'ArgusVisionInference',
-    'ArgusVisionEvaluation',
+
     'CLASS_PROMPT_CONFIG',
     'CLASS_NAMES',
     'get_prompt_type'

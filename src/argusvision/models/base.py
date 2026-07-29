@@ -84,9 +84,11 @@ class Detector(Protocol):
 
 @runtime_checkable
 class Segmenter(Protocol):
-    """Adapter protocol: image + box prompts in, standardized masks out.
+    """Adapter protocol: image + box prompts in, one binary mask per prompt,
+    in prompt order. The segmenter knows nothing about classes or scores —
+    the pipeline attaches those from the detection that produced each prompt.
     Prompt design beyond boxes lives in pipeline/prompts.py, not here."""
 
     def predict_masks(
         self, image_rgb: np.ndarray, box_prompts_xyxy: np.ndarray
-    ) -> List[InstanceMask]: ...
+    ) -> List[np.ndarray]: ...
