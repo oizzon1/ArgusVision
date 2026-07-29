@@ -1,5 +1,5 @@
 # 🦉 ATHENA_STATE — Program Ledger
-**Last updated: 2026-07-29 (by ATHENA, NTUA dev PC — environment audit session)**
+**Last updated: 2026-07-29 (by ATHENA, NTUA dev PC — roadmap v2.1: supervisor-finalized paper plan)**
 
 > The single cross-environment source of truth. Any AI instance, any machine, any vendor: what is written here is what has happened. Update after every milestone; date every update. Claims about results must trace to `results/` or the thesis.
 
@@ -57,6 +57,11 @@
 | **Single primary machine, not two** | The "Local PC / NTUA PC" split in RISE v2.0 never existed. One NTUA dev PC holds GPU + all data; home PC is secondary and has no CUDA. OPERATOR is permitted here | 2026-07-29 |
 | **Env canonical name `AV_env`** (was `thesis_env`) | Phase-0 name outlived Phase 0. Renamed by clone→verify→remove, not rebuilt — rebuilding from the spec would have destroyed a working CUDA install | 2026-07-29 |
 | **Env spec corrected to match reality; lock file added** | `ArgusVision_environment.yml` specified conda `pytorch-cuda=12.1` while the real env had pip `torch==2.5.1+cu124`, and omitted `scipy` (which the code imports). The file could not have rebuilt the env that produced the thesis results. Config was corrected to the env, not the reverse | 2026-07-29 |
+| **P2 scope finalized (roadmap v2.1): pipeline + Mask R-CNN + YOLOv11-seg baselines; VBB-on-DOTA-HBB ablation OUT** | Supervisor instruction. P2 becomes a clean training-free-vs-supervised story (~2–3 wk new experiments). Constraint: with the ablation gone, the confound is unresolved — P2 cites the 0.34% VBB result only as motivation, never claims it is a representation effect | 2026-07-29 |
+| **Mask2Former dropped from P2** | Supervisor named exactly two supervised baselines; was already "optional, if schedule allows" | 2026-07-29 |
+| **P3 conference paper kept as written** | User confirmed after clarification: condensed P2 findings, no new content; insurance toward NTUA 3-paper rule + visibility | 2026-07-29 |
+| **P4 reframed: detector × segmenter combination benchmark** | Supervisor instruction — "many model combinations (detector and segmenter)". SAM-variant blocks subsumed as the segmenter axis; detector-axis block design due before Mar 2027 | 2026-07-29 |
+| **Single-scope ideas parked, not scheduled** | SAM batch processing, OBB prompt support, VBB vs OBB (inherits the ablation). Activation = Revision Protocol event with major version bump | 2026-07-29 |
 
 ---
 
@@ -89,7 +94,7 @@ All assets are local to this machine — none are on a separate server.
 
 ## ❓ OPEN (inherited by every future session until formally closed)
 
-1. **P2 exact scope** — aim clean at ISPRS Journal; decision deferred. Options on the table: (a) roadmap scope as written; (b) trim (drop Mask2Former, tighten to core ablation + 2 baselines); (c) pull one cheap DIOR generalization eval forward from P4. STRATEGIST's recorded concern: P2 as written risks a forced split at ISPRS review; no cross-dataset test may draw reviewer fire. Close via Revision Protocol when triggered (likely supervisor input or P2 experiment findings).
+1. ~~**P2 exact scope**~~ — **CLOSED 2026-07-29** via roadmap v2.1 (trigger: supervisor instruction). Resolution ≈ option (b), trimmed further than anticipated: Mask2Former out **and** the VBB-on-DOTA-HBB ablation out (→ parked VBB-vs-OBB paper). P2 = pipeline + 2 supervised baselines + confidence filtering + PR curves. STRATEGIST's cross-dataset concern (no generalization test may draw reviewer fire) remains live but is accepted risk under the supervisor's plan.
 2. **P3 venue** — EarthVision @ CVPR 2027 vs IGARSS 2027; decide when calls open (~Nov 2026 / Jan 2027).
 3. **DIOR / NWPU VHR-10 setup** — needed for P4 (and for P2 option c); not yet downloaded/prepared.
 4. ~~**NTUA PC asset paths**~~ — **CLOSED 2026-07-29.** All assets were already on this machine; recorded in § ENVIRONMENT above. The item was written on the false premise of a two-machine split.
@@ -104,3 +109,4 @@ All assets are local to this machine — none are on a separate server.
 | 2026-07-28 | Local PC, ATHENA v2.0 restructure | Ledger created. Phase 0 results recorded from thesis full read. Roadmap v2.0 adopted as canonical. Environment architecture decided. |
 | 2026-07-29 | NTUA dev PC, codebase review | Deep REVIEWER pass over `src/` (~10.5k lines). Restructure approved in principle; plan recorded in `TODO_RESTRUCTURE.md` (installable package, single evaluation stack, model adapters via protocol, run manifests, runtime/ for operational mode). Found: 4× evaluation duplication with matcher disagreement, `map`-is-F1 naming, confidence-ordering bug in greedy matcher. Execution deferred. |
 | 2026-07-29 | NTUA dev PC, environment audit | User-led audit found the repo unready. Resolved: CRLF phantom diff (69 files / 15,962 lines) killed via `.gitattributes`; `thesis_env` → `AV_env` rename; env spec corrected (wrong PyTorch install path, missing scipy) + lock file added; doc rot fixed (stale `d:\Work\DSML` root, wrong yml filename, three-way env-name disagreement). RISE → v2.1: machine table corrected, Windows-conda-via-interop execution model documented. Ledger stale entries fixed; OPEN 4 closed, OPEN 5 (Detectron2-on-Windows) opened. |
+| 2026-07-29 | NTUA dev PC, roadmap revision | Roadmap → v2.1, trigger: supervisor meeting finalized paper plan. P2 trimmed (2 baselines; ablation → parked VBB-vs-OBB paper; Mask2Former out; experiments Dec → Oct 2026). P3 kept (user-confirmed). P4 reframed to detector × segmenter benchmark. Parked-papers section added (VBB vs OBB, SAM batch, OBB prompts). OPEN 1 closed. Six DECIDED rows added. |
