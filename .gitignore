@@ -10,11 +10,13 @@
 ########################################
 # Datasets / heavy raw data
 ########################################
-data/
-datasets/
-AerialFuseCV/
-raw_data/
-ContextOnProject/
+# Anchored to repo root — unanchored patterns here once swallowed source dirs
+# (src/datasets/ was never tracked; src/argusvision/data/ nearly suffered the same)
+/data/
+/datasets/
+/AerialFuseCV/
+/raw_data/
+/ContextOnProject/
 
 # Keep placeholder files to preserve folder structure
 !data/.gitkeep
@@ -105,6 +107,7 @@ dataset/DOTA_v1_YOLO_vertical_bboxes_dataset/
 # Python / build artifacts
 ########################################
 __pycache__/
+*.egg-info/
 *.pyc
 *.pyo
 *.pyd

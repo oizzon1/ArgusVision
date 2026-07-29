@@ -64,8 +64,11 @@ tools/dataset_construction/       # P0-bound scripts, separated from 55 GB data 
 
 ## Migration phases (do in order)
 
-- [ ] **Phase 0 — Safety (5 min):** `git tag thesis-code-final` on current `dev` HEAD. Thesis-producing code stays reachable forever.
-- [ ] **Phase 1 — Foundation (~1 day):** package skeleton, `pyproject.toml`, `pip install -e .` into `AV_env`; `data/constants.py` — collapse the 6×/4× duplication to one definition.
+- [x] **Phase 0 — Safety: DONE 2026-07-29.** Tag `thesis-code-final` pushed. Migration runs on branch **`AV_dev`** (off `dev`), merged back only after Phase 4 validation; unrelated work keeps landing on `dev`.
+- [x] **Phase 1 — Foundation: DONE 2026-07-29.** `pyproject.toml` + `src/argusvision/` skeleton (data/models/pipeline/evaluation/runtime/viz), editable-installed into `AV_env`, imports verified from non-repo cwd (no `sys.path` hacks). `data/constants.py` holds the single copies (class names, iSAID colors, COCO→DOTA, GSD loader); legacy consumers switch over as they are ported. `tests/` started (7 passing); pytest 8.4.2 added to env + spec + lock.
+  **Findings during Phase 1:**
+  - **Case-insensitive FS collision:** Windows FS treats `src/argusvision` ≡ `src/ArgusVision`, so the legacy dir was renamed to `src/_legacy_ArgusVision` (dies at Phase 3; old imports still work on `dev` and at the tag).
+  - **F7 (new): legacy GSD loading was a silent no-op.** All 4 call sites hardcode `dataset/dota_gsd_mapping.json`, but the file lives at `dataset/DOTA_v1/dota_gsd_mapping.json`; the silent `{}` fallback hid it. Any thesis-era output that nominally used GSD ran without it — check at Phase 4 whether anything downstream actually consumed `gsd_mapping`. Canonical path fixed in `constants.py`; the new loader is still soft-fail, but the test suite pins existence.
 - [ ] **Phase 2 — Evaluation stack (~2–3 days). Do first among the code, freeze before any P2 number:** one Hungarian matcher (+ unit tests, incl. the confidence-ordering case from F2); metrics with honest names (`macro_f1`, not `map`); real PR curves / AP at IoU 0.1/0.3/0.5 (already a P2 deliverable per roadmap); run-manifest writer.
 - [ ] **Phase 3 — Adapters & pipeline (~2 days):** slim `yolo.py` to predict-only; port `sam.py`; registry; port `pipeline/` + `runtime/`; absorb viz V1 into V2; delete V1 evaluator.
 - [ ] **Phase 4 — Drivers & validation (~1–2 days):** config+driver experiment layer; **validation run:** re-evaluate YOLOv11x-OBB and the integrated pipeline under the new evaluator, diff against existing `results/` — the greedy→Hungarian delta *will* exist; document it deliberately now rather than let a reviewer find it.
@@ -83,9 +86,9 @@ tools/dataset_construction/       # P0-bound scripts, separated from 55 GB data 
 
 ## Open questions for the next session
 
-1. Naming: package `argusvision` lowercase (PEP 8) vs keeping `ArgusVision` dir name — recommend lowercase, decide at Phase 1.
+1. ~~Naming~~ — **RESOLVED at Phase 1:** lowercase `argusvision`; not merely style — the case-insensitive Windows FS cannot hold both names, so legacy moved to `_legacy_ArgusVision`.
 2. Whether `evaluate_ArgusVision_diagnostic.py` has anything worth porting or is thesis-era scaffolding to drop (leans drop — re-check at Phase 3).
-3. Unit-test framework: plain `pytest` recommended; not yet in `AV_env` — add to spec + lock at Phase 1.
+3. ~~Unit-test framework~~ — **RESOLVED at Phase 1:** pytest 8.4.2 installed; spec + lock updated (closure now 203 packages).
 
 ---
 

@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "argusvision"
+version = "0.1.0"
+description = "ArgusVision — aerial detection-to-segmentation research package (NTUA PhD)"
+requires-python = ">=3.9"
+# Runtime dependencies are intentionally NOT declared here: the environment is
+# managed as a whole by ArgusVision_environment.yml (spec) and
+# ArgusVision_environment.lock.txt (exact closure) in the AV_env conda env.
+# Declaring pins here too would create a third, competing source of truth.
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["argusvision*"]
