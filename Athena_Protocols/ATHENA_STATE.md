@@ -1,5 +1,5 @@
 # 🦉 ATHENA_STATE — Program Ledger
-**Last updated: 2026-07-29 (by ATHENA, NTUA dev PC — roadmap v2.1: supervisor-finalized paper plan)**
+**Last updated: 2026-07-29 (by ATHENA, NTUA dev PC — restructure complete & merged; roadmap v2.2; P1 initialized)**
 
 > The single cross-environment source of truth. Any AI instance, any machine, any vendor: what is written here is what has happened. Update after every milestone; date every update. Claims about results must trace to `results/` or the thesis.
 
@@ -33,8 +33,9 @@
 
 ### Infrastructure
 - Repo `oizzon1/ArgusVision` (private): `src/` pipeline + experiments, `dataset/` construction scripts, `results/` metrics-only commit discipline in `.gitignore`, branches `dev` + `ArgusVision_main`
-- Publication Roadmap v2.0 committed; ATHENA protocol suite live (v2.1 as of 2026-07-29)
-- WTF-P installed (NTUA dev PC, Claude Code)
+- Publication Roadmap v2.2 committed; ATHENA protocol suite live (RISE v2.1 + WORK_LOG closeout protocol, 2026-07-29)
+- **Codebase restructure COMPLETE (2026-07-29, merged to `dev`):** installable `argusvision` package (data/models/pipeline/evaluation/runtime/viz), frozen evaluation stack (Hungarian + ranked-AP, honest metric names), run-manifest provenance, generic YAML experiment driver, 62 tests. **Validation vs thesis baselines: port faithful ±0.05 pp; thesis YOLOv11x-OBB macro-F1 0.6240 reproduced exactly; AABB→polygon ≤0.3 pp** — full report `documentation/RESTRUCTURE_VALIDATION.md`. Thesis code preserved at tag `thesis-code-final`. Findings F7–F9 documented in `TODO_RESTRUCTURE.md`.
+- WTF-P v0.5.0 installed **in-repo** (`.claude/`, versioned — both machines get it via pull); venue guides archived + distilled in `papers/shared/venues/`
 - Line-ending policy committed (`.gitattributes`, `* text=auto eol=lf`) — required because Windows editors and WSL agents share one worktree
 
 ---
@@ -70,7 +71,8 @@
 
 ## 🔄 IN PROGRESS
 
-- **Codebase restructure — STARTED 2026-07-29, on branch `AV_dev`.** Phases 0–1 of 4 complete: `thesis-code-final` tag pushed; `argusvision` package skeleton editable-installed into `AV_env`; domain constants consolidated (`data/constants.py`); `tests/` started (pytest 8.4.2 added to env+spec+lock on the branch). Plan + phase status + findings live in `TODO_RESTRUCTURE.md` **on `AV_dev`** (that file is branch-owned during migration; this ledger stays on `dev`). New findings F7 (legacy GSD loading was a silent no-op — wrong hardcoded path) and F8 (unanchored `.gitignore` had excluded `src/datasets/` from git entirely, even from the tag; fixed on branch). Next: Phase 2, the frozen evaluation stack. Merge to `dev` only after Phase 4 validation. Deadline: before P2 experiments (Sep 2026).
+- **Restructure close-out residuals** (restructure itself COMPLETE — see ACHIEVED): (a) legacy `src/` deletion sweep per the inventory in `TODO_RESTRUCTURE.md` — awaiting user go; keep `evaluate_sam.py` (GT-prompt benchmark, not yet superseded; port as driver kind at P4 prep) and `evaluate_yolo_vbb.py` (driver lacks class_map passthrough) until replaced; (b) `AV_dev` branch deletion after (a); (c) move `dataset/` construction scripts → `tools/dataset_construction/` during P0 packaging.
+- **P1 writing started ahead of schedule** — venue now Data in Brief (roadmap v2.2); `.planning/` complete + 5 section drafts in `papers/p1_aerialfusecv_descriptor/`; blocked on P0 for Data Description/DOI + methods-vs-frozen-scripts.
 - Next up per roadmap: **P0 Zenodo release** (Aug 2026) — construction scripts in `dataset/` are the raw material; packaging, checksums, LICENSE, README remain
 
 ---
@@ -115,3 +117,4 @@ All assets are local to this machine — none are on a separate server.
 | 2026-07-29 | NTUA dev PC, roadmap revision | Roadmap → v2.1, trigger: supervisor meeting finalized paper plan. P2 trimmed (2 baselines; ablation → parked VBB-vs-OBB paper; Mask2Former out; experiments Dec → Oct 2026). P3 kept (user-confirmed). P4 reframed to detector × segmenter benchmark. Parked-papers section added (VBB vs OBB, SAM batch, OBB prompts). OPEN 1 closed. Six DECIDED rows added. |
 | 2026-07-29 | NTUA dev PC, restructure start | Restructure begun on new branch `AV_dev` (user-named; merge to `dev` gated on Phase 4 validation). Phases 0–1 done: tag `thesis-code-final`; `src/ArgusVision` → `src/_legacy_ArgusVision` (case-insensitive FS collision with new package name); `argusvision` package + consolidated constants + first 7 tests. Findings: F7 GSD silent no-op, F8 gitignore ate `src/datasets/`. Env: pytest added (spec+lock updated on `AV_dev`). |
 | 2026-07-29 | NTUA dev PC, closeout protocol | Added `Athena_Protocols/WORK_LOG.md` as the mandatory session closeout log. RISE startup now reads it, and the end-session ritual now requires updating it every time, with `ATHENA_STATE.md` reserved for milestones and durable decisions. |
+| 2026-07-29 | NTUA dev PC, restructure complete + P1 start | Phases 2–4 executed and validated same-day; `AV_dev` merged to `dev` (`59f583d`). Validation: port ±0.05 pp; thesis YOLO macro-F1 0.6240 exact; AABB collapse ≤0.3 pp (`documentation/RESTRUCTURE_VALIDATION.md`). Roadmap → v2.2 (P1 → Data in Brief on verified-guide finding; P3 deadlines corrected). WTF-P installed in-repo; venue guides archived; P1 `.planning/` + 5 section drafts written (template v19 rules). Residuals: legacy deletion sweep (user-gated), `AV_dev` branch removal, scripts→`tools/` at P0. |
