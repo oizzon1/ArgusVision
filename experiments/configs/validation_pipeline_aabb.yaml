@@ -1,0 +1,18 @@
+# Restructure Phase 4 validation: integrated pipeline, LEGACY-comparable mode.
+# Legacy baseline: results/ArgusVision_v2_evaluation/evaluation_metrics_v2.json
+#   (Hungarian@0.1 on AABB IoU, 456 images: recall .626, precision .877,
+#    f1 .731, seg_iou_tp .662, seg_iou_gt_anchored .415).
+# iou_mode aabb reproduces the legacy V2 OBB->AABB collapse deliberately.
+experiment: restructure_validation_pipeline_aabb
+kind: pipeline
+dataset:
+  type: aerialfusecv
+  path: dataset/AerialFuseCV_Refined/val
+detector:
+  name: yolo11x-obb
+  conf_threshold: 0.25
+segmenter:
+  name: sam-vit-b
+iou_thresholds: [0.1, 0.3, 0.5]
+iou_mode: aabb
+seg_match_threshold: 0.1

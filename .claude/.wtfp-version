@@ -1,0 +1,587 @@
+{
+  "version": "0.5.0",
+  "installedAt": "2026-07-29T17:59:34.283Z",
+  "files": 145,
+  "manifest": [
+    {
+      "path": "./write-the-f-paper/references/agent-model-matrix.md",
+      "checksum": "-351334cf"
+    },
+    {
+      "path": "./write-the-f-paper/references/checkpoints.md",
+      "checksum": "-5cba0374"
+    },
+    {
+      "path": "./write-the-f-paper/references/context-fidelity.md",
+      "checksum": "4aae31e1"
+    },
+    {
+      "path": "./write-the-f-paper/references/continuation-format.md",
+      "checksum": "6f225a8a"
+    },
+    {
+      "path": "./write-the-f-paper/references/deviation-rules.md",
+      "checksum": "-2a5bbc60"
+    },
+    {
+      "path": "./write-the-f-paper/references/git-integration.md",
+      "checksum": "26778c17"
+    },
+    {
+      "path": "./write-the-f-paper/references/github-contrib.md",
+      "checksum": "-4a0bdbe4"
+    },
+    {
+      "path": "./write-the-f-paper/references/imrad-structure.md",
+      "checksum": "2b5057f3"
+    },
+    {
+      "path": "./write-the-f-paper/references/length-estimation.md",
+      "checksum": "3203cbcd"
+    },
+    {
+      "path": "./write-the-f-paper/references/orchestrator-pattern.md",
+      "checksum": "-9951e44"
+    },
+    {
+      "path": "./write-the-f-paper/references/plan-format.md",
+      "checksum": "-dce250a"
+    },
+    {
+      "path": "./write-the-f-paper/references/planning-config.md",
+      "checksum": "-19af1cea"
+    },
+    {
+      "path": "./write-the-f-paper/references/principles.md",
+      "checksum": "229cda3d"
+    },
+    {
+      "path": "./write-the-f-paper/references/questioning.md",
+      "checksum": "343b892c"
+    },
+    {
+      "path": "./write-the-f-paper/references/research-pitfalls.md",
+      "checksum": "-281d9184"
+    },
+    {
+      "path": "./write-the-f-paper/references/ui-brand.md",
+      "checksum": "-22b99832"
+    },
+    {
+      "path": "./write-the-f-paper/templates/UAT.md",
+      "checksum": "-2a96063e"
+    },
+    {
+      "path": "./write-the-f-paper/templates/base-prefs.yaml",
+      "checksum": "27fb7cce"
+    },
+    {
+      "path": "./write-the-f-paper/templates/config.json",
+      "checksum": "506e9f7b"
+    },
+    {
+      "path": "./write-the-f-paper/templates/context.md",
+      "checksum": "-4ff8f6f2"
+    },
+    {
+      "path": "./write-the-f-paper/templates/continue-here.md",
+      "checksum": "6146f94b"
+    },
+    {
+      "path": "./write-the-f-paper/templates/data-inventory.md",
+      "checksum": "-f59fff1"
+    },
+    {
+      "path": "./write-the-f-paper/templates/discovery.md",
+      "checksum": "-1e3558f0"
+    },
+    {
+      "path": "./write-the-f-paper/templates/issues.md",
+      "checksum": "-8923efb"
+    },
+    {
+      "path": "./write-the-f-paper/templates/manuscript.md",
+      "checksum": "-4e927c2"
+    },
+    {
+      "path": "./write-the-f-paper/templates/narrative-arc.md",
+      "checksum": "76bda56d"
+    },
+    {
+      "path": "./write-the-f-paper/templates/outline.md",
+      "checksum": "-138de082"
+    },
+    {
+      "path": "./write-the-f-paper/templates/phase-prompt.md",
+      "checksum": "-59193d7b"
+    },
+    {
+      "path": "./write-the-f-paper/templates/posters/basic.md",
+      "checksum": "-7663ae1f"
+    },
+    {
+      "path": "./write-the-f-paper/templates/prior-drafts.md",
+      "checksum": "-69df76af"
+    },
+    {
+      "path": "./write-the-f-paper/templates/project-context/argument-structure.md",
+      "checksum": "-67b7f418"
+    },
+    {
+      "path": "./write-the-f-paper/templates/project-context/bibliography.md",
+      "checksum": "-29ad6038"
+    },
+    {
+      "path": "./write-the-f-paper/templates/project-context/gaps.md",
+      "checksum": "7198e0f1"
+    },
+    {
+      "path": "./write-the-f-paper/templates/project-context/imrad.md",
+      "checksum": "-79a1967d"
+    },
+    {
+      "path": "./write-the-f-paper/templates/project-context/peer-review.md",
+      "checksum": "333cd1f6"
+    },
+    {
+      "path": "./write-the-f-paper/templates/project-context/style-guide.md",
+      "checksum": "42aae974"
+    },
+    {
+      "path": "./write-the-f-paper/templates/project-context/tools.md",
+      "checksum": "-621d8a8c"
+    },
+    {
+      "path": "./write-the-f-paper/templates/project.md",
+      "checksum": "5e0cf363"
+    },
+    {
+      "path": "./write-the-f-paper/templates/research.md",
+      "checksum": "204cb6aa"
+    },
+    {
+      "path": "./write-the-f-paper/templates/review-comments.md",
+      "checksum": "c81f7a0"
+    },
+    {
+      "path": "./write-the-f-paper/templates/revision-issues.md",
+      "checksum": "745533c0"
+    },
+    {
+      "path": "./write-the-f-paper/templates/roadmap.md",
+      "checksum": "-3f0b97ed"
+    },
+    {
+      "path": "./write-the-f-paper/templates/section-archive.md",
+      "checksum": "-3f5a405f"
+    },
+    {
+      "path": "./write-the-f-paper/templates/section-context.md",
+      "checksum": "9c3e4b"
+    },
+    {
+      "path": "./write-the-f-paper/templates/section.md",
+      "checksum": "-6c61e0b7"
+    },
+    {
+      "path": "./write-the-f-paper/templates/slides/basic.md",
+      "checksum": "21e12428"
+    },
+    {
+      "path": "./write-the-f-paper/templates/state.md",
+      "checksum": "-30d99aa3"
+    },
+    {
+      "path": "./write-the-f-paper/templates/summary.md",
+      "checksum": "-293cac39"
+    },
+    {
+      "path": "./write-the-f-paper/venues/acm-cs.yaml",
+      "checksum": "-51cf6a74"
+    },
+    {
+      "path": "./write-the-f-paper/venues/arxiv-ml.yaml",
+      "checksum": "-1501c"
+    },
+    {
+      "path": "./write-the-f-paper/venues/ieee-cs.yaml",
+      "checksum": "6bc861ef"
+    },
+    {
+      "path": "./write-the-f-paper/venues/nature.yaml",
+      "checksum": "67f08bf7"
+    },
+    {
+      "path": "./write-the-f-paper/venues/thesis-chapter.yaml",
+      "checksum": "34a4a57e"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/create-outline.md",
+      "checksum": "62fd637d"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/create-outline.wcn.md",
+      "checksum": "-13f47e41"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/discuss-section.md",
+      "checksum": "6e76db2e"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/discuss-section.wcn.md",
+      "checksum": "-50e3f8a9"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/execute-outline.md",
+      "checksum": "-5e599c40"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/execute-outline.wcn.md",
+      "checksum": "-66179aca"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/execute-section.md",
+      "checksum": "-6478b9be"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/execute-section.wcn.md",
+      "checksum": "adbed23"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/list-assumptions.md",
+      "checksum": "6afbe619"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/list-assumptions.wcn.md",
+      "checksum": "-78926a54"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/lit-review-phase.md",
+      "checksum": "46d94f5"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/lit-review-phase.wcn.md",
+      "checksum": "-4289251a"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/map-project.md",
+      "checksum": "-159353ab"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/map-project.wcn.md",
+      "checksum": "1ba8a433"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/plan-section.md",
+      "checksum": "-3103e91"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/plan-section.wcn.md",
+      "checksum": "-41003f43"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/research-gap.md",
+      "checksum": "-5d76e6ab"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/research-gap.wcn.md",
+      "checksum": "-2dca3dfe"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/resume-paper.md",
+      "checksum": "6966509a"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/resume-paper.wcn.md",
+      "checksum": "-1ca563c5"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/review-section.md",
+      "checksum": "-2fc37acb"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/review-section.wcn.md",
+      "checksum": "-7ce2a4af"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/submit-draft.md",
+      "checksum": "-24a512aa"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/submit-draft.wcn.md",
+      "checksum": "-135a87b1"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/transition.md",
+      "checksum": "5b6377ec"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/transition.wcn.md",
+      "checksum": "-8e7f31f"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/verify-work.md",
+      "checksum": "6bf51b90"
+    },
+    {
+      "path": "./write-the-f-paper/workflows/verify-work.wcn.md",
+      "checksum": "-17209ac8"
+    },
+    {
+      "path": "./commands/wtfp/add-todo.md",
+      "checksum": "3e9cc7e0"
+    },
+    {
+      "path": "./commands/wtfp/analyze-bib.md",
+      "checksum": "-43f997a"
+    },
+    {
+      "path": "./commands/wtfp/audit-milestone.md",
+      "checksum": "58d4e6e7"
+    },
+    {
+      "path": "./commands/wtfp/check-refs.md",
+      "checksum": "1f901eac"
+    },
+    {
+      "path": "./commands/wtfp/check-todos.md",
+      "checksum": "-64b7180b"
+    },
+    {
+      "path": "./commands/wtfp/checkpoint.md",
+      "checksum": "9487035"
+    },
+    {
+      "path": "./commands/wtfp/contribute.md",
+      "checksum": "-2285e9be"
+    },
+    {
+      "path": "./commands/wtfp/create-outline.md",
+      "checksum": "641ae59f"
+    },
+    {
+      "path": "./commands/wtfp/create-poster.md",
+      "checksum": "-40cae39b"
+    },
+    {
+      "path": "./commands/wtfp/create-slides.md",
+      "checksum": "70681f08"
+    },
+    {
+      "path": "./commands/wtfp/discuss-section.md",
+      "checksum": "-b7e4a82"
+    },
+    {
+      "path": "./commands/wtfp/execute-outline.md",
+      "checksum": "678ebd81"
+    },
+    {
+      "path": "./commands/wtfp/export-latex.md",
+      "checksum": "-5e63d17a"
+    },
+    {
+      "path": "./commands/wtfp/help.md",
+      "checksum": "52b743b3"
+    },
+    {
+      "path": "./commands/wtfp/insert-section.md",
+      "checksum": "27fc4bc6"
+    },
+    {
+      "path": "./commands/wtfp/list-assumptions.md",
+      "checksum": "-585ba72"
+    },
+    {
+      "path": "./commands/wtfp/map-project.md",
+      "checksum": "2fd6127f"
+    },
+    {
+      "path": "./commands/wtfp/new-paper.md",
+      "checksum": "197d4dfb"
+    },
+    {
+      "path": "./commands/wtfp/pause-writing.md",
+      "checksum": "-3902101a"
+    },
+    {
+      "path": "./commands/wtfp/plan-milestone-gaps.md",
+      "checksum": "e5a17c7"
+    },
+    {
+      "path": "./commands/wtfp/plan-revision.md",
+      "checksum": "-36b0f8f7"
+    },
+    {
+      "path": "./commands/wtfp/plan-section.md",
+      "checksum": "f871727"
+    },
+    {
+      "path": "./commands/wtfp/polish-prose.md",
+      "checksum": "-f1e15eb"
+    },
+    {
+      "path": "./commands/wtfp/progress.md",
+      "checksum": "4d2448c8"
+    },
+    {
+      "path": "./commands/wtfp/quick.md",
+      "checksum": "1684e81"
+    },
+    {
+      "path": "./commands/wtfp/remove-section.md",
+      "checksum": "-663ef881"
+    },
+    {
+      "path": "./commands/wtfp/report-bug.md",
+      "checksum": "1e7315bb"
+    },
+    {
+      "path": "./commands/wtfp/request-feature.md",
+      "checksum": "32d647be"
+    },
+    {
+      "path": "./commands/wtfp/research-gap.md",
+      "checksum": "58fd1805"
+    },
+    {
+      "path": "./commands/wtfp/resume-writing.md",
+      "checksum": "3b377706"
+    },
+    {
+      "path": "./commands/wtfp/review-section.md",
+      "checksum": "-4aaee9c2"
+    },
+    {
+      "path": "./commands/wtfp/settings.md",
+      "checksum": "-348127cf"
+    },
+    {
+      "path": "./commands/wtfp/submit-milestone.md",
+      "checksum": "73320322"
+    },
+    {
+      "path": "./commands/wtfp/update.md",
+      "checksum": "-31bd5c23"
+    },
+    {
+      "path": "./commands/wtfp/verify-work.md",
+      "checksum": "-5789f75e"
+    },
+    {
+      "path": "./commands/wtfp/write-section.md",
+      "checksum": "7779f21d"
+    },
+    {
+      "path": "./skills/wtfp/echarts/SKILL.md",
+      "checksum": "-207f56c9"
+    },
+    {
+      "path": "./skills/wtfp/marp/SKILL.md",
+      "checksum": "-64ac9da4"
+    },
+    {
+      "path": "./agents/wtfp/argument-verifier.md",
+      "checksum": "-64c0dbda"
+    },
+    {
+      "path": "./agents/wtfp/citation-expert.md",
+      "checksum": "-375e18fe"
+    },
+    {
+      "path": "./agents/wtfp/citation-formatter.md",
+      "checksum": "71697182"
+    },
+    {
+      "path": "./agents/wtfp/coherence-checker.md",
+      "checksum": "3358bc2d"
+    },
+    {
+      "path": "./agents/wtfp/outliner.md",
+      "checksum": "616625b2"
+    },
+    {
+      "path": "./agents/wtfp/plan-checker.md",
+      "checksum": "65103084"
+    },
+    {
+      "path": "./agents/wtfp/prose-polisher.md",
+      "checksum": "7928b34c"
+    },
+    {
+      "path": "./agents/wtfp/research-synthesizer.md",
+      "checksum": "-7da18d16"
+    },
+    {
+      "path": "./agents/wtfp/section-planner.md",
+      "checksum": "22edc390"
+    },
+    {
+      "path": "./agents/wtfp/section-reviewer.md",
+      "checksum": "-7327ac41"
+    },
+    {
+      "path": "./agents/wtfp/section-writer.md",
+      "checksum": "-6d8c30dc"
+    },
+    {
+      "path": "./mcp/research-server/package.json",
+      "checksum": "659776ac"
+    },
+    {
+      "path": "./mcp/research-server/src/index.js",
+      "checksum": "-66532481"
+    },
+    {
+      "path": "./bin/analyze-impact.js",
+      "checksum": "40f28fb1"
+    },
+    {
+      "path": "./bin/bib-format.js",
+      "checksum": "-234ab30e"
+    },
+    {
+      "path": "./bin/bib-index.js",
+      "checksum": "836cedc"
+    },
+    {
+      "path": "./bin/checkpoint.js",
+      "checksum": "-7c0448ff"
+    },
+    {
+      "path": "./bin/citation-fetcher.js",
+      "checksum": "5996a3bf"
+    },
+    {
+      "path": "./bin/citation-ranker.js",
+      "checksum": "-614a2cc9"
+    },
+    {
+      "path": "./bin/context-primer.js",
+      "checksum": "-63c499bb"
+    },
+    {
+      "path": "./bin/manifest.js",
+      "checksum": "2a16c3a0"
+    },
+    {
+      "path": "./bin/scholar-lookup.js",
+      "checksum": "-5340bfbf"
+    },
+    {
+      "path": "./bin/semantic-scholar.js",
+      "checksum": "2e475bfa"
+    },
+    {
+      "path": "./bin/utils.js",
+      "checksum": "6a08b91f"
+    },
+    {
+      "path": "./bin/wcn-compiler.js",
+      "checksum": "-6623163"
+    },
+    {
+      "path": "./.claude-plugin/plugin.json",
+      "checksum": "2135a9a6"
+    }
+  ]
+}

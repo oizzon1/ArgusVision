@@ -1,0 +1,15 @@
+# Restructure Phase 4 validation: YOLOv11x-OBB under the new evaluator.
+# Legacy baseline: results/yolo_evaluation/OBB/YOLOv11x-OBB_metrics.json
+#   ("map"=macro-F1 0.6240, greedy arbitrary-order matcher, polygon IoU@0.1,
+#    conf 0.25, 458 images).
+experiment: restructure_validation_yolo11x_obb
+kind: detection
+dataset:
+  type: dota_yolo_obb
+  path: dataset/DOTA_v1_YOLO_oriented_bboxes_dataset
+  split: val
+detector:
+  name: yolo11x-obb
+  conf_threshold: 0.25
+iou_thresholds: [0.1, 0.3, 0.5]
+iou_mode: auto   # polygon IoU, as the legacy YOLO benchmark used

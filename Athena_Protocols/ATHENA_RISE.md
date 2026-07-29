@@ -19,7 +19,8 @@ On activation, in order:
 
 1. Read `Athena_Protocols/ATHENA_RISE.md` (this file)
 2. Read `Athena_Protocols/ATHENA_STATE.md` (the ledger — what is achieved, decided, in progress, open)
-3. Read `ArgusVision_Strategic_Planning/PUBLICATION_ROADMAP.md` (the canonical living plan)
+3. Read `Athena_Protocols/WORK_LOG.md` (recent work hours, issues, findings, and closeout notes)
+4. Read `ArgusVision_Strategic_Planning/PUBLICATION_ROADMAP.md` (the canonical living plan)
 
 Then announce:
 
@@ -121,7 +122,7 @@ This satisfies the run-from-repo-root rule (`cwd` resolves to `D:\Work\AV`). Ver
 
 **Session ritual:**
 - Start: `git pull` → startup protocol → announce
-- End (if anything meaningful happened): update `ATHENA_STATE.md` → commit → push
+- End: update `Athena_Protocols/WORK_LOG.md` always; if anything meaningful happened, also update `ATHENA_STATE.md` → commit → push
 - Branch flow: daily work on `dev`; `ArgusVision_main` receives milestone merges only (submission snapshots, accepted revisions)
 
 **Working rules:**
@@ -141,6 +142,7 @@ This satisfies the run-from-repo-root rule (`cwd` resolves to `D:\Work\AV`). Ver
 |---|---|
 | `Athena_Protocols/ATHENA_RISE.md` | Identity & protocol (this file — changes rarely) |
 | `Athena_Protocols/ATHENA_STATE.md` | Ledger — updated every milestone |
+| `Athena_Protocols/WORK_LOG.md` | Session closeout log — hours, work done, issues, findings, notes |
 | `ArgusVision_Strategic_Planning/PUBLICATION_ROADMAP.md` | Canonical living plan (P0–P4) |
 | `ArgusVision_for_Master_Thesis/` | Phase 0 archive — frozen, read-only |
 | `papers/` | One WTF-P project per paper |

@@ -1,0 +1,57 @@
+{
+    "config": {
+        "dataset": "results\\yolo_evaluation\\VBB",
+        "num_images": 458,
+        "total_gt": 18785,
+        "total_detections": 68,
+        "matched_pairs": 6
+    },
+    "overall": {
+        "bbox_iou": 0.005125053567602816,
+        "bbox_dice": 0.006062474402497558,
+        "std_bbox_iou": 0.05723428112123813,
+        "std_bbox_dice": 0.06658203843463366,
+        "mean_recall": 0.0003677822728944465,
+        "mean_precision": 0.06666666666666667,
+        "mean_f1": 0.0007315288953913679
+    },
+    "per_class": {
+        "ship": {
+            "recall": 0.0,
+            "precision": 0.0,
+            "f1": 0.0,
+            "bbox_iou": 0.0,
+            "bbox_dice": 0.0,
+            "tp": 0,
+            "fp": 3,
+            "fn": 8960
+        },
+        "large-vehicle": {
+            "recall": 0.0,
+            "precision": 0.0,
+            "f1": 0.0,
+            "bbox_iou": 0.0,
+            "bbox_dice": 0.0,
+            "tp": 0,
+            "fp": 35,
+            "fn": 4387
+        },
+        "small-vehicle": {
+            "recall": 0.0011033468186833395,
+            "precision": 0.2,
+            "f1": 0.0021945866861741038,
+            "bbox_iou": 0.6809379400587193,
+            "bbox_dice": 0.7982189457847251,
+            "tp": 6,
+            "fp": 24,
+            "fn": 5432
+        }
+    },
+    "timing": {
+        "avg_inference_ms": 18.338809367350617
+    },
+    "mean_iou": 0.005125053567602816,
+    "mean_dice": 0.006062474402497558,
+    "map": 0.0007315288953913679,
+    "avg_inference_time_ms": 18.338809367350617
+}

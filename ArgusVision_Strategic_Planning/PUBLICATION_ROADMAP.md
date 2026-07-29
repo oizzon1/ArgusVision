@@ -1,8 +1,8 @@
-# Publication Roadmap v2.1
+# Publication Roadmap v2.2
 ### ArgusVision PhD — Panagiotis Fragkos
 **Base:** Master Thesis (Phase 0) — Object Detection and Semantic Segmentation of Aerial and Satellite Imagery with Deep Learning
 **Program:** PhD in Photogrammetry, NTUA | **Supervisor:** Prof. Charalampos Ioannidis
-**Roadmap version:** 2.1, 2026-07-29 (supervisor-finalized paper plan) | **Replaces:** v2.0, July 2026
+**Roadmap version:** 2.2, 2026-07-29 (P1 venue → Data in Brief; P3 deadline reality) | **Replaces:** v2.1, 2026-07-29
 
 > **Status: LIVING DOCUMENT.** Revised only through the Roadmap Revision Protocol in `Athena_Protocols/ATHENA_RISE.md` (triggers: supervisor instruction · new finding · milestone outcome · external event). Minor version bump for date/venue/scope changes, major bump for papers added/cancelled/merged. Every revision is recorded with reasoning in the changelog at the bottom of this file and mirrored to `ATHENA_STATE.md`.
 
@@ -62,8 +62,10 @@ The DOI becomes the citation anchor for P1, P2, P3, and P4 regardless of any rev
 
 | Priority | Journal | IF (2024) | Notes |
 |---|---|---|---|
-| Primary | ISPRS Open Journal of Photogrammetry and Remote Sensing | no IF yet (Scopus indexed) | Community venue, recognized by committee, fast review |
-| Fallback | Data in Brief (Elsevier) | ~1.2 | Fast, near-certain if methodology is sound |
+| Primary | **Data in Brief (Elsevier)** | ~1.2 | Purpose-built templated data articles; fast, near-certain if methodology sound. **v2.2 swap** — verified guides show ISPRS OJPRS has *no data-paper article type* |
+| Fallback | ISPRS Open Journal of Photogrammetry and Remote Sensing | no IF yet (Scopus indexed) | Would require reframing as a regular application Paper (validation carries research weight); ~2–3 days conversion |
+
+Venue guides + distilled notes: `papers/shared/venues/{data-in-brief,isprs-ojprs}/`. DiB hard requirements: mandatory template, deposit DOI live at submission, abstract ≤250 w, Limitations ≤200 w.
 
 ### Extra Work Needed
 
@@ -129,10 +131,12 @@ Removed in v2.1 (supervisor decision, 2026-07-29): **VBB-on-DOTA-HBB ablation** 
 
 ### Venues (deadlines to be verified when calls open)
 
-| Priority | Venue | Deadline (approx.) | Notes |
+| Priority | Venue | Deadline (corrected v2.2) | Notes |
 |---|---|---|---|
-| Primary | EarthVision workshop at CVPR 2027 | ~Nov 2026 | Aerial/satellite CV audience, high visibility |
-| Alternative | IGARSS 2027 | ~Jan 2027 | Large RS community venue |
+| Primary | EarthVision workshop at CVPR 2027 | **~Feb–Mar 2027** (2026 edition closed Mar 2; workshop deadlines trail CVPR's Nov main deadline) | 8 pages excl. refs, CVPR template, double-blind; CVF + IEEE Xplore proceedings |
+| Alternative | IGARSS 2027 | ~Jan 2027 — **now the earlier of the two** | 4 pages excl. refs |
+
+v2.2 correction: the v2.0 "~Nov 2026" assumption for EarthVision was the main-conference deadline pattern, not the workshop's. Consequence: both P3 options land *after* P2 experiments complete (Oct 2026) with full material available; IGARSS decision point comes first. Facts: `papers/shared/venues/earthvision-igarss/NOTES.md`.
 
 ---
 
@@ -235,4 +239,5 @@ Late 2027  P2 expected acceptance after revisions (= papers #3, regulation met)
 | v1 (draft) | Jul 2026 | — | Four journal papers, opening with VBB-vs-OBB letter at GRSL. |
 | v2.0 | Jul 2026 | Strategy review | Letter cancelled — COCO-VBB vs DOTA-OBB confounds representation with training domain; folded into P2 with VBB-on-DOTA-HBB ablation. Scientific Data dropped (4–8 mo reviews); ISPRS Open Journal primary for P1. P3 conference paper added (insurance, counts toward NTUA rule). RT-DETR-seg dropped (effort/value). No CVPR/ICCV gamble for P4. |
 | v2.0 (annot.) | 2026-07-28 | Environment restructure | Living-document header + this changelog added; content unchanged. Open item recorded in `ATHENA_STATE.md`: P2 exact scope (trim vs. as-written vs. +DIOR eval) deferred until supervisor input or P2 findings. |
+| v2.2 | 2026-07-29 | **New finding** — venue guides verified (user-retrieved PDFs, `papers/shared/venues/`) | **P1 primary → Data in Brief** (user decision on the finding): ISPRS OJPRS has no data-paper article type — a descriptor there must be reframed as a regular application Paper; DiB is purpose-built, templated, fast. OJPRS becomes fallback with the reframing cost noted. P1 WTF-P project initialized against the DiB mandatory template (`papers/p1_aerialfusecv_descriptor/.planning/`). **P3 deadlines corrected:** EarthVision @ CVPR deadlines are ~Feb–Mar (not ~Nov); IGARSS (~Jan 2027) is now the earlier option — decision point unchanged (when calls open), ordering flipped. Minor bump: venue/date changes only. |
 | v2.1 | 2026-07-29 | **Supervisor instruction** — paper plan finalized in supervisor meeting | Closes the P2-scope open item, resolution ≈ option (b) trim. **P2:** tightened to pipeline + Mask R-CNN + YOLOv11-seg supervised baselines (+ confidence filtering, PR curves); VBB-on-DOTA-HBB ablation moved out — P2 therefore may not claim the VBB failure is a representation effect, only cite it as motivation with the confound acknowledged; Mask2Former dropped (supervisor named exactly two baselines); new-experiment effort ~5–6 wk → ~2–3 wk, experiments-complete pulled Dec → Oct 2026. **P3:** kept as written (user confirmed) — insurance + visibility, no new content. **P4:** reframed from SAM-variants benchmark to detector × segmenter combination benchmark; detector-axis block design due before Mar 2027. **Parked papers section added:** VBB vs OBB (inherits the ablation), SAM batch processing, OBB prompt support — explicitly unscheduled; activation requires a Revision Protocol event. Minor bump: no paper added/cancelled/merged — P0–P4 all stand. |

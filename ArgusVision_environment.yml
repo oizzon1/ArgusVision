@@ -10,7 +10,7 @@ name: AV_env
 # matched the environment that produced the thesis results and would not reproduce
 # them. It also omitted scipy, which the codebase imports. Corrected 2026-07-29.
 #
-# Exact pins for the full 200-package closure live in ArgusVision_environment.lock.txt.
+# Exact pins for the full 203-package closure live in ArgusVision_environment.lock.txt.
 # This file is the human-readable spec; the lock file is the reproducibility record.
 
 channels:
@@ -48,3 +48,4 @@ dependencies:
       # Development tools
       - jupyterlab==4.4.6
       - ipykernel==6.30.1
+      - pytest==8.4.2

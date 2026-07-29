@@ -1,0 +1,45 @@
+# Data in Brief (Elsevier) — custom venue template
+# Built from the official guide-for-authors (papers/shared/venues/data-in-brief/,
+# retrieved 2026-07-29). DiB submissions REQUIRE the official Word template;
+# this YAML mirrors its mandatory section order for outline/planning purposes.
+name: data-in-brief
+type: data-article
+review: single-anonymized
+notes: >
+  Mandatory template — submissions without it are rejected. Data must be
+  publicly deposited (DOI) before submission. No background, interpretation,
+  or conclusions anywhere: the article describes data.
+sections:
+  - id: title
+    name: Title
+    rules: "Describes the data, not findings"
+  - id: specifications-table
+    name: Specifications Table
+    rules: "Fields: Subject; Specific subject area (<=150 chars); Type of data; Data collection; Data source location; Data accessibility (repository, DOI, URL); Related research article"
+  - id: value-of-the-data
+    name: Value of the Data
+    rules: ">=3 bullets; no background/interpretation/conclusions"
+  - id: background
+    name: Background
+    rules: "Motivation and context for compiling the dataset (confirmed present, template v19 Dec 2024)"
+  - id: data-description
+    name: Data Description
+    rules: "Every file/folder in the deposit described; figures/tables of the data allowed"
+  - id: methods
+    name: Experimental Design, Materials and Methods
+    rules: "Construction pipeline in reproducible detail"
+  - id: limitations
+    name: Limitations
+    rules: "<=200 words"
+  - id: statements
+    name: Ethics Statement / CRediT / Declaration of Competing Interests / Acknowledgments
+    rules: "All mandatory"
+limits:
+  abstract_words: [100, 500]
+  keywords: [4, 8]
+  keywords_rule: "semicolon-separated; must not repeat title words"
+  title_rule: "must include the word 'data' or 'dataset'"
+  limitations_words: 200
+  specific_subject_area_chars: 150
+  references_max: 20
+  references_style: "numbered [n]; cite the deposited dataset itself"
