@@ -62,7 +62,7 @@
 
 ## 🔄 IN PROGRESS
 
-- **Nothing blocking.** The dev environment is verified end-to-end (2026-07-29) — see § ENVIRONMENT below. `src/` and `dataset/` are runnable.
+- **Codebase restructure — PLANNED, not started.** Full REVIEWER pass done 2026-07-29; findings + target structure + 5-phase migration plan in `TODO_RESTRUCTURE.md`. Deadline: before P2 experiments (Sep 2026). Key findings: evaluation implemented 4× with disagreeing matchers (greedy vs Hungarian); metric named `map` is actually macro-F1 (ISPRS reviewer risk); adapters entangled with evaluation. Independent of P0.
 - Next up per roadmap: **P0 Zenodo release** (Aug 2026) — construction scripts in `dataset/` are the raw material; packaging, checksums, LICENSE, README remain
 
 ---
@@ -102,4 +102,5 @@ All assets are local to this machine — none are on a separate server.
 | Date | Session | Change |
 |---|---|---|
 | 2026-07-28 | Local PC, ATHENA v2.0 restructure | Ledger created. Phase 0 results recorded from thesis full read. Roadmap v2.0 adopted as canonical. Environment architecture decided. |
+| 2026-07-29 | NTUA dev PC, codebase review | Deep REVIEWER pass over `src/` (~10.5k lines). Restructure approved in principle; plan recorded in `TODO_RESTRUCTURE.md` (installable package, single evaluation stack, model adapters via protocol, run manifests, runtime/ for operational mode). Found: 4× evaluation duplication with matcher disagreement, `map`-is-F1 naming, confidence-ordering bug in greedy matcher. Execution deferred. |
 | 2026-07-29 | NTUA dev PC, environment audit | User-led audit found the repo unready. Resolved: CRLF phantom diff (69 files / 15,962 lines) killed via `.gitattributes`; `thesis_env` → `AV_env` rename; env spec corrected (wrong PyTorch install path, missing scipy) + lock file added; doc rot fixed (stale `d:\Work\DSML` root, wrong yml filename, three-way env-name disagreement). RISE → v2.1: machine table corrected, Windows-conda-via-interop execution model documented. Ledger stale entries fixed; OPEN 4 closed, OPEN 5 (Detectron2-on-Windows) opened. |
