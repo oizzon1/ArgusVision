@@ -1,0 +1,36 @@
+{
+  "experiment": "restructure_validation_yolo11x_obb",
+  "created_utc": "2026-07-29T18:56:08.105645+00:00",
+  "config": {
+    "experiment": "restructure_validation_yolo11x_obb",
+    "kind": "detection",
+    "dataset": {
+      "type": "dota_yolo_obb",
+      "path": "dataset/DOTA_v1_YOLO_oriented_bboxes_dataset",
+      "split": "val"
+    },
+    "detector": {
+      "name": "yolo11x-obb",
+      "conf_threshold": 0.25
+    },
+    "iou_thresholds": [
+      0.1,
+      0.3,
+      0.5
+    ],
+    "iou_mode": "auto"
+  },
+  "command": "experiments/run_evaluation.py experiments/configs/validation_yolo11x_obb.yaml",
+  "git_sha": "106c7af555ab0f976a3c731e6fe414a4b9e00ec5",
+  "git_branch": "AV_dev",
+  "git_dirty": true,
+  "environment": {
+    "conda_env": "AV_env",
+    "python": "3.9.25",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "torch": "2.5.1+cu124",
+    "cuda_available": true,
+    "gpu": "NVIDIA GeForce RTX 3090 Ti",
+    "numpy": "2.0.2"
+  }
+}

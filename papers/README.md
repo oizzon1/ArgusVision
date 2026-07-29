@@ -4,7 +4,7 @@ One directory per paper from Publication Roadmap v2.0. Each is an isolated WTF-P
 
 | Dir | Paper | Venue (primary) | Status |
 |---|---|---|---|
-| `p1_aerialfusecv_descriptor/` | AerialFuseCV data descriptor | ISPRS Open Journal of P&RS | Not started — blocked by P0 (Zenodo DOI) |
+| `p1_aerialfusecv_descriptor/` | AerialFuseCV data article | **Data in Brief** (fallback: ISPRS OJ as application Paper) — roadmap v2.2 | **Initialized** (`.planning/` complete) — writing blocked by P0 (Zenodo DOI) |
 | `p2_flagship_training_free/` | Training-Free Detection→Segmentation (flagship) | ISPRS Journal of P&RS | Not started — experiments first |
 | `p3_conference/` | Condensed pipeline findings | EarthVision @ CVPR 2027 or IGARSS 2027 | Not started — condenses P2 |
 | `p4_argusvision_benchmark/` | ArgusVision full benchmark | IEEE TGRS | Not started — PhD Year 1–2 |
