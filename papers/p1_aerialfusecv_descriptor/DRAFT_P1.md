@@ -455,3 +455,33 @@ annotations for aerial imagery [dataset], Zenodo, 2026.
 - [ ] Reference details verified; ≤20 references.
 - [ ] Confirm current APC.
 - [ ] 🔴 REVIEWER pass (hostile read) before submission.
+
+---
+
+## ⛔ POLICY NOTICE — 2026-07-30: this draft must be re-sourced
+
+**The MSc thesis is not a citable source.** It was a degree prerequisite and is
+closed; every number this program publishes is measured by this program and
+lives in `results/` with a run manifest.
+
+This draft was written before that directive and currently derives its
+numeric content and its Methods narrative from that document. It is therefore
+**provisional in full**:
+
+- Every count — 1,869 / 127,843 / 125,102 / 97.9% / all of Table 2 / the four ⚠
+  values — is superseded pending the corrected build's own output
+  (`dataset_statistics.json`).
+- The Methods section must be rewritten to describe **the script we ship**, not
+  a five-stage narrative inherited from elsewhere.
+- Already superseded by our own exhaustive measurement
+  (`results/isaid_colour_audit/colour_audit.json`, 1,869 images): the iSAID
+  source contains **475,438 instances** (358,166 train / 117,272 val), not the
+  330,693 that connected-components counting implied — a 30.4% undercount. The
+  class-colour table is confirmed complete and correct (16 values, zero
+  unknown, zero unobserved), and **zero instances span more than one class**.
+
+**Deliberately not rewritten yet.** The corrected build changes these numbers
+again, so re-sourcing now would mean writing the same prose twice. Rewrite once,
+from `dataset_statistics.json`, at Phase 4 of `TODO_RECREATION_SCRIPT.md`.
+Structure, argument and venue compliance all survive; only sourcing and figures
+change.

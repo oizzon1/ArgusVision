@@ -11,7 +11,16 @@
 - **Defended 8 July 2026, grade 10/10.** NTUA/SECE DSML. Supervisor: Asst. Prof. A. Voulodimos. Committee: Voulodimos, Ioannidis, Stamou.
 - Thesis PDF: `ArgusVision_for_Master_Thesis/` (also Google Drive, DSML--Thesis folder).
 
-### Verified thesis results (citable in papers)
+### ⚠️ Phase-0 figures — HISTORICAL CONTEXT ONLY, **NOT citable** (policy change 2026-07-30)
+
+> The MSc thesis is a closed prerequisite, not a source. Nothing below may enter
+> a paper. Every published number is produced and verified by this program and
+> lives in `results/` with a run manifest. These values are retained solely so a
+> future session can recognise what the precursor build reported and measure the
+> delta against it. **Where our own measurement already exists it supersedes
+> these outright** — e.g. the authoritative iSAID instance count is **475,438**
+> (`results/isaid_colour_audit/colour_audit.json`), not the 330,693 implied by
+> the precursor's connected-components counting.
 **AerialFuseCV dataset** — all values below read from thesis §3.1, Tables 6–7 (pp. 57–60) on 2026-07-30; Table 7 verified arithmetically (per-class matched sums to 97,070 train + 28,032 val = 125,102 exactly)
 - **Construction funnel:** DOTA v1.0 train+val = 2,806 images → intersection with iSAID = **1,869** (1,411 train / 458 val), 66.6%; the 937 test images excluded (no public iSAID masks) → **127,843 source boxes** (98,990 train / 28,853 val) → **125,102 matched pairs** (97,070 / 28,032) → **12 images discarded** (10 train / 2 val, zero pairs) → **1,857 images** (1,401 train / 456 val)
 - Match rates: **97.9%** overall (98.1% train / 97.2% val), 15 classes, IoU ≥ 0.1 criterion
@@ -67,6 +76,8 @@
 | **P4 reframed: detector × segmenter combination benchmark** | Supervisor instruction — "many model combinations (detector and segmenter)". SAM-variant blocks subsumed as the segmenter axis; detector-axis block design due before Mar 2027 | 2026-07-29 |
 | **Single-scope ideas parked, not scheduled** | SAM batch processing, OBB prompt support, VBB vs OBB (inherits the ablation). Activation = Revision Protocol event with major version bump | 2026-07-29 |
 | **P1 primary venue → Data in Brief (roadmap v2.2)** | Verified guides (user-retrieved): ISPRS OJPRS has NO data-paper article type — descriptor would need reframing as application Paper. DiB purpose-built + templated + fast; OJPRS demoted to fallback. P1 WTF-P project initialized against DiB template | 2026-07-29 |
+| **🔑 The thesis is not a source. Nothing cites it; everything is re-derived** | User directive 2026-07-30. The MSc was a prerequisite and is closed. All prior work is verified, changed where wrong, and re-run for consistency; the program's own results are published as the first source of truth. Consequences: scope guard tightened to `results/` only (stubs + RISE updated); Phase-0 figures demoted to non-citable historical context; P1 numbers all provisional until the corrected build reports them; P2/P4 experiments re-run rather than quoted; thesis errata tracking dropped as moot — we no longer inherit anything to be wrong about | 2026-07-30 |
+| **AerialFuseCV rebuilt corrected, not reproduced** | Per-instance masks give exact separation; connected components on class-coloured masks merged **144,745 instances (30.4%)**, measured exhaustively. Released dataset ships both mask types and enforces one-to-one box↔instance assignment | 2026-07-30 |
 | **P3 deadline reality (roadmap v2.2)** | EarthVision @ CVPR deadlines ~Feb–Mar (2026 edition: Mar 2), not ~Nov as assumed; IGARSS (~Jan) now the earlier P3 option. Decision still deferred to call opening | 2026-07-29 |
 | **Session closeout work log added** | `ATHENA_STATE.md` is a milestone ledger, not a day-to-day work record. `Athena_Protocols/WORK_LOG.md` now captures hours, work done, issues, findings, notes, verification, and next actions at every session close | 2026-07-29 |
 
@@ -107,6 +118,7 @@ All assets are local to this machine — none are on a separate server.
 3. **DIOR / NWPU VHR-10 setup** — needed for P4 (and for P2 option c); not yet downloaded/prepared.
 4. ~~**NTUA PC asset paths**~~ — **CLOSED 2026-07-29.** All assets were already on this machine; recorded in § ENVIRONMENT above. The item was written on the false premise of a two-machine split.
 5. **Mask R-CNN baseline on Windows** — P2 requires it, but **Detectron2 has no official Windows support** and the work environment is Windows by decision. MMDetection is the more Windows-tolerant path; a `torchvision.models.detection.maskrcnn` implementation is the fallback. Must be resolved **before P2 experiments begin (Sep 2026)**, together with the Phase-1 env upgrade (SAM2 for P4). Not urgent today, but it is a dated dependency, not a vague gap.
+7. **AerialFuseCV version label + DOI strategy.** The release is a corrected build, not the precursor. Recommend **v1.0 = first public release**, with a Data Description note that earlier internal experiments used an unreleased precursor — one DOI, no phantom version history. Decide before Zenodo upload.
 6. **🔴 P0 BLOCKER — AerialFuseCV construction Stages 1 and 3 have no committed script.** Found 2026-07-30 while sourcing P1 Methods from code. `dataset/refine_aerialfusecv.py` implements Stage 4 (instance matching) but consumes `dataset/AerialFuseCV/` as pre-existing input; `dataset/convert_dota_to_yolo_obb.py` covers Stage 2. **Nothing in version control performs Stage 1** (DOTA∩iSAID image intersection by filename + dimension verification, 2,806 → 1,869 images) **or Stage 3** (mask reorganisation into the split layout with dimension checks). No notebooks exist in the repo. P0's central deliverable is a script that rebuilds the dataset from official downloads, so this must be authored and verified before the Zenodo release — and P1 cannot claim reproducibility until it is. Mitigation: thesis §3.1 (pp. 57–58) specifies both stages precisely enough to reimplement faithfully. Same class of loss as finding F8: work that only ever existed on one disk.
 
 ---

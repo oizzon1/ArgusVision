@@ -9,6 +9,14 @@ iSAID downloads in a single pass, plus one EDA report whose every number is
 recomputed and verified. Replaces the historical two-step process (combine →
 refine), of which the combine step was never version-controlled.
 
+> **Policy (user directive, 2026-07-30): the MSc thesis is not a source.**
+> It was a prerequisite and is closed. Nothing cites it. Every number this
+> program publishes is measured by this program, lands in `results/` with a run
+> manifest, and is re-run for consistency. Where this plan previously said
+> "reproduce thesis Table 6/7", read instead: **the precursor build's outputs on
+> disk are a regression baseline, not an authority.** If our measurement and the
+> precursor disagree, our measurement is right and the delta gets explained.
+
 ---
 
 ## What we have to work with
@@ -17,16 +25,17 @@ refine), of which the combine step was never version-controlled.
 |---|---|---|
 | `dataset/DOTA_v1/{train,val}/{images,labels}` | 1,411 / 458 | source |
 | `dataset/iSAID/{train,val}/{semantic_masks,instance_masks}` | 1,411 / 458 each | source |
-| `dataset/AerialFuseCV/` | 1,411 + 458 = **1,869** | **ground truth for the combine step** |
-| `dataset/AerialFuseCV_Refined/` | 1,401 + 456 = **1,857** | **ground truth for the whole pipeline** |
+| `dataset/AerialFuseCV/` | 1,411 + 458 = **1,869** | regression baseline, combine step |
+| `dataset/AerialFuseCV_Refined/` | 1,401 + 456 = **1,857** | regression baseline, full pipeline (**not an authority**) |
 | `dataset/refine_aerialfusecv.py` | works | reference implementation of matching |
 | `dataset/convert_dota_to_yolo_obb.py` | works | separate YOLO-OBB conversion (not on this path) |
 
-**The decisive advantage: both historical outputs are still on disk.** The new
-script does not have to be trusted — it can be proven, file by file, against
-the dataset that produced the thesis results. Any divergence is a bug in the
-new script or an undocumented step in the old one, and either way we want to
-know. Do the verification before deleting anything.
+**The decisive advantage: both precursor outputs are still on disk.** The new
+script's *port fidelity* can therefore be proven file by file rather than
+assumed — any divergence is a bug in the new script or an undocumented step in
+the precursor, and either way we want to know. This is a regression check, not
+a claim that the precursor was right: the corrected build is expected to
+differ, and its differences are the point. Verify before deleting anything.
 
 ---
 
@@ -40,10 +49,10 @@ know. Do the verification before deleting anything.
 | **R4** | **`isaid_instance_colors.json` is an empty file** (0 entries) in the released dataset. | Dead artifact: either populate it meaningfully (the class-colour table) or drop it from the deposit. Do not ship an empty JSON. |
 | **R5** | **The statistics file is not named what the thesis says.** Thesis Stage 5 documents `Dataset_Statistics.md`; the actual file is `AerialFuseCV_Refined_DATASET_ANALYSIS.md`. P1's Data Description currently repeats the thesis name. | Fix the P1 draft to the real name, or standardise the name in the new script and keep the paper aligned. Prefer the latter: `DATASET_ANALYSIS.md`. |
 
-Also worth recording: the thesis says the 1,869 images represent "66.6% of the
-combined DOTA train and validation splits". They are **100%** of train+val;
-66.6% is their share of all 2,806 DOTA images including test. A wording
-erratum — add to the errata list in `ATHENA_STATE.md`.
+Measured directly: the 1,869 images are **100%** of DOTA's train+val, and 66.6%
+of all 2,806 DOTA images once the 937 test images are counted. Stating it the
+second way without saying "including test" is the kind of ambiguity to avoid in
+P1.
 
 ---
 
@@ -84,7 +93,7 @@ experiments ran on. This is acceptable and manageable because:
 
 The superseded analysis is kept below for the record.
 
-## Superseded: v1.0 faithful, or v2.0 corrected?
+## Superseded (kept only as decision record — do not act on)
 
 R2 puts a genuine fork in front of us.
 
@@ -130,7 +139,7 @@ Over all 1,869 image pairs it establishes:
    (`table_colours_never_observed`).
 2. **The authoritative instance count** per image from the instance-id masks —
    independent of connected components, and the number that replaces my ⚠
-   derivation of 330,693.
+   derivation of 330,693. **Result: 475,438 — see below.**
 3. **Whether any instance region spans more than one semantic class**
    (`instances_spanning_multiple_classes`). This is the correctness
    precondition for deriving (class, instance) by intersecting the two mask
@@ -221,16 +230,20 @@ then attributable to the fix, not to a porting bug. Run both modes.
 
 **Level 3 — statistical, two parts.**
 
-*Historical mode* must reproduce thesis Tables 6 and 7 exactly: 127,843 source
-boxes → 125,102 pairs; 98,990/97,070/98.1% train and 28,853/28,032/97.2% val;
-all 15 per-class rows. Failure here means the old pipeline had an undocumented
-step — worth knowing before anything is deleted.
+*Historical mode* must reproduce the precursor build's own outputs, recomputed
+from `dataset/AerialFuseCV_Refined/` on disk — not quoted from any document.
+Its purpose is purely diagnostic: it proves the port is faithful, so that every
+difference in the corrected build is attributable to the fix rather than to a
+porting bug. Failure here means the precursor had an undocumented step, which
+is worth knowing before anything is deleted.
 
 *Corrected mode* produces the numbers that will be published. Report the delta
 against historical mode explicitly, per class: pairs gained by no longer
 merging touching instances, pairs lost to one-to-one enforcement, and the new
 box-side and mask-side retention rates. **The authoritative source-instance
-count comes from the colour audit, replacing my ⚠ derivation of 330,693.**
+count is **475,438** (358,166 train / 117,272 val), measured exhaustively by
+the colour audit — superseding the 330,693 that connected-components counting
+implied, a 30.4% undercount.**
 
 Level 3 is where "recompute and verify everything" is actually satisfied — and
 where the corrected build has to justify itself with a measured improvement

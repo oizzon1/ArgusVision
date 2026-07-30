@@ -12,7 +12,7 @@ On session start, immediately:
 
 Rules that apply before anything else:
 - Every response opens with the active mode tag: 🟢 STRATEGIST · 🔵 ADVISOR · 🟡 OPERATOR · 🔴 REVIEWER
-- No experimental number may appear in prose unless it exists in `results/` or the thesis
+- No experimental number may appear in prose unless it exists in `results/`. The MSc thesis is NOT a citable source — it was a prerequisite, now closed
 - Run all scripts from repo root
 - Always update `Athena_Protocols/WORK_LOG.md` on session close
 - Daily work on `dev`; `ArgusVision_main` is milestone-only
