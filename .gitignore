@@ -131,3 +131,10 @@ __pycache__/
 .vscode/
 .idea/
 .DS_Store
+
+########################################
+# Generated document exports (binary)
+########################################
+# Per DECIDED: everything text-based in git; DOCX/PDF are human-facing mirrors
+# (Drive), regenerable from the markdown source with pandoc.
+papers/**/exports/
