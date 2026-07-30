@@ -12,10 +12,12 @@
 - Thesis PDF: `ArgusVision_for_Master_Thesis/` (also Google Drive, DSML--Thesis folder).
 
 ### Verified thesis results (citable in papers)
-**AerialFuseCV dataset**
-- 1,857 images (1,401 train / 456 val), **125,102 bbox–mask pairs**, 15 classes, **97.9% match rate** (98.1% train / 97.2% val), IoU ≥ 0.1 conservative matching, 12 images discarded
-- Class imbalance: ship 29.5% + small-vehicle 24.8% + large-vehicle 16.6% = 71% of instances; 6 classes < 0.6% each
-- Worst per-class match: helicopter 83.6% (val), harbor 89.6% (train)
+**AerialFuseCV dataset** — all values below read from thesis §3.1, Tables 6–7 (pp. 57–60) on 2026-07-30; Table 7 verified arithmetically (per-class matched sums to 97,070 train + 28,032 val = 125,102 exactly)
+- **Construction funnel:** DOTA v1.0 train+val = 2,806 images → intersection with iSAID = **1,869** (1,411 train / 458 val), 66.6%; the 937 test images excluded (no public iSAID masks) → **127,843 source boxes** (98,990 train / 28,853 val) → **125,102 matched pairs** (97,070 / 28,032) → **12 images discarded** (10 train / 2 val, zero pairs) → **1,857 images** (1,401 train / 456 val)
+- Match rates: **97.9%** overall (98.1% train / 97.2% val), 15 classes, IoU ≥ 0.1 criterion
+- Class imbalance: ship 36,903 pairs (29.5%) + small-vehicle 31,073 (24.8%) + large-vehicle 20,797 (16.6%) = **71.0%**; six moderate classes = 26.3%; six classes < 0.6% each = 2.7%
+- Lowest per-class match: helicopter 83.6% (val), harbor 89.6% (train), soccer-ball-field 92.2% (val), basketball-court 93.2% (val), large-vehicle 93.2% (val)
+- **⚠ Thesis errata — do NOT inherit into papers** (found 2026-07-30 while sourcing P1 Methods; the tables and percentages are correct, only the prose counts are wrong): (a) p. 59 says "Seven moderately represented classes" then lists **six** (their percentages sum to the stated 26.3%); (b) same page says "five classes are severely underrepresented" then lists **six** (3 + 6 + 6 = 15 classes, percentages sum to 100%); (c) p. 58's "three lowest-performing classes" omits soccer-ball-field (92.2% val), which is lower than the basketball-court/large-vehicle 93.2% it does cite.
 
 **YOLO benchmark (34 models)**
 - VBB (24 COCO-pretrained, v8–v12): catastrophic — best F1 **0.34%**
@@ -105,6 +107,7 @@ All assets are local to this machine — none are on a separate server.
 3. **DIOR / NWPU VHR-10 setup** — needed for P4 (and for P2 option c); not yet downloaded/prepared.
 4. ~~**NTUA PC asset paths**~~ — **CLOSED 2026-07-29.** All assets were already on this machine; recorded in § ENVIRONMENT above. The item was written on the false premise of a two-machine split.
 5. **Mask R-CNN baseline on Windows** — P2 requires it, but **Detectron2 has no official Windows support** and the work environment is Windows by decision. MMDetection is the more Windows-tolerant path; a `torchvision.models.detection.maskrcnn` implementation is the fallback. Must be resolved **before P2 experiments begin (Sep 2026)**, together with the Phase-1 env upgrade (SAM2 for P4). Not urgent today, but it is a dated dependency, not a vague gap.
+6. **🔴 P0 BLOCKER — AerialFuseCV construction Stages 1 and 3 have no committed script.** Found 2026-07-30 while sourcing P1 Methods from code. `dataset/refine_aerialfusecv.py` implements Stage 4 (instance matching) but consumes `dataset/AerialFuseCV/` as pre-existing input; `dataset/convert_dota_to_yolo_obb.py` covers Stage 2. **Nothing in version control performs Stage 1** (DOTA∩iSAID image intersection by filename + dimension verification, 2,806 → 1,869 images) **or Stage 3** (mask reorganisation into the split layout with dimension checks). No notebooks exist in the repo. P0's central deliverable is a script that rebuilds the dataset from official downloads, so this must be authored and verified before the Zenodo release — and P1 cannot claim reproducibility until it is. Mitigation: thesis §3.1 (pp. 57–58) specifies both stages precisely enough to reimplement faithfully. Same class of loss as finding F8: work that only ever existed on one disk.
 
 ---
 

@@ -21,10 +21,11 @@ the pixel-level instance masks of iSAID at the level of individual object
 instances. Although both benchmarks annotate the same aerial imagery, their
 annotations were produced independently and share no instance
 correspondence. The dataset was constructed by decoding iSAID's
-color-encoded instance masks, extracting per-instance regions through
-clipping with the corresponding DOTA oriented-box polygons, and accepting
-box–mask pairs under a conservative intersection-over-union rule
-(IoU ≥ 0.1); images failing structural checks were discarded (12 in total).
+color-encoded masks into per-category binary masks, isolating candidate
+instances as connected components within the neighborhood of each DOTA box,
+and pairing every box with its highest-overlap candidate under a permissive
+intersection-over-union rule (IoU ≥ 0.1); images retaining no pair were
+excluded (12 in total).
 The result contains 1,857 images (1,401 training, 456 validation) with
 125,102 validated box–mask pairs across the 15 DOTA v1.0 object categories,
 corresponding to an overall match rate of 97.9% (98.1% training, 97.2%
