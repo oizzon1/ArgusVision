@@ -40,6 +40,14 @@ results/**
 !results/**/*_metrics.json
 !results/**/metrics.json
 !results/**/manifest.json
+# Evidence artefacts that papers cite. Every published number must live in
+# git next to the manifest that produced it, so these are re-included by name.
+# Suffix patterns, not bare names — `!results/**/manifest.json` does NOT match
+# `build_manifest.json`, which silently excluded it (same class of defect as
+# finding F8, where unanchored patterns dropped src/datasets from git).
+!results/**/*manifest.json
+!results/**/*_audit.json
+!results/**/dataset_statistics.json
 
 # Ignore huge restore points specifically
 results/**/restore_points/
