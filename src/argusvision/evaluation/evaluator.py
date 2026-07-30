@@ -196,6 +196,7 @@ class SegmentationEvaluator:
         self._tp_dice: Dict[int, List[float]] = defaultdict(list)
         self._anchored_iou: Dict[int, List[float]] = defaultdict(list)
         self._anchored_dice: Dict[int, List[float]] = defaultdict(list)
+        self._no_mask_gt: Dict[int, int] = defaultdict(int)
 
     def add_pair(self, class_id: int, pred_mask: np.ndarray, gt_mask: np.ndarray) -> float:
         """One successfully detected instance: pred mask vs its GT mask."""
@@ -209,18 +210,35 @@ class SegmentationEvaluator:
 
     def add_missed_gt(self, class_id: int) -> None:
         """One GT instance the detector never found: contributes 0 to the
-        GT-anchored view and nothing to the TP-only view."""
+        GT-anchored view and nothing to the TP-only view. A real failure."""
         self._anchored_iou[class_id].append(0.0)
         self._anchored_dice[class_id].append(0.0)
+
+    def add_gt_without_mask(self, class_id: int) -> None:
+        """One ground-truth OBJECT that carries no ground-truth MASK.
+
+        Arises where the box source annotated an object the mask source did
+        not (DOTA/iSAID annotate independently). Such an object is excluded
+        from BOTH views and counted instead: scoring it 0 would charge the
+        system for the annotation's absence, not for any failure of its own.
+
+        The rule keys on the mask ground truth's existence, independently of
+        the detection outcome — a mask that was never drawn cannot be missed,
+        so this applies whether or not the detector found the object.
+
+        See `documentation/DECISION_unpaired_annotations.md`.
+        """
+        self._no_mask_gt[class_id] += 1
 
     def summarize(self) -> Dict:
         per_class = {}
         for c in range(self.num_classes):
-            if not self._anchored_iou[c] and not self._tp_iou[c]:
+            if not self._anchored_iou[c] and not self._tp_iou[c] and not self._no_mask_gt[c]:
                 continue
             per_class[self.class_names.get(c, str(c))] = {
                 "n_matched": len(self._tp_iou[c]),
                 "n_gt_anchored": len(self._anchored_iou[c]),
+                "n_excluded_no_mask_gt": self._no_mask_gt[c],
                 "tp_only_iou": float(np.mean(self._tp_iou[c])) if self._tp_iou[c] else 0.0,
                 "tp_only_dice": float(np.mean(self._tp_dice[c])) if self._tp_dice[c] else 0.0,
                 "gt_anchored_iou": float(np.mean(self._anchored_iou[c])),
@@ -230,11 +248,21 @@ class SegmentationEvaluator:
         all_tp_dice = [x for c in self._tp_dice for x in self._tp_dice[c]]
         all_an_iou = [x for c in self._anchored_iou for x in self._anchored_iou[c]]
         all_an_dice = [x for c in self._anchored_dice for x in self._anchored_dice[c]]
+        n_excluded = sum(self._no_mask_gt.values())
+        n_scoreable = len(all_an_iou) + n_excluded
         return {
             "per_class": per_class,
+            # Objects excluded because no ground-truth mask exists for them.
+            # Reported, never silently dropped — see
+            # documentation/DECISION_unpaired_annotations.md
+            "excluded_no_mask_gt": {
+                "count": n_excluded,
+                "fraction_of_gt_objects": (n_excluded / n_scoreable) if n_scoreable else 0.0,
+            },
             "overall": {
                 "n_matched": len(all_tp_iou),
                 "n_gt_anchored": len(all_an_iou),
+                "n_excluded_no_mask_gt": n_excluded,
                 "tp_only_iou": float(np.mean(all_tp_iou)) if all_tp_iou else 0.0,
                 "tp_only_dice": float(np.mean(all_tp_dice)) if all_tp_dice else 0.0,
                 "gt_anchored_iou": float(np.mean(all_an_iou)) if all_an_iou else 0.0,
