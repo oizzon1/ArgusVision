@@ -29,6 +29,7 @@ import shutil
 import subprocess
 import sys
 import time
+from collections import defaultdict
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -195,17 +196,36 @@ def rect_instance_iou(labels: np.ndarray, inst: Instance, hull, shape) -> float:
 
 
 def match_instance_mode(boxes, labels, instances, shape, iou_threshold):
-    """One-to-one box<->instance assignment within each class."""
+    """One-to-one box<->instance assignment within each class.
+
+    Returns (pairs, discarded). The released dataset contains only pairs — the
+    scope is the verified correspondence — but every discarded object is
+    reported with the reason it failed, so the exclusion is explainable,
+    arguable and reproducible rather than silent.
+    """
     pairs = []
+    discarded: List[dict] = []
+
     by_class: Dict[int, List[int]] = {}
     for i, inst in enumerate(instances):
         by_class.setdefault(inst.class_id, []).append(i)
+    box_classes = {b.class_id for b in boxes}
 
-    for cid in sorted({b.class_id for b in boxes}):
+    for cid in sorted(box_classes | set(by_class)):
         b_idx = [i for i, b in enumerate(boxes) if b.class_id == cid]
         i_idx = by_class.get(cid, [])
-        if not b_idx or not i_idx:
+
+        if b_idx and not i_idx:
+            for bi in b_idx:
+                discarded.append({"kind": "box", "class_id": cid, "index": bi,
+                                  "reason": "no_mask_instance_of_class", "best_iou": 0.0})
             continue
+        if i_idx and not b_idx:
+            for ii in i_idx:
+                discarded.append({"kind": "instance", "class_id": cid, "index": ii,
+                                  "reason": "no_box_of_class"})
+            continue
+
         ious = np.zeros((len(b_idx), len(i_idx)), dtype=np.float64)
         for r, bi in enumerate(b_idx):
             bx1, by1, bx2, by2 = boxes[bi].hull
@@ -214,10 +234,38 @@ def match_instance_mode(boxes, labels, instances, shape, iou_threshold):
                 if bx2 <= ix1 or ix2 <= bx1 or by2 <= iy1 or iy2 <= by1:
                     continue                      # disjoint bounding boxes
                 ious[r, c] = rect_instance_iou(labels, instances[ii], boxes[bi].hull, shape)
+
         res = hungarian_match(ious, iou_threshold)
+        matched_rows = {r for r, _, _ in res.matches}
+        matched_cols = {c for _, c, _ in res.matches}
         for r, c, iou in res.matches:
             pairs.append((b_idx[r], i_idx[c], float(iou)))
-    return pairs
+
+        for r, bi in enumerate(b_idx):
+            if r in matched_rows:
+                continue
+            best = float(ious[r].max()) if ious.shape[1] else 0.0
+            if best == 0.0:
+                reason = "no_overlapping_instance"
+            elif best < iou_threshold:
+                reason = "below_iou_threshold"
+            else:
+                # overlapped well enough, but the one-to-one assignment gave
+                # that instance to a better-fitting box
+                reason = "lost_to_one_to_one_assignment"
+            discarded.append({"kind": "box", "class_id": cid, "index": bi,
+                              "reason": reason, "best_iou": round(best, 6)})
+
+        for c, ii in enumerate(i_idx):
+            if c in matched_cols:
+                continue
+            best = float(ious[:, c].max()) if ious.shape[0] else 0.0
+            discarded.append({"kind": "instance", "class_id": cid, "index": ii,
+                              "reason": ("no_overlapping_box" if best == 0.0
+                                         else "unassigned"),
+                              "best_iou": round(best, 6)})
+
+    return pairs, discarded
 
 
 # --------------------------------------------------------------------------- #
@@ -364,9 +412,13 @@ def main() -> int:
     ambiguous_total = 0
     iou_values: List[float] = []
     pairs_path = args.out / "pairs.jsonl"
+    discard_path = args.out / "discarded.jsonl"
+    discard_counts: Dict[Tuple[str, str], int] = defaultdict(int)
+    discard_by_class: Dict[str, Dict[str, int]] = defaultdict(lambda: defaultdict(int))
     t0 = time.time()
 
-    with open(pairs_path, "w", encoding="utf-8") as pairs_f:
+    with open(pairs_path, "w", encoding="utf-8") as pairs_f, \
+            open(discard_path, "w", encoding="utf-8") as discard_f:
         for split in args.splits:
             img_dir = args.dota / split / "images"
             ids = sorted(p.stem for p in img_dir.glob("*.png"))
@@ -396,12 +448,31 @@ def main() -> int:
                 per_split[split]["src_instances"] += len(instances)
 
                 if args.mask_source == "instance":
-                    matched = match_instance_mode(boxes, labels, instances, shape,
-                                                  args.iou_threshold)
+                    matched, discarded = match_instance_mode(
+                        boxes, labels, instances, shape, args.iou_threshold)
                     masks_for = {bi: instances[ii] for bi, ii, _ in matched}
                 else:
                     matched, comp_masks = match_semantic_mode(boxes, sem, args.iou_threshold)
                     masks_for = {bi: comp_masks[ci] for bi, ci, _ in matched}
+                    paired_boxes = {bi for bi, _, _ in matched}
+                    discarded = [{"kind": "box", "class_id": boxes[bi].class_id,
+                                  "index": bi, "reason": "unpaired_semantic_mode"}
+                                 for bi in range(len(boxes)) if bi not in paired_boxes]
+
+                for d in discarded:
+                    d["image_id"] = img_id
+                    d["split"] = split
+                    d["class_name"] = CLASS_ID_TO_NAME[d["class_id"]]
+                    if d["kind"] == "box":
+                        d["corners"] = [round(v, 1) for v in boxes[d["index"]].corners.tolist()]
+                    elif args.mask_source == "instance":
+                        inst = instances[d["index"]]
+                        d["instance_rgb"] = list(inst.colour)
+                        d["instance_area_px"] = inst.area
+                    d.pop("index", None)
+                    discard_f.write(json.dumps(d) + "\n")
+                    discard_counts[(d["kind"], d["reason"])] += 1
+                    discard_by_class[d["class_name"]][d["kind"]] += 1
 
                 if not matched:
                     excluded.append(img_id)
@@ -501,6 +572,14 @@ def main() -> int:
             "p95": float(np.percentile(iou_arr, 95)) if iou_arr.size else None,
         },
         "excluded_images": sorted(excluded),
+        # Scope: the released dataset contains exact pairs only. Everything
+        # dropped is accounted for here and itemised in discarded.jsonl.
+        "discarded": {
+            "by_reason": {f"{k}:{r}": n for (k, r), n in sorted(discard_counts.items())},
+            "boxes": sum(n for (k, _), n in discard_counts.items() if k == "box"),
+            "instances": sum(n for (k, _), n in discard_counts.items() if k == "instance"),
+            "by_class": {c: dict(v) for c, v in sorted(discard_by_class.items())},
+        },
         "instances_with_ambiguous_class": ambiguous_total,
         "images_without_gsd": sorted(
             set(i for s in args.splits
