@@ -111,16 +111,36 @@ and `source instances = pairs + discarded instances`, verified on every build.
 This is what makes the exclusion defensible. The dataset is clean; the record
 of what was excluded, and why, is complete.
 
-## 7. Evaluation-stack consequence
+## 7. Evaluation stack — no change
 
-`SegmentationEvaluator.add_gt_without_mask()` — an object excluded from mask
-averaging rather than scored zero — was added while the retention approach was
-under consideration. **It is retained deliberately**, although it is
-unreachable when evaluating on AerialFuseCV, where every object has a mask by
-construction. It becomes necessary for P4's cross-dataset work on DIOR and
-NWPU VHR-10, whose annotation coverage differs, and the tests pinning the
-distinction between an *excluded* object and a *missed* one guard a semantic
-that is easy to collapse by accident.
+An earlier iteration added a third `SegmentationEvaluator` outcome
+(`add_gt_without_mask`) to exclude objects lacking mask ground truth from mask
+averaging. **It has been removed as out of scope.** With a pairs-only dataset
+every object carries both annotations by construction, so the outcome is
+unreachable and would be dead code carrying an untested promise. If P4's
+cross-dataset work on DIOR or NWPU VHR-10 meets datasets whose annotation
+coverage differs, it can be reintroduced then, with the tests that pin the
+distinction between an *excluded* object and a *missed* one.
+
+The evaluation stack therefore remains exactly as validated on 2026-07-29.
+
+## 7b. Two scripts, deliberately
+
+**Internal build-and-verify tool** — `dataset/build_aerialfusecv.py` as it
+stands. It carries a `--mask-source semantic` regression mode and comparison
+machinery against the earlier build. Its only purpose is to let us measure the
+delta and satisfy ourselves that the corrected construction behaves as intended
+before anything is published. It is not shipped.
+
+**Deliverable rebuild script** — written after that review, from scratch, to
+the scope of the descriptor paper alone: read the official DOTA v1.0 and iSAID
+downloads, produce AerialFuseCV, verify by checksum. No modes, no comparisons,
+no reference to any earlier version. This is what accompanies the dataset in
+the deposit.
+
+Keeping them separate means our internal confidence-building never leaks into
+the published artefact, and the published script never has to explain history a
+user does not need.
 
 ## 8. Anticipated challenges
 
