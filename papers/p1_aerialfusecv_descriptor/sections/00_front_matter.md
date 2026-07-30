@@ -28,8 +28,10 @@ intersection-over-union rule (IoU ≥ 0.1); images retaining no pair were
 excluded (12 in total).
 The result contains 1,857 images (1,401 training, 456 validation) with
 125,102 validated box–mask pairs across the 15 DOTA v1.0 object categories,
-corresponding to an overall match rate of 97.9% (98.1% training, 97.2%
-validation); per-class match rates are reported for transparency. The
+meaning that 97.9% of DOTA boxes acquired a mask (98.1% training, 97.2%
+validation). Pairing is anchored on the boxes, so a smaller fraction of the
+more numerous iSAID mask instances is retained; both rates and per-category
+figures are reported. The
 deposit provides all pairing annotations and metadata, per-class statistics,
 and a construction pipeline with verification checksums that rebuilds the
 dataset from the official DOTA v1.0 and iSAID distributions, whose imagery
