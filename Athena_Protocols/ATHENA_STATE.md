@@ -36,6 +36,7 @@
 - Publication Roadmap v2.2 committed; ATHENA protocol suite live (RISE v2.1 + WORK_LOG closeout protocol, 2026-07-29)
 - **Codebase restructure COMPLETE (2026-07-29, merged to `dev`):** installable `argusvision` package (data/models/pipeline/evaluation/runtime/viz), frozen evaluation stack (Hungarian + ranked-AP, honest metric names), run-manifest provenance, generic YAML experiment driver, 62 tests. **Validation vs thesis baselines: port faithful ±0.05 pp; thesis YOLOv11x-OBB macro-F1 0.6240 reproduced exactly; AABB→polygon ≤0.3 pp** — full report `documentation/RESTRUCTURE_VALIDATION.md`. Thesis code preserved at tag `thesis-code-final`. Findings F7–F9 documented in `TODO_RESTRUCTURE.md`.
 - WTF-P v0.5.0 installed **in-repo** (`.claude/`, versioned — both machines get it via pull); venue guides archived + distilled in `papers/shared/venues/`
+- **Branch layout (as of 2026-07-29):** `dev` = daily work · `ArgusVision_main` = milestone-only · **`legacy_thesis` = frozen Phase-0 snapshot** (at `258a67c`, based on tag `thesis-code-final`; holds the thesis-era flat `src/` layout plus the `src/datasets/` dataloaders rescued per finding F8, and the anchored `.gitignore` that made them trackable). Never develop on `legacy_thesis`; its orientation note is `LEGACY_BRANCH.md` on that branch. `AV_dev` was deleted after merging.
 - Line-ending policy committed (`.gitattributes`, `* text=auto eol=lf`) — required because Windows editors and WSL agents share one worktree
 
 ---
