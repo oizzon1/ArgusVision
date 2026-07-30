@@ -129,7 +129,7 @@ them. Honest, and it pre-announces v2.0.
 
 ## Colour audit (prerequisite, running)
 
-`tools/dataset_construction/scan_isaid_colours.py` — exhaustive, no sampling.
+`dataset/scan_isaid_colours.py` — exhaustive, no sampling.
 Over all 1,869 image pairs it establishes:
 
 1. **Every RGB value that actually occurs** in the semantic masks, with pixel
@@ -160,14 +160,14 @@ Smoke run (6 images): 8 distinct semantic colours, 0 unknown, 1,159 instances,
 ## Target script
 
 ```
-tools/dataset_construction/build_aerialfusecv.py     # the single entry point
-tools/dataset_construction/analyze_aerialfusecv.py   # the EDA (importable + CLI)
+dataset/build_aerialfusecv.py     # the single entry point
+dataset/analyze_aerialfusecv.py   # the EDA (importable + CLI)
 ```
 
 Run from repo root, as everything else in this repo:
 
 ```bash
-python tools/dataset_construction/build_aerialfusecv.py \
+python dataset/build_aerialfusecv.py \
     --dota   dataset/DOTA_v1 \
     --isaid  dataset/iSAID \
     --out    dataset/AerialFuseCV_v1 \

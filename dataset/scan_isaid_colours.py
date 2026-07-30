@@ -3,7 +3,7 @@
 Answers, without sampling or assumption:
 
 1. Which RGB values actually occur in the semantic (class-coloured) masks?
-   -> verifies the thesis Table 5 / `argusvision.data.constants` table and
+   -> verifies the `argusvision.data.constants` table against the data and
       exposes any colour present in the data but absent from the table.
 2. How many distinct instances does each instance-id mask contain?
    -> the authoritative instance count, independent of connected components.
@@ -12,8 +12,8 @@ Answers, without sampling or assumption:
       intersecting the two mask types. Any violation is reported per image.
 
 Run from repo root, in AV_env:
-    python tools/dataset_construction/scan_isaid_colours.py
-    python tools/dataset_construction/scan_isaid_colours.py --limit 20   # smoke
+    python dataset/scan_isaid_colours.py
+    python dataset/scan_isaid_colours.py --limit 20   # smoke
 """
 
 import argparse
@@ -26,7 +26,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from argusvision.data.constants import ISAID_COLOR_TO_CLASS_ID, CLASS_ID_TO_NAME
 
 ISAID_ROOT = Path("dataset/iSAID")
@@ -53,7 +53,13 @@ def read_rgb(path: Path):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=None, help="first N images per split")
+    ap.add_argument("--out", type=Path, default=None, help="override report path")
     args = ap.parse_args()
+
+    # A limited run is a smoke test and must never overwrite the full audit.
+    out_path = args.out or (
+        OUT_PATH.with_name(f"colour_audit_limit{args.limit}.json") if args.limit else OUT_PATH
+    )
 
     known = {(r << 16) | (g << 8) | b: cid for (r, g, b), cid in ISAID_COLOR_TO_CLASS_ID.items()}
 
@@ -166,8 +172,8 @@ def main() -> int:
         "per_image": per_image,
     }
 
-    OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(OUT_PATH, "w", encoding="utf-8") as f:
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2)
 
     print("\n" + "=" * 72)
@@ -180,7 +186,7 @@ def main() -> int:
         print(f"   {s}: {c:,}")
     print(f"instances spanning >1 class : {report['instances_spanning_multiple_classes']}")
     print(f"dimension mismatches        : {len(dim_mismatch)}   unreadable: {len(unreadable)}")
-    print(f"report -> {OUT_PATH}")
+    print(f"report -> {out_path}")
     print("=" * 72)
     return 0
 

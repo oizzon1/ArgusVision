@@ -55,7 +55,7 @@ experiments/                      # thin drivers + YAML configs, OUTSIDE the pac
 
 results/<experiment>/<run_id>/    # every run writes manifest.json:
                                   #   {git_sha, config, env=AV_env, date, dataset_hash}
-tools/dataset_construction/       # P0-bound scripts, separated from 55 GB data roots
+dataset/*.py                      # P0-bound scripts stay here (git tracks *.py, ignores data)
 ```
 
 **Load-bearing principle:** models emit standardized `Detection`/`InstanceMask`; the evaluator consumes only those. Adding a P2/P4 model = one ~80-line adapter, zero evaluation changes. That is the "evaluation always the same" requirement, expressed as architecture.

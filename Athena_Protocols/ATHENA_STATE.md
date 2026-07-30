@@ -1,7 +1,7 @@
 # 🦉 ATHENA_STATE — Program Ledger
 **Last updated: 2026-07-29 (by ATHENA, NTUA dev PC — restructure complete & merged; roadmap v2.2; P1 initialized)**
 
-> The single cross-environment source of truth. Any AI instance, any machine, any vendor: what is written here is what has happened. Update after every milestone; date every update. Claims about results must trace to `results/` or the thesis.
+> The single cross-environment source of truth. Any AI instance, any machine, any vendor: what is written here is what has happened. Update after every milestone; date every update. **Claims about results must trace to `results/`** — an artefact this program computed, with a run manifest beside it. The MSc thesis is a closed prerequisite and is not a source (policy 2026-07-30).
 
 ---
 
@@ -85,7 +85,7 @@
 
 ## 🔄 IN PROGRESS
 
-- **Restructure close-out residuals** (restructure itself COMPLETE — see ACHIEVED): (a) legacy `src/` deletion sweep per the inventory in `TODO_RESTRUCTURE.md` — awaiting user go; keep `evaluate_sam.py` (GT-prompt benchmark, not yet superseded; port as driver kind at P4 prep) and `evaluate_yolo_vbb.py` (driver lacks class_map passthrough) until replaced; (b) `AV_dev` branch deletion after (a); (c) move `dataset/` construction scripts → `tools/dataset_construction/` during P0 packaging.
+- **Restructure close-out residuals** (restructure itself COMPLETE — see ACHIEVED): (a) legacy `src/` deletion sweep per the inventory in `TODO_RESTRUCTURE.md` — awaiting user go; keep `evaluate_sam.py` (GT-prompt benchmark, not yet superseded; port as driver kind at P4 prep) and `evaluate_yolo_vbb.py` (driver lacks class_map passthrough) until replaced; (b) `AV_dev` branch deletion after (a); (c) ~~move construction scripts to `tools/`~~ — CANCELLED 2026-07-30: dataset-handling scripts stay in `dataset/`, which git already tracks for `*.py` while ignoring the data.
 - **P1 writing started ahead of schedule** — venue now Data in Brief (roadmap v2.2); `.planning/` complete + 5 section drafts in `papers/p1_aerialfusecv_descriptor/`; blocked on P0 for Data Description/DOI + methods-vs-frozen-scripts.
 - Next up per roadmap: **P0 Zenodo release** (Aug 2026) — construction scripts in `dataset/` are the raw material; packaging, checksums, LICENSE, README remain
 

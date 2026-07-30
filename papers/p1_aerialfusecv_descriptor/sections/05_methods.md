@@ -130,6 +130,6 @@ reported in Data Description.
   reorganisation with dimension checks) — or the deposit's reproducibility
   claim fails. Recorded as a P0 blocker in `ATHENA_STATE.md`.
 - Script paths above must be updated once P0 moves construction code to
-  `tools/dataset_construction/`.
+  `dataset/` (they already live there; no move needed).
 - Figure F3: reuse or redraw thesis Figure 15 (creation methodology).
 - End-to-end reproducibility run (roadmap: 3–5 days) precedes submission.
