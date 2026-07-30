@@ -47,7 +47,44 @@ erratum — add to the errata list in `ATHENA_STATE.md`.
 
 ---
 
-## The decision this plan needs first: v1.0 faithful, or v2.0 corrected?
+## ✅ DECIDED 2026-07-30 (user): build the CORRECTED dataset
+
+**Option B. Fix it.** Plus two requirements and one verification mandate:
+
+1. **Matching uses the per-instance masks** (`instance_masks/*_instance_id_RGB.png`)
+   for exact instance separation — no connected-components approximation.
+   Class comes from the semantic mask at the same pixels; instance identity
+   from the instance mask. The audit precondition for this
+   (every instance region maps to exactly one class) is being verified
+   exhaustively — see § Colour audit.
+2. **The released dataset ships BOTH mask directories per split:**
+   `semantic_masks/` (class-coloured, as before, for backward compatibility and
+   semantic-segmentation users) and `instance_masks/` (per-instance identity).
+   This removes the v1.0 limitation that adjacent same-class instances are
+   inseparable — the paired box is no longer the only way to isolate an
+   instance.
+3. **No colour table is trusted, including the thesis's.** Table 5 must be
+   verified against an exhaustive scan of every mask; "P0000 contains four
+   colours" proves nothing about the other 1,868 images.
+
+**Consequence, recorded not relitigated.** Pair counts will change, so the
+released dataset is no longer numerically identical to the one the thesis
+experiments ran on. This is acceptable and manageable because:
+- P2 re-runs every experiment under the new evaluation stack anyway (already
+  decided at the restructure), so P2's numbers will describe the released
+  dataset natively.
+- The thesis stands as Phase 0 with its own numbers, computed on the
+  pre-release construction — stated plainly in P1 and in `ATHENA_STATE.md`.
+- **P1 must be re-based on the corrected numbers.** Every count in
+  `DRAFT_P1.md` (125,102 pairs, 97.9%, all of Table 2, the four ⚠ values) is
+  provisional until the new build reports its own. Phase 4 becomes a rewrite
+  of the numeric content, not a patch. The narrative and structure survive.
+- Thesis-vs-release divergence becomes a documented Data Description
+  subsection, not an inconsistency a reviewer discovers.
+
+The superseded analysis is kept below for the record.
+
+## Superseded: v1.0 faithful, or v2.0 corrected?
 
 R2 puts a genuine fork in front of us.
 
@@ -77,7 +114,37 @@ Either way, R2 must be disclosed in P1's Limitations — the current wording
 should say that the *source* offers per-instance masks and v1.0 does not use
 them. Honest, and it pre-announces v2.0.
 
-**⛔ Do not start implementation until this is decided.**
+~~⛔ Do not start implementation until this is decided.~~ **Decided — see above.**
+
+---
+
+## Colour audit (prerequisite, running)
+
+`tools/dataset_construction/scan_isaid_colours.py` — exhaustive, no sampling.
+Over all 1,869 image pairs it establishes:
+
+1. **Every RGB value that actually occurs** in the semantic masks, with pixel
+   and image counts → verifies thesis Table 5 / `argusvision.data.constants`
+   and surfaces any colour present in the data but absent from the table
+   (`unknown_semantic_colours`) or in the table but never observed
+   (`table_colours_never_observed`).
+2. **The authoritative instance count** per image from the instance-id masks —
+   independent of connected components, and the number that replaces my ⚠
+   derivation of 330,693.
+3. **Whether any instance region spans more than one semantic class**
+   (`instances_spanning_multiple_classes`). This is the correctness
+   precondition for deriving (class, instance) by intersecting the two mask
+   types. **A non-zero count here changes the build design**, so it gates
+   Phase 1.
+
+Implementation note: both masks are packed to `0xRRGGBB` int32 and the
+(instance, semantic) co-occurrence set is obtained in a single `np.unique`
+over a combined int64 key — one pass per image rather than per-instance
+masking, which would be ~444 × 21 M operations on a large image.
+
+Smoke run (6 images): 8 distinct semantic colours, 0 unknown, 1,159 instances,
+**0 instances spanning multiple classes**. Output:
+`results/isaid_colour_audit/colour_audit.json`.
 
 ---
 
@@ -96,9 +163,20 @@ python tools/dataset_construction/build_aerialfusecv.py \
     --isaid  dataset/iSAID \
     --out    dataset/AerialFuseCV_v1 \
     --iou-threshold 0.1 \
-    --mask-source semantic   # 'instance' selects the v2.0 path (Option B)
-    --manifest                # write checksums + provenance
+    --mask-source instance   # DECIDED default; 'semantic' reproduces the
+                             # historical build for the verification harness
+    --manifest               # checksums + provenance
 ```
+
+**Instance-mask matching (the corrected path).** Per image: pack both masks;
+obtain the (instance, semantic) co-occurrence set in one pass; that yields, for
+every instance, its pixel set and its class — exactly, with no connected-
+components approximation and no merging of touching same-class objects. Then
+match DOTA boxes to instances of the same class by IoU against the box hull,
+threshold 0.1 as before. Because instances are now exact, **a one-to-one
+assignment becomes meaningful and should be enforced** (Hungarian, reusing
+`argusvision.evaluation.matching` — the same single matcher the restructure
+froze), removing the v1.0 caveat that two boxes could claim one component.
 
 **One pass, no intermediate dataset.** For each split, for each image ID: read
 the DOTA label and the iSAID mask, decode class masks, match boxes to
@@ -114,7 +192,8 @@ colour table lives in `argusvision.data.constants` and must not be duplicated
 here, per finding F4).
 
 **Outputs:**
-- `{train,val}/{images,labels,semantic_masks}/`
+- `{train,val}/{images,labels,semantic_masks,instance_masks}/` — **both mask
+  types**, filtered to paired instances only, per the decision above
 - `DATASET_ANALYSIS.md` — the EDA report
 - `dataset_statistics.json` — machine-readable counterpart (this is what P1
   cites for the ⚠ mask-side numbers)
@@ -135,16 +214,27 @@ compare equal as parsed geometry (order-insensitive, tolerance on the 1-decimal
 formatting the old script used), and masks compare pixel-identical. Report any
 divergence per image rather than aborting on the first.
 
-**Level 3 — statistical.** Recomputed counts must reproduce thesis Tables 6
-and 7 exactly: 127,843 source boxes → 125,102 pairs; 98,990/97,070/98.1% train
-and 28,853/28,032/97.2% val; all 15 per-class rows. Plus the numbers P1
-currently carries as ⚠ derivations — source mask instances (I derived 330,693
-by summing Table 7), mask-side retention (37.8%), unpaired mask instances
-(205,591), small-vehicle ratio (6.2×). **These become verified or corrected,
-and P1 cites `dataset_statistics.json` instead of my arithmetic.**
+**Levels 1–2 apply to `--mask-source semantic`,** which must reproduce the
+historical dataset. That is what proves the port is faithful and isolates the
+effect of the instance-mask change: any difference in the corrected build is
+then attributable to the fix, not to a porting bug. Run both modes.
 
-Level 3 is the point where "recompute and verify everything" is actually
-satisfied, and where a silent discrepancy in the old pipeline would surface.
+**Level 3 — statistical, two parts.**
+
+*Historical mode* must reproduce thesis Tables 6 and 7 exactly: 127,843 source
+boxes → 125,102 pairs; 98,990/97,070/98.1% train and 28,853/28,032/97.2% val;
+all 15 per-class rows. Failure here means the old pipeline had an undocumented
+step — worth knowing before anything is deleted.
+
+*Corrected mode* produces the numbers that will be published. Report the delta
+against historical mode explicitly, per class: pairs gained by no longer
+merging touching instances, pairs lost to one-to-one enforcement, and the new
+box-side and mask-side retention rates. **The authoritative source-instance
+count comes from the colour audit, replacing my ⚠ derivation of 330,693.**
+
+Level 3 is where "recompute and verify everything" is actually satisfied — and
+where the corrected build has to justify itself with a measured improvement
+rather than an assumed one.
 
 ---
 
@@ -176,22 +266,31 @@ rendered — so the paper cites data, not prose.
 
 ## Phases
 
-- [ ] **Phase 0 — Decide v1.0 vs v2.0 (user).** Blocks everything. Recommendation above.
-- [ ] **Phase 1 — Build script (~1 day).** Single-pass builder with `--mask-source`, manifest, checksums. Matching logic ported and unit-tested (synthetic masks: touching instances, empty class mask, sub-threshold overlap, multi-candidate).
-- [ ] **Phase 2 — Verification harness (~0.5 day).** Levels 1–3 as a script (`verify_against_reference.py`) producing a pass/fail report; run against `AerialFuseCV_Refined`. **Gate: Level 2 must be clean, or the divergence explained in writing, before proceeding.**
-- [ ] **Phase 3 — EDA (~1 day).** `analyze_aerialfusecv.py` → `dataset_statistics.json` + `DATASET_ANALYSIS.md` + the four P1 figures.
-- [ ] **Phase 4 — Reconcile the papers (~0.5 day).** Replace every ⚠ in `DRAFT_P1.md` with verified values citing `dataset_statistics.json`; fix R5 filename; extend Limitations with R2's source-masks disclosure; add the 66.6% wording erratum to `ATHENA_STATE.md`.
+- [x] **Phase 0 — Decide (user): CORRECTED build, both mask dirs, exhaustive colour verification.** Done 2026-07-30.
+- [~] **Phase 0b — Colour audit (running).** Exhaustive scan of all 1,869 pairs. **Gate: `instances_spanning_multiple_classes` must be 0**, and the colour table must be confirmed, before Phase 1 design is final.
+- [ ] **Phase 1 — Build script (~1–1.5 day).** Single-pass builder, `--mask-source {instance,semantic}`, both mask dirs written, Hungarian one-to-one for the corrected path, manifest + checksums. Unit tests on synthetic masks: touching same-class instances (the case v1.0 got wrong), empty class mask, sub-threshold overlap, multi-candidate, instance spanning a class boundary.
+- [ ] **Phase 2 — Verification harness (~0.5 day).** Levels 1–3 as `verify_against_reference.py`; historical mode against `AerialFuseCV_Refined`. **Gate: Level 2 clean in historical mode, or the divergence explained in writing, before the corrected build is trusted.**
+- [ ] **Phase 3 — EDA (~1 day).** `analyze_aerialfusecv.py` → `dataset_statistics.json` + `DATASET_ANALYSIS.md` + the four P1 figures, plus the historical-vs-corrected delta table.
+- [ ] **Phase 4 — Re-base P1 on the corrected numbers (~1 day, was 0.5).** Every count in `DRAFT_P1.md` is provisional: Tables 1–2, the abstract, Value of the Data, Data Description and Limitations all take new values from `dataset_statistics.json`. Add the thesis-vs-release divergence subsection. Remove the instance-inseparability limitation (fixed) and the one-to-one caveat (fixed). Fix R5 filename. Add the 66.6% wording erratum to `ATHENA_STATE.md`.
 - [ ] **Phase 5 — P0 packaging (~0.5 day).** LICENSE (CC-BY 4.0 on our contribution), deposit README, the rebuild instructions the descriptor promises, Zenodo upload → DOI.
 - [ ] **Close-out.** Close OPEN 6; ledger + work log; delete `refine_aerialfusecv.py` only after Level 2 passes.
 
-**Total ~3.5 days**, versus the ~1 week P0 was budgeted at — and it now
-produces a verified dataset plus the EDA P1 needs, not just a package.
+**Total ~4.5–5 days**, versus the ~1 week P0 was budgeted at — still inside
+budget, and it now produces a *corrected and verified* dataset with both mask
+types plus the EDA P1 needs, rather than a package around an approximation.
 
 ---
 
 ## Open questions
 
-1. **v1.0 vs v2.0** — Phase 0, above.
+1. ~~v1.0 vs v2.0~~ — **CLOSED: corrected build** (Phase 0, 2026-07-30).
+1b. **Version label and DOI strategy.** The release is no longer the thesis
+   artefact, so: call it AerialFuseCV **v1.0** (first public release, corrected)
+   and describe the thesis construction as an unreleased precursor? Or v2.0,
+   acknowledging the thesis version as v1.0 even though it was never
+   deposited? Recommend **v1.0 = first public release**, with a Data
+   Description note that the thesis experiments used a precursor build — one
+   DOI, no phantom version history.
 2. **Ship the images?** DOTA/iSAID terms forbid redistribution, hence the
    script-plus-annotations deposit. Confirm the interpretation once more before
    upload; it is the deposit's central design constraint.
