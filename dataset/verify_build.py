@@ -90,7 +90,7 @@ def main() -> int:
     ap.add_argument("--splits", nargs="+", default=list(SPLITS))
     ap.add_argument("--max-report", type=int, default=25)
     ap.add_argument("--out", type=Path,
-                    default=Path("results/build_verification/verification_report.json"))
+                    default=Path("results/AerialFuseCV_Testing/build_verification/verification_report.json"))
     args = ap.parse_args()
 
     report: Dict = {"build": str(args.build), "reference": str(args.reference), "levels": {}}

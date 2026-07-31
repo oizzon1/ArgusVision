@@ -1,0 +1,385 @@
+{
+  "generated_utc": "2026-07-31T05:48:40Z",
+  "mask_source": "instance",
+  "matching_geometry": "oriented polygon",
+  "iou_threshold": 0.1,
+  "annotation_format": "DOTA native (headers, absolute px, class name, difficulty)",
+  "box_geometries_written": [
+    "labels_obb",
+    "labels_hbb"
+  ],
+  "totals": {
+    "boxes": 127843,
+    "pairs": 125722,
+    "src_instances": 475438,
+    "images_kept": 1862,
+    "images_seen": 1869,
+    "images_excluded": 7,
+    "box_pairing_rate": 0.9834093380161605,
+    "instance_pairing_rate": 0.26443405869955705
+  },
+  "per_split": {
+    "train": {
+      "images_seen": 1411,
+      "images_kept": 1406,
+      "boxes": 98990,
+      "pairs": 97590,
+      "src_instances": 358166
+    },
+    "val": {
+      "images_seen": 458,
+      "images_kept": 456,
+      "boxes": 28853,
+      "pairs": 28132,
+      "src_instances": 117272
+    }
+  },
+  "per_class": {
+    "plane": {
+      "class_id": 0,
+      "class_name": "plane",
+      "train": {
+        "boxes": 8055,
+        "pairs": 7910,
+        "src_instances": 8209,
+        "box_pairing_rate": 0.9819987585350713
+      },
+      "val": {
+        "boxes": 2531,
+        "pairs": 2522,
+        "src_instances": 2637,
+        "box_pairing_rate": 0.9964440932437771
+      },
+      "total_pairs": 10432
+    },
+    "ship": {
+      "class_id": 1,
+      "class_name": "ship",
+      "train": {
+        "boxes": 28068,
+        "pairs": 27929,
+        "src_instances": 35649,
+        "box_pairing_rate": 0.995047741199943
+      },
+      "val": {
+        "boxes": 8960,
+        "pairs": 8925,
+        "src_instances": 12470,
+        "box_pairing_rate": 0.99609375
+      },
+      "total_pairs": 36854
+    },
+    "storage-tank": {
+      "class_id": 2,
+      "class_name": "storage-tank",
+      "train": {
+        "boxes": 5029,
+        "pairs": 4936,
+        "src_instances": 6129,
+        "box_pairing_rate": 0.9815072579041559
+      },
+      "val": {
+        "boxes": 2888,
+        "pairs": 2821,
+        "src_instances": 3462,
+        "box_pairing_rate": 0.9768005540166205
+      },
+      "total_pairs": 7757
+    },
+    "baseball-diamond": {
+      "class_id": 3,
+      "class_name": "baseball-diamond",
+      "train": {
+        "boxes": 415,
+        "pairs": 413,
+        "src_instances": 465,
+        "box_pairing_rate": 0.9951807228915662
+      },
+      "val": {
+        "boxes": 214,
+        "pairs": 214,
+        "src_instances": 220,
+        "box_pairing_rate": 1.0
+      },
+      "total_pairs": 627
+    },
+    "tennis-court": {
+      "class_id": 4,
+      "class_name": "tennis-court",
+      "train": {
+        "boxes": 2367,
+        "pairs": 2355,
+        "src_instances": 2499,
+        "box_pairing_rate": 0.9949302915082383
+      },
+      "val": {
+        "boxes": 760,
+        "pairs": 748,
+        "src_instances": 789,
+        "box_pairing_rate": 0.9842105263157894
+      },
+      "total_pairs": 3103
+    },
+    "basketball-court": {
+      "class_id": 5,
+      "class_name": "basketball-court",
+      "train": {
+        "boxes": 515,
+        "pairs": 494,
+        "src_instances": 567,
+        "box_pairing_rate": 0.9592233009708738
+      },
+      "val": {
+        "boxes": 132,
+        "pairs": 122,
+        "src_instances": 154,
+        "box_pairing_rate": 0.9242424242424242
+      },
+      "total_pairs": 616
+    },
+    "ground-track-field": {
+      "class_id": 6,
+      "class_name": "ground-track-field",
+      "train": {
+        "boxes": 325,
+        "pairs": 313,
+        "src_instances": 359,
+        "box_pairing_rate": 0.963076923076923
+      },
+      "val": {
+        "boxes": 144,
+        "pairs": 137,
+        "src_instances": 160,
+        "box_pairing_rate": 0.9513888888888888
+      },
+      "total_pairs": 450
+    },
+    "harbor": {
+      "class_id": 7,
+      "class_name": "harbor",
+      "train": {
+        "boxes": 5983,
+        "pairs": 5833,
+        "src_instances": 6180,
+        "box_pairing_rate": 0.9749289654019723
+      },
+      "val": {
+        "boxes": 2090,
+        "pairs": 2029,
+        "src_instances": 2133,
+        "box_pairing_rate": 0.9708133971291866
+      },
+      "total_pairs": 7862
+    },
+    "bridge": {
+      "class_id": 8,
+      "class_name": "bridge",
+      "train": {
+        "boxes": 2047,
+        "pairs": 2024,
+        "src_instances": 2086,
+        "box_pairing_rate": 0.9887640449438202
+      },
+      "val": {
+        "boxes": 464,
+        "pairs": 456,
+        "src_instances": 483,
+        "box_pairing_rate": 0.9827586206896551
+      },
+      "total_pairs": 2480
+    },
+    "large-vehicle": {
+      "class_id": 9,
+      "class_name": "large-vehicle",
+      "train": {
+        "boxes": 16969,
+        "pairs": 16686,
+        "src_instances": 36554,
+        "box_pairing_rate": 0.9833225293181684
+      },
+      "val": {
+        "boxes": 4387,
+        "pairs": 4079,
+        "src_instances": 9140,
+        "box_pairing_rate": 0.929792568953727
+      },
+      "total_pairs": 20765
+    },
+    "small-vehicle": {
+      "class_id": 10,
+      "class_name": "small-vehicle",
+      "train": {
+        "boxes": 26126,
+        "pairs": 25674,
+        "src_instances": 255490,
+        "box_pairing_rate": 0.9826992268238536
+      },
+      "val": {
+        "boxes": 5438,
+        "pairs": 5258,
+        "src_instances": 84412,
+        "box_pairing_rate": 0.9668995954394998
+      },
+      "total_pairs": 30932
+    },
+    "helicopter": {
+      "class_id": 11,
+      "class_name": "helicopter",
+      "train": {
+        "boxes": 630,
+        "pairs": 613,
+        "src_instances": 654,
+        "box_pairing_rate": 0.973015873015873
+      },
+      "val": {
+        "boxes": 73,
+        "pairs": 71,
+        "src_instances": 89,
+        "box_pairing_rate": 0.9726027397260274
+      },
+      "total_pairs": 684
+    },
+    "roundabout": {
+      "class_id": 12,
+      "class_name": "roundabout",
+      "train": {
+        "boxes": 399,
+        "pairs": 386,
+        "src_instances": 429,
+        "box_pairing_rate": 0.9674185463659147
+      },
+      "val": {
+        "boxes": 179,
+        "pairs": 176,
+        "src_instances": 188,
+        "box_pairing_rate": 0.9832402234636871
+      },
+      "total_pairs": 562
+    },
+    "soccer-ball-field": {
+      "class_id": 13,
+      "class_name": "soccer-ball-field",
+      "train": {
+        "boxes": 326,
+        "pairs": 311,
+        "src_instances": 449,
+        "box_pairing_rate": 0.9539877300613497
+      },
+      "val": {
+        "boxes": 153,
+        "pairs": 140,
+        "src_instances": 191,
+        "box_pairing_rate": 0.9150326797385621
+      },
+      "total_pairs": 451
+    },
+    "swimming-pool": {
+      "class_id": 14,
+      "class_name": "swimming-pool",
+      "train": {
+        "boxes": 1736,
+        "pairs": 1713,
+        "src_instances": 2447,
+        "box_pairing_rate": 0.9867511520737328
+      },
+      "val": {
+        "boxes": 440,
+        "pairs": 434,
+        "src_instances": 744,
+        "box_pairing_rate": 0.9863636363636363
+      },
+      "total_pairs": 2147
+    }
+  },
+  "matched_iou": {
+    "mean": 0.6710086565597112,
+    "median": 0.7149829999999999,
+    "p05": 0.27582255,
+    "p95": 0.8869646
+  },
+  "excluded_images": [
+    "P1531",
+    "P1674",
+    "P2123",
+    "P2152",
+    "P2330",
+    "P2352",
+    "P2380"
+  ],
+  "instances_with_ambiguous_class": 0,
+  "discarded": {
+    "by_reason": {
+      "box:below_iou_threshold": 223,
+      "box:lost_to_one_to_one_assignment": 215,
+      "box:no_mask_instance_of_class": 111,
+      "box:no_overlapping_instance": 1572,
+      "instance:no_box_of_class": 303451,
+      "instance:no_overlapping_box": 44021,
+      "instance:unassigned": 2244
+    },
+    "boxes": 2121,
+    "instances": 349716,
+    "by_class": {
+      "baseball-diamond": {
+        "instance": 58,
+        "box": 2
+      },
+      "basketball-court": {
+        "instance": 105,
+        "box": 31
+      },
+      "bridge": {
+        "instance": 89,
+        "box": 31
+      },
+      "ground-track-field": {
+        "instance": 69,
+        "box": 19
+      },
+      "harbor": {
+        "instance": 451,
+        "box": 211
+      },
+      "helicopter": {
+        "instance": 59,
+        "box": 19
+      },
+      "large-vehicle": {
+        "box": 591,
+        "instance": 24929
+      },
+      "plane": {
+        "instance": 414,
+        "box": 154
+      },
+      "roundabout": {
+        "box": 16,
+        "instance": 55
+      },
+      "ship": {
+        "instance": 11265,
+        "box": 174
+      },
+      "small-vehicle": {
+        "instance": 308970,
+        "box": 632
+      },
+      "soccer-ball-field": {
+        "box": 28,
+        "instance": 189
+      },
+      "storage-tank": {
+        "instance": 1834,
+        "box": 160
+      },
+      "swimming-pool": {
+        "instance": 1044,
+        "box": 29
+      },
+      "tennis-court": {
+        "instance": 185,
+        "box": 24
+      }
+    }
+  }
+}

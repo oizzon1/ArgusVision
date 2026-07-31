@@ -474,7 +474,7 @@ numeric content and its Methods narrative from that document. It is therefore
 - The Methods section must be rewritten to describe **the script we ship**, not
   a five-stage narrative inherited from elsewhere.
 - Already superseded by our own exhaustive measurement
-  (`results/isaid_colour_audit/colour_audit.json`, 1,869 images): the iSAID
+  (`results/AerialFuseCV_Testing/isaid_colour_audit/colour_audit.json`, 1,869 images): the iSAID
   source contains **475,438 instances** (358,166 train / 117,272 val), not the
   330,693 that connected-components counting implied — a 30.4% undercount. The
   class-colour table is confirmed complete and correct (16 values, zero
