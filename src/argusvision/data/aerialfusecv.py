@@ -13,6 +13,8 @@ polygon itself where the semantic mask has annotation gaps.
 from pathlib import Path
 from typing import List, Optional
 
+import json
+
 import cv2
 import numpy as np
 
@@ -63,6 +65,46 @@ class AerialFuseCVSplit:
             if not sub.exists():
                 raise FileNotFoundError(f"dataset split missing {sub}")
         self.image_ids = sorted(p.stem for p in (self.root / "images").glob("*.png"))
+        self.instance_masks_dir = self.root / "instance_masks"
+        # A build that ships per-instance masks also ships pairs.jsonl, which
+        # names the iSAID instance behind each label line, in label order.
+        # With both we can hand back EXACT ground truth instead of re-deriving
+        # it by clipping the class-coloured mask.
+        self._instance_rgb = {}
+        pairs = self.root.parent / "pairs.jsonl"
+        if self.instance_masks_dir.exists() and pairs.exists():
+            split = self.root.name
+            for line in open(pairs, encoding="utf-8"):
+                r = json.loads(line)
+                if r.get("split") == split and "instance_rgb" in r:
+                    self._instance_rgb.setdefault(r["image_id"], []).append(
+                        tuple(r["instance_rgb"]))
+
+    @property
+    def has_instance_masks(self) -> bool:
+        return bool(self._instance_rgb)
+
+    def load_instance_mask(self, image_id: str) -> np.ndarray:
+        path = self.instance_masks_dir / f"{image_id}_instance_id_RGB.png"
+        bgr = cv2.imread(str(path))
+        if bgr is None:
+            raise IOError(f"cannot read instance mask {path}")
+        return cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
+
+    def ground_truth_masks(self, image_id: str, gts) -> List[np.ndarray]:
+        """One mask per ground-truth object, in label order.
+
+        Uses the released per-instance masks when the build provides them —
+        exact, and free of neighbouring objects by construction. Falls back to
+        clipping the class-coloured mask for older builds that ship no
+        instance masks.
+        """
+        rgbs = self._instance_rgb.get(image_id)
+        if rgbs and len(rgbs) == len(gts):
+            ins = self.load_instance_mask(image_id)
+            return [np.all(ins == np.array(c, np.uint8), axis=-1) for c in rgbs]
+        semantic = self.load_semantic_mask(image_id)
+        return [extract_gt_instance_mask(semantic, g) for g in gts]
 
     def __len__(self) -> int:
         return len(self.image_ids)

@@ -1,0 +1,39 @@
+{
+  "experiment": "pipeline_aerialfusecv_reconciled",
+  "created_utc": "2026-07-31T16:59:48.120643+00:00",
+  "config": {
+    "experiment": "pipeline_aerialfusecv_reconciled",
+    "kind": "pipeline",
+    "dataset": {
+      "type": "aerialfusecv",
+      "path": "dataset/AerialFuseCV_reconciled/val"
+    },
+    "detector": {
+      "name": "yolo11x-obb",
+      "conf_threshold": 0.25
+    },
+    "segmenter": {
+      "name": "sam-vit-b"
+    },
+    "iou_thresholds": [
+      0.1,
+      0.3,
+      0.5
+    ],
+    "iou_mode": "auto",
+    "seg_match_threshold": 0.1
+  },
+  "command": "experiments/run_evaluation.py experiments/configs/p2_pipeline_aerialfusecv_reconciled.yaml",
+  "git_sha": "bb6ed2abdbe6a8407f5e2fb9f64aec4af62d44b3",
+  "git_branch": "dev",
+  "git_dirty": true,
+  "environment": {
+    "conda_env": "AV_env",
+    "python": "3.9.25",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "torch": "2.5.1+cu124",
+    "cuda_available": true,
+    "gpu": "NVIDIA GeForce RTX 3090 Ti",
+    "numpy": "2.0.2"
+  }
+}

@@ -20,7 +20,7 @@ import numpy as np
 import yaml
 from tqdm import tqdm
 
-from argusvision.data.aerialfusecv import AerialFuseCVSplit, extract_gt_instance_mask
+from argusvision.data.aerialfusecv import AerialFuseCVSplit
 from argusvision.data.dota import DotaYoloObbSplit
 from argusvision.evaluation import (
     DetectionEvaluator,
@@ -99,7 +99,7 @@ def run_pipeline(cfg: Dict, run_dir) -> Dict:
     for image_id in tqdm(ids, desc=cfg["experiment"], unit="img", ncols=90):
         image = dataset.load_image(image_id)
         gts = dataset.load_ground_truth(image_id)
-        semantic = dataset.load_semantic_mask(image_id)
+        gt_masks = dataset.ground_truth_masks(image_id, gts)
 
         result = pipeline.run(image)
         timings.append(result.timing_ms)
@@ -107,8 +107,8 @@ def run_pipeline(cfg: Dict, run_dir) -> Dict:
         merged = det_eval.add_image(result.detections, gts)
         match = merged[seg_threshold]
         for pred_i, gt_j, _ in match.matches:
-            gt_mask = extract_gt_instance_mask(semantic, gts[gt_j])
-            seg_eval.add_pair(gts[gt_j].class_id, result.masks[pred_i].mask, gt_mask)
+            seg_eval.add_pair(gts[gt_j].class_id, result.masks[pred_i].mask,
+                              gt_masks[gt_j])
         for gt_j in match.unmatched_gt:
             seg_eval.add_missed_gt(gts[gt_j].class_id)
 
