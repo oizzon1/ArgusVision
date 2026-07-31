@@ -32,8 +32,17 @@ SPLITS = ("train", "val")
 COORD_TOL = 0.05          # labels are written to 1 decimal place
 
 
+def labels_dir(root: Path, split: str) -> Path:
+    """Builds may store oriented boxes in labels_obb/; older ones use labels/."""
+    for name in ("labels_obb", "labels"):
+        d = root / split / name
+        if d.exists():
+            return d
+    return root / split / "labels"
+
+
 def image_ids(root: Path, split: str) -> Set[str]:
-    d = root / split / "labels"
+    d = labels_dir(root, split)
     return {p.stem for p in d.glob("*.txt")} if d.exists() else set()
 
 
@@ -112,8 +121,8 @@ def main() -> int:
     counts = {"labels_compared": 0, "masks_compared": 0}
     for s in args.splits:
         for img_id in sorted(common[s]):
-            a = parse_label(args.build / s / "labels" / f"{img_id}.txt")
-            b = parse_label(args.reference / s / "labels" / f"{img_id}.txt")
+            a = parse_label(labels_dir(args.build, s) / f"{img_id}.txt")
+            b = parse_label(labels_dir(args.reference, s) / f"{img_id}.txt")
             counts["labels_compared"] += 1
             if not boxes_match(a, b):
                 l2["passed"] = False
@@ -160,7 +169,7 @@ def main() -> int:
     ref_counts: Dict[str, int] = defaultdict(int)
     for s in args.splits:
         for img_id in sorted(image_ids(args.reference, s)):
-            for cls, _ in parse_label(args.reference / s / "labels" / f"{img_id}.txt"):
+            for cls, _ in parse_label(labels_dir(args.reference, s) / f"{img_id}.txt"):
                 ref_counts[cls] += 1
     l3["reference_pairs_per_class"] = dict(sorted(ref_counts.items()))
     if "build_pairs_per_class" in l3:

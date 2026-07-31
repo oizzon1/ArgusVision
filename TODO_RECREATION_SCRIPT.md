@@ -378,3 +378,44 @@ AABB is computational-geometry vocabulary, not remote sensing.
 registry naming, and `model_checkpoints/YOLO/VBB/`. **Rename to HBB later** so
 one vocabulary spans dataset, code and papers. Mechanical but touches a
 checkpoint path, so do it deliberately, with the tests, not in passing.
+
+
+---
+
+## P1 content notes — captured 2026-07-31 (source: our own builds)
+
+### Value of the Data: official benchmarking stays available
+Training on AerialFuseCV does not cut a user off from the official DOTA
+evaluation server. Because annotations are kept in DOTA's native form —
+absolute pixel coordinates, DOTA class names, oriented quadrilaterals, the
+`difficult` flag — predictions from a model trained here are directly
+submission-shaped: no de-normalisation, no coordinate reconstruction, no class
+re-indexing. The imagery is DOTA's own, unmodified and identically identified,
+so there is no train/test domain shift either. Had the dataset shipped
+framework-normalised labels this would not hold.
+
+The test split itself is deliberately absent: DOTA publishes no test labels and
+iSAID no test masks (verified in our tree — `DOTA_v1/test/` has images only,
+`iSAID/test/` likewise), so no correspondence exists there for us to contribute.
+Users wanting it download it from DOTA.
+
+### Limitations: the training-side subset effect
+AerialFuseCV's labels are DOTA's minus the unpaired boxes — **1.66%** of them
+after the corrected build (box pairing 98.34%), roughly one object per image.
+Those objects remain visible in the imagery but carry no label, so a detector
+trained here is mildly taught to suppress them. This is the training-side mirror
+of the evaluation artefact in
+`documentation/DECISION_unpaired_annotations.md` §5. Quantifiable per class from
+`discarded.jsonl`; state it, do not estimate it. A user seeking maximum
+detection performance for a server submission should train on full DOTA.
+
+### Corrected build result (for Data Description)
+Run `results/aerialfusecv_build/20260731_082446_667bf23/`:
+1,862 images kept of 1,869 (7 excluded), 127,843 source boxes -> **125,722
+pairs** (98.34%), 475,438 source instances (26.44% paired), matched-IoU median
+**0.715**. Versus the hull/connected-components construction: +620 pairs, +5
+images, +0.48 pp box pairing, +0.247 median IoU. Largest class gains are harbor
+(+548, 90.6% -> 97.4%) and plane (+265, 96.0% -> 98.5%) — both strongly
+oriented, so the axis-aligned hull hurt them most. Small negative deltas in
+ship, small-vehicle and large-vehicle are the one-to-one constraint removing
+duplicate claims on a single mask, i.e. a correctness gain.
