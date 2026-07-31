@@ -1,0 +1,16 @@
+# Pipeline evaluation on the corrected AerialFuseCV build.
+# Mirrors the configuration behind results/ArgusVision_v2_evaluation so the only
+# variable is the dataset: same models, same prompts, same evaluator.
+experiment: pipeline_aerialfusecv_v1
+kind: pipeline
+dataset:
+  type: aerialfusecv
+  path: dataset/AerialFuseCV_v1/val
+detector:
+  name: yolo11x-obb
+  conf_threshold: 0.25
+segmenter:
+  name: sam-vit-b
+iou_thresholds: [0.1, 0.3, 0.5]
+iou_mode: auto
+seg_match_threshold: 0.1

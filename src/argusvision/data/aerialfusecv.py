@@ -53,9 +53,15 @@ class AerialFuseCVSplit:
 
     def __init__(self, root: str):
         self.root = Path(root)
-        for sub in ("images", "labels", "semantic_masks"):
-            if not (self.root / sub).exists():
-                raise FileNotFoundError(f"dataset split missing {self.root / sub}")
+        # Oriented boxes live in labels_obb/ (a build may also ship labels_hbb/);
+        # older layouts used a single labels/ directory.
+        self.labels_dir = next(
+            (self.root / n for n in ("labels_obb", "labels") if (self.root / n).exists()),
+            self.root / "labels",
+        )
+        for sub in (self.root / "images", self.labels_dir, self.root / "semantic_masks"):
+            if not sub.exists():
+                raise FileNotFoundError(f"dataset split missing {sub}")
         self.image_ids = sorted(p.stem for p in (self.root / "images").glob("*.png"))
 
     def __len__(self) -> int:
@@ -75,7 +81,7 @@ class AerialFuseCVSplit:
         return cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
 
     def load_ground_truth(self, image_id: str) -> List[GroundTruthInstance]:
-        path = self.root / "labels" / f"{image_id}.txt"
+        path = self.labels_dir / f"{image_id}.txt"
         if not path.exists():
             return []
         instances = []
