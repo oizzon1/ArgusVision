@@ -1,0 +1,24 @@
+{
+  "run_id": "20260730_150220_7555f87",
+  "created_utc": "2026-07-30T13:40:41Z",
+  "git_sha": "1755705629e60f17c953bdd6e0976a063f3d3b47",
+  "command": "dataset/build_aerialfusecv.py --out dataset/AerialFuseCV_regression --mask-source semantic --image-mode none",
+  "args": {
+    "dota": "dataset\\DOTA_v1",
+    "isaid": "dataset\\iSAID",
+    "out": "dataset\\AerialFuseCV_regression",
+    "mask_source": "semantic",
+    "iou_threshold": "0.1",
+    "image_mode": "none",
+    "splits": "['train', 'val']",
+    "limit": "None",
+    "results_root": "results\\aerialfusecv_build"
+  },
+  "elapsed_s": 5901.8,
+  "environment": {
+    "python": "3.9.25",
+    "numpy": "2.0.2",
+    "opencv": "4.12.0",
+    "conda_env": "AV_env"
+  }
+}
