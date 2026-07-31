@@ -318,3 +318,63 @@ types plus the EDA P1 needs, rather than a package around an approximation.
 
 *Written 2026-07-30 by ATHENA (STRATEGIST/OPERATOR). Companion entries:
 `ATHENA_STATE.md` OPEN 6, `Athena_Protocols/WORK_LOG.md` 2026-07-30.*
+
+---
+
+## Rebuild design — settled 2026-07-31
+
+All verified against sources, not assumed. Four changes converge on one rebuild;
+the earlier instance-mode run was stopped ~30% in because it reflected none of
+them.
+
+### 1. Match on the oriented polygon, not its axis-aligned hull
+The precursor scored candidates against the box's hull rendered as a filled
+rectangle, because connected components gave it nothing better. Measured over
+21,265 boxes, **that hull is a median 1.83× the true oriented box area** (68%
+exceed 1.5×, 37% exceed 2×, worst 12.9×). DOTA is genuinely oriented — 95.5% of
+boxes are rotated, median 17.1° off-axis. Matching on the hull therefore
+depresses IoU, makes the 0.1 threshold mean "10% of a box twice the object's
+size", and loses discrimination exactly where scenes are dense (ships at a quay,
+vehicle rows). We now hold the true polygon and an exact instance mask, so
+rasterise the quadrilateral (`cv2.fillPoly`) and score against the instance
+directly.
+
+### 2. Ship both box geometries
+`labels_obb/` (oriented quadrilateral, as DOTA annotates) and `labels_hbb/`
+(axis-aligned hull, explicitly derived). The pairing is format-independent — the
+same object, two geometries — so this is not a scope expansion. Verified at
+source (captain-whu.github.io/DOTA/dataset.html): **DOTA distributes OBB
+exclusively**, no official HBB, so ours is a derivation with nothing to
+contradict. Needed by our own P2 baselines: Mask R-CNN and YOLOv11-seg are
+horizontal-box models. Also enables comparing OBB and HBB detectors against
+*identical* mask ground truth, which nothing else offers.
+
+### 3. Keep DOTA-native annotation format; convert per consumer
+Verified: the YOLO conversion is **lossy** — it drops the `difficult` flag,
+`gsd:` and `imagesource:`, and normalises coordinates. DOTA's own evaluation
+protocol treats difficult instances specially, so a converted copy cannot follow
+it. No single framework format serves everyone: P2 alone needs YOLO (YOLOv11-seg)
+and COCO JSON (Mask R-CNN). Store the source format; conversion belongs in the
+loader.
+
+### 4. Deposit the correspondence, not the coordinates — LICENSING
+DOTA's terms: *"All images and their associated annotations in DOTA can be used
+for academic purposes only, but any commercial use is prohibited."* **Annotations,
+not only images.** Redistributing DOTA coordinates under CC-BY 4.0 would
+relicense restricted third-party data permissively. The deposit therefore ships
+the **pairing relation** (image id, split, class, iSAID instance identity,
+matching IoU) plus the script; the user brings their own DOTA and iSAID
+downloads and the dataset materialises locally. We license only what we created.
+**TODO: check iSAID's terms the same way** — expected at least as restrictive,
+since it inherits DOTA's imagery.
+
+### Naming
+`HBB`, not VBB. DOTA's own benchmark tasks are *OBB detection* and *HBB
+detection*; VBB is not established in this literature and "vertical" misleads.
+AABB is computational-geometry vocabulary, not remote sensing.
+
+### 5. NOTE — code rename deferred (user decision, 2026-07-31)
+`argusvision` still uses VBB internally: `mode="vbb"` in the YOLO adapter, the
+registry naming, and `model_checkpoints/YOLO/VBB/`. **Rename to HBB later** so
+one vocabulary spans dataset, code and papers. Mechanical but touches a
+checkpoint path, so do it deliberately, with the tests, not in passing.
