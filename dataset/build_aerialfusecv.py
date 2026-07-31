@@ -331,6 +331,7 @@ def process_image(task: dict) -> dict:
     img_id, split = task["img_id"], task["split"]
     dota, isaid, out = Path(task["dota"]), Path(task["isaid"]), Path(task["out"])
     mode, thr, image_mode = task["mask_source"], task["iou_threshold"], task["image_mode"]
+    mask_mode = task.get("mask_mode", "reconciled")
 
     boxes, gsd, imagesource = load_dota_label(dota / split / "labels" / f"{img_id}.txt")
     sem = read_rgb(isaid / split / "semantic_masks" / f"{img_id}_instance_color_RGB.png")
@@ -388,6 +389,15 @@ def process_image(task: dict) -> dict:
         obb_rows.append((b.corners.tolist(), b.class_id, b.difficulty))
         hbb_rows.append((hull_corners(b), b.class_id, b.difficulty))
         sel = (labels == instances[ref].label) if mode == "instance" else comp_masks[ref]
+        if mask_mode == "reconciled":
+            # Clip to the oriented box: the released mask is consistent with the
+            # annotation that delimits it, and cannot contain a neighbouring
+            # object's pixels. See documentation/DECISION_reconciled_masks.md
+            poly = np.zeros(shape, dtype=np.uint8)
+            cv2.fillPoly(poly, [np.round(b.corners.reshape(4, 2)).astype(np.int32)], 1)
+            clipped = sel & (poly > 0)
+            if clipped.any():
+                sel = clipped
         sem_out[sel] = CLASS_ID_TO_ISAID_COLOR[b.class_id]
         if ins_out is not None:
             ins_out[sel] = instances[ref].colour
@@ -459,6 +469,10 @@ def main() -> int:
     ap.add_argument("--isaid", type=Path, default=Path("dataset/iSAID"))
     ap.add_argument("--out", type=Path, default=Path("dataset/AerialFuseCV_v1"))
     ap.add_argument("--mask-source", choices=("instance", "semantic"), default="instance")
+    ap.add_argument("--mask-mode", choices=("reconciled", "isaid"), default="reconciled",
+                    help="reconciled = matched instance clipped to the oriented box "
+                         "(consistent with the annotation that delimits it); "
+                         "isaid = the instance as iSAID drew it")
     ap.add_argument("--iou-threshold", type=float, default=0.1)
     ap.add_argument("--image-mode", choices=("hardlink", "copy", "none"), default="hardlink")
     ap.add_argument("--splits", nargs="+", default=list(SPLITS))
@@ -484,7 +498,7 @@ def main() -> int:
         tasks += [{"img_id": i, "split": split, "dota": str(args.dota),
                    "isaid": str(args.isaid), "out": str(args.out),
                    "mask_source": args.mask_source, "iou_threshold": args.iou_threshold,
-                   "image_mode": args.image_mode} for i in ids]
+                   "image_mode": args.image_mode, "mask_mode": args.mask_mode} for i in ids]
 
     run_id = f"{time.strftime('%Y%m%d_%H%M%S')}_{git_sha()[:7]}"
     results_dir = args.results_root / run_id
@@ -553,6 +567,10 @@ def main() -> int:
                               else "axis-aligned hull (regression)"),
         "iou_threshold": args.iou_threshold,
         "annotation_format": "DOTA native (headers, absolute px, class name, difficulty)",
+        "mask_mode": args.mask_mode,
+        "mask_definition": ("matched iSAID instance clipped to the oriented box"
+                            if args.mask_mode == "reconciled"
+                            else "matched iSAID instance as drawn"),
         "box_geometries_written": ["labels_obb", "labels_hbb"],
         "totals": {**totals, "images_excluded": len(excluded),
                    "box_pairing_rate": totals["pairs"] / totals["boxes"] if totals["boxes"] else None,
@@ -600,6 +618,7 @@ def main() -> int:
     t = statistics["totals"]
     print("\n" + "=" * 72)
     print(f"mode / geometry     : {args.mask_source} / {statistics['matching_geometry']}")
+    print(f"mask definition     : {statistics['mask_definition']}")
     print(f"images kept         : {t['images_kept']} / {t['images_seen']}"
           f"   (excluded {t['images_excluded']})")
     print(f"source boxes        : {t['boxes']:,}")
