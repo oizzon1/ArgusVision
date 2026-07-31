@@ -419,3 +419,50 @@ images, +0.48 pp box pairing, +0.247 median IoU. Largest class gains are harbor
 oriented, so the axis-aligned hull hurt them most. Small negative deltas in
 ship, small-vehicle and large-vehicle are the one-to-one constraint removing
 duplicate claims on a single mask, i.e. a correctness gain.
+
+
+---
+
+## LICENSING — both sources verified 2026-07-31 (blocks deposit design)
+
+**DOTA** (captain-whu.github.io/DOTA/dataset.html): *"All images and their
+associated annotations in DOTA can be used for academic purposes only, but any
+commercial use is prohibited."*
+
+**iSAID** (captain-whu.github.io/iSAID/dataset.html): identical wording —
+*"All images and their associated annotations in iSAID can be used for academic
+purposes only, but any commercial use is prohibited."* Additionally, Google
+Earth's geospatial terms apply to the imagery. Neither dataset declares a
+redistribution policy or a formal licence.
+
+### Consequence: correspondence must reference, not reproduce
+
+Depositing under CC-BY 4.0 would permit commercial use of content whose sources
+forbid it. Shipping the script instead of the images solves the imagery, but
+**`pairs.jsonl` as currently built still contains source annotation content** —
+`obb` corner coordinates are DOTA's annotation; `instance_rgb` is iSAID's
+instance identifier.
+
+**Deposit format to adopt:** reference the objects rather than reproduce them —
+image id, split, class name, the box's **ordinal index within its DOTA label
+file**, the iSAID instance identifier, and our computed IoU. The user's script
+resolves those references against their own downloads. Identical utility, no
+source annotation content in our deposit, and a much smaller file.
+(The full local build keeps coordinates — this constraint applies to what we
+publish, not to what we compute.)
+
+### Open, and not ATHENA's to decide
+1. **Licence for our contribution.** CC-BY-NC 4.0 is the obvious candidate
+   (non-commercial, matching upstream), but whether even a derived
+   correspondence may be licensed at all is a question for NTUA's research-data
+   office, not for this program to assume.
+2. **Ask the source authors.** DOTA and iSAID share authorship (Wuhan
+   University / captain-whu). A direct request to redistribute a derived
+   correspondence costs one email and could remove the constraint entirely.
+3. **Fold into the Data in Brief pre-submission enquiry.** The question "does a
+   correspondence-plus-script deposit satisfy your data-availability
+   requirement" and "may we deposit derived annotations from academic-only
+   sources" are the same conversation. Ask both at once.
+
+**Blocks:** deliverable script design (it determines what the deposit contains),
+P1 Data accessibility and licence statements.
