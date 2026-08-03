@@ -1,5 +1,5 @@
 # 🦉 ATHENA_STATE — Program Ledger
-**Last updated: 2026-07-29 (by ATHENA, NTUA dev PC — restructure complete & merged; roadmap v2.2; P1 initialized)**
+**Last updated: 2026-08-03 (by ATHENA, NTUA dev PC — strategic context inbox adopted; AerOSeg reviewed)**
 
 > The single cross-environment source of truth. Any AI instance, any machine, any vendor: what is written here is what has happened. Update after every milestone; date every update. **Claims about results must trace to `results/`** — an artefact this program computed, with a run manifest beside it. The MSc thesis is a closed prerequisite and is not a source (policy 2026-07-30).
 
@@ -81,6 +81,7 @@
 | **AerialFuseCV rebuilt corrected, not reproduced** | Per-instance masks give exact separation; connected components on class-coloured masks merged **144,745 instances (30.4%)**, measured exhaustively. Released dataset ships both mask types and enforces one-to-one box↔instance assignment | 2026-07-30 |
 | **P3 deadline reality (roadmap v2.2)** | EarthVision @ CVPR deadlines ~Feb–Mar (2026 edition: Mar 2), not ~Nov as assumed; IGARSS (~Jan) now the earlier P3 option. Decision still deferred to call opening | 2026-07-29 |
 | **Session closeout work log added** | `ATHENA_STATE.md` is a milestone ledger, not a day-to-day work record. `Athena_Protocols/WORK_LOG.md` now captures hours, work done, issues, findings, notes, verification, and next actions at every session close | 2026-07-29 |
+| **Strategic context inbox adopted** | `ArgusVision_Strategic_Planning/Context/` is now the intake for papers, competitor work, venue intelligence, supervisor material, and other planning context. ATHENA must survey it at startup and before roadmap, venue, paper-scope, benchmark-design, or positioning advice; consequential papers get local review notes | 2026-08-03 |
 
 ---
 
@@ -135,3 +136,4 @@ All assets are local to this machine — none are on a separate server.
 | 2026-07-29 | NTUA dev PC, restructure start | Restructure begun on new branch `AV_dev` (user-named; merge to `dev` gated on Phase 4 validation). Phases 0–1 done: tag `thesis-code-final`; `src/ArgusVision` → `src/_legacy_ArgusVision` (case-insensitive FS collision with new package name); `argusvision` package + consolidated constants + first 7 tests. Findings: F7 GSD silent no-op, F8 gitignore ate `src/datasets/`. Env: pytest added (spec+lock updated on `AV_dev`). |
 | 2026-07-29 | NTUA dev PC, closeout protocol | Added `Athena_Protocols/WORK_LOG.md` as the mandatory session closeout log. RISE startup now reads it, and the end-session ritual now requires updating it every time, with `ATHENA_STATE.md` reserved for milestones and durable decisions. |
 | 2026-07-29 | NTUA dev PC, restructure complete + P1 start | Phases 2–4 executed and validated same-day; `AV_dev` merged to `dev` (`59f583d`). Validation: port ±0.05 pp; thesis YOLO macro-F1 0.6240 exact; AABB collapse ≤0.3 pp (`documentation/RESTRUCTURE_VALIDATION.md`). Roadmap → v2.2 (P1 → Data in Brief on verified-guide finding; P3 deadlines corrected). WTF-P installed in-repo; venue guides archived; P1 `.planning/` + 5 section drafts written (template v19 rules). Residuals: legacy deletion sweep (user-gated), `AV_dev` branch removal, scripts→`tools/` at P0. |
+| 2026-08-03 | NTUA dev PC, strategic context intake | Added `ArgusVision_Strategic_Planning/Context/` as ATHENA's formal strategic context inbox and wired it into startup/planning protocols. Reviewed `2504.09203v1.pdf` (AerOSeg): does not invalidate the parked OBB-for-SAM prompt idea; affects related-work positioning and may become a P4 context baseline family if the benchmark broadens beyond instance-level detect-to-segment systems. No roadmap revision required. |

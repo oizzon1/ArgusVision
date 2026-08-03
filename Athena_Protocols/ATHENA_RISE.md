@@ -20,7 +20,8 @@ On activation, in order:
 1. Read `Athena_Protocols/ATHENA_RISE.md` (this file)
 2. Read `Athena_Protocols/ATHENA_STATE.md` (the ledger — what is achieved, decided, in progress, open)
 3. Read `Athena_Protocols/WORK_LOG.md` (recent work hours, issues, findings, and closeout notes)
-4. Read `ArgusVision_Strategic_Planning/PUBLICATION_ROADMAP.md` (the canonical living plan)
+4. Survey `ArgusVision_Strategic_Planning/Context/` (strategic context inbox; read its README and review notes, flag unreviewed papers)
+5. Read `ArgusVision_Strategic_Planning/PUBLICATION_ROADMAP.md` (the canonical living plan)
 
 Then announce:
 
@@ -126,6 +127,8 @@ This satisfies the run-from-repo-root rule (`cwd` resolves to `D:\Work\AV`). Ver
 - End: update `Athena_Protocols/WORK_LOG.md` always; if anything meaningful happened, also update `ATHENA_STATE.md` → commit → push
 - Branch flow: daily work on `dev`; `ArgusVision_main` receives milestone merges only (submission snapshots, accepted revisions)
 
+**Strategic context inbox:** `ArgusVision_Strategic_Planning/Context/` is the intake directory for papers, competitor work, venue intelligence, supervisor material, and other items that may affect planning. ATHENA must survey it at startup and before any roadmap, venue, paper-scope, benchmark-design, or research-positioning advice. Raw PDFs are not automatically trusted; consequential papers receive a short local `*_REVIEW.md` note that records impact on ArgusVision. If a new unreviewed paper exists, flag it before giving strategic advice.
+
 **Working rules:**
 - Run all scripts from repo root (path convention throughout `src/` and `dataset/`)
 - Environment is **`AV_env`** (Windows conda). `ArgusVision_environment.yml` is the spec; `ArgusVision_environment.lock.txt` is the exact 200-package closure. Never claim reproducibility from the spec without checking it against the lock
@@ -145,6 +148,7 @@ This satisfies the run-from-repo-root rule (`cwd` resolves to `D:\Work\AV`). Ver
 | `Athena_Protocols/ATHENA_STATE.md` | Ledger — updated every milestone |
 | `Athena_Protocols/WORK_LOG.md` | Session closeout log — hours, work done, issues, findings, notes |
 | `ArgusVision_Strategic_Planning/PUBLICATION_ROADMAP.md` | Canonical living plan (P0–P4) |
+| `ArgusVision_Strategic_Planning/Context/` | Strategic context inbox — papers/competitors/venue intelligence with ATHENA review notes |
 | `ArgusVision_for_Master_Thesis/` | Phase 0 archive — frozen, read-only |
 | `papers/` | One WTF-P project per paper |
 | `results/` | The only legitimate source of experimental numbers |

@@ -89,3 +89,18 @@ Rules:
 | Verification | Regression build vs reference: 3-level comparison, PASS with zero mismatches. Corrected build: self-consistency audit passed on all checks. 62/62 pytest. Colour audit re-run reproduced its own earlier numbers exactly (1,869 images, 16 colours, 0 unknown, 0 multi-class instances, 475,438 instances). |
 | Session close | **Steps 1–6 of `TODO_AERIALFUSECV_REBUILD.md` executed autonomously.** Discrepancy measured over all 125,722 pairs: 90.0% extent / 10.0% foreign, 16.3% of pairs contaminated, 2.61% multi-piece instances. Reconciled masks defined (matched instance ∩ oriented box) and recorded in `documentation/DECISION_reconciled_masks.md`; `dataset/AerialFuseCV_reconciled` built. **Second finding of the same shape as the first:** the re-run showed exactly zero delta because the evaluation still re-derived GT by clipping the semantic mask and never read the released instance masks — `AerialFuseCVSplit.ground_truth_masks()` now resolves each label line to its iSAID instance via `pairs.jsonl`. Re-run then gave +0.0012 seg IoU, small but with per-class gains falling **only** on the classes the discrepancy measurement independently flagged as contaminated (plane, storage-tank, small/large-vehicle) and exactly 0.000 elsewhere — two independent measurements agreeing. EDA + 4 figures generated. Consolidated evidence: `results/AerialFuseCV_Testing/FINDINGS.md`. |
 | Next actions | **Steps 7–8 deliberately not executed.** Step 7 (deliverable script) is blocked on licensing answers — NTUA research-data office, DOTA/iSAID authors, venue pre-submission enquiry — and step 8's deletion is gated on step 7's verified build. Remaining: make the extraction component-aware (step 2 residual, 2.61%); re-source P1 numerically from `dataset_statistics.json`; decide venue once the discrepancy analysis is sized; `argusvision` VBB→HBB rename. |
+
+## 2026-08
+
+### 2026-08-03 — Mode(s): STRATEGIST / OPERATOR / REVIEWER
+
+| Field | Entry |
+|---|---|
+| Work hours | in progress (started before 12:00 EEST) |
+| Work done | Added `ArgusVision_Strategic_Planning/Context/` as ATHENA's strategic context inbox; wired the survey rule into `ATHENA_RISE.md` and identical bootstrap stubs; created `Context/README.md`; reviewed `2504.09203v1.pdf` as `2504.09203v1_AerOSeg_REVIEW.md`; updated `ATHENA_STATE.md`. |
+| Key issues | Strategic planning previously had no durable intake path for newly found papers/competitor context, so future sessions could miss evidence unless it had been promoted to the roadmap or state ledger. |
+| Findings | AerOSeg uses SAM as frozen feature guidance for trained open-vocabulary semantic segmentation, not as an OBB/prompted instance segmenter. It does not kill the OBB-for-SAM prompt idea; it does strengthen related-work expectations around SAM use in remote sensing. |
+| Notes | No roadmap revision required now. AerOSeg is a related-work anchor for SAM+CLIP remote-sensing segmentation and possible P4 context baseline family only if P4 expands beyond instance-level detect-to-segment systems. |
+| Files changed | `ArgusVision_Strategic_Planning/Context/{README.md,2504.09203v1_AerOSeg_REVIEW.md}`; `Athena_Protocols/{ATHENA_RISE.md,ATHENA_STATE.md,WORK_LOG.md}`; `AGENTS.md`; `CLAUDE.md`; `GEMINI.md` |
+| Verification | `git diff --check` passed; `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md` confirmed byte-identical. |
+| Next actions | Keep surveying `Context/` on startup and before strategic advice; if more papers are added, create review notes before letting them affect roadmap decisions. |
