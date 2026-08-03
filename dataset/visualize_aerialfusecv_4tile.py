@@ -1,5 +1,5 @@
 """
-Create 4-tile collages for AerialFuseCV_Refined samples.
+Create 4-tile collages for AerialFuseCV samples.
 
 Tiles:
 1) Original image + GT VBB (axis-aligned bbox from OBB)
@@ -11,7 +11,7 @@ The script searches the requested image id in BOTH train and val splits.
 
 Usage:
     python dataset/visualize_aerialfusecv_4tile.py --image-id P0173
-    python dataset/visualize_aerialfusecv_4tile.py --image-id P0173 --root dataset/AerialFuseCV_Refined
+    python dataset/visualize_aerialfusecv_4tile.py --image-id P0173 --root dataset/AerialFuseCV_reconciled
     python dataset/visualize_aerialfusecv_4tile.py --image-id P0173 --output results/aerialfusecv_4tile
 """
 
@@ -156,7 +156,7 @@ def resolve_sample_paths(root: Path, split: str, image_id: str) -> Dict[str, Pat
     base = root / split
     return {
         "image": base / "images" / f"{image_id}.png",
-        "label": base / "labels" / f"{image_id}.txt",
+        "label": base / "labels_obb" / f"{image_id}.txt",
         "semantic": base / "semantic_masks" / f"{image_id}_instance_color_RGB.png",
         "instance": base / "instance_masks" / f"{image_id}_instance_id_RGB.png",
     }
@@ -197,8 +197,8 @@ def process_split(root: Path, split: str, image_id: str, output_dir: Path) -> Pa
 def main():
     parser = argparse.ArgumentParser(description="4-tile AerialFuseCV visualization (train/val auto-search)")
     parser.add_argument("--image-id", required=True, type=str, help="Image id, e.g. P0173")
-    parser.add_argument("--root", type=str, default="dataset/AerialFuseCV_Refined", help="Dataset root")
-    parser.add_argument("--output", type=str, default="results/AerialFuseCV_4tile", help="Output directory")
+    parser.add_argument("--root", type=str, default="dataset/AerialFuseCV_reconciled", help="Dataset root")
+    parser.add_argument("--output", type=str, default="results/AerialFuseCV_Testing/visualizations/4tile", help="Output directory")
     args = parser.parse_args()
 
     image_id = args.image_id.strip()

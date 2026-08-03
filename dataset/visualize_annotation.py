@@ -14,7 +14,7 @@ Usage:
     
 Examples:
     python dataset/visualize_annotation.py dataset/iSAID/val/semantic_masks/P2695_instance_color_RGB.png
-    python dataset/visualize_annotation.py dataset/AerialFuseCV/train/labels/P0050.txt
+    python dataset/visualize_annotation.py dataset/AerialFuseCV_reconciled/train/labels_obb/P0050.txt
 """
 
 import os
@@ -60,7 +60,7 @@ class AnnotationVisualizer:
         
         # Determine base directory (parent of labels/semantic_masks)
         parent = path.parent
-        if parent.name in ['labels', 'semantic_masks']:
+        if parent.name in ['labels', 'labels_obb', 'labels_hbb', 'semantic_masks', 'instance_masks']:
             base_dir = parent.parent
         else:
             base_dir = parent

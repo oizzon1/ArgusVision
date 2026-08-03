@@ -8,8 +8,8 @@ For each image, the script:
 
 Usage example:
     python dataset/create_dataset_overlays.py \
-        --source dataset/AerialFuseCV_Refined \
-        --output results/AerialFuseCV_Refined_overlays \
+        --source dataset/AerialFuseCV_reconciled \
+        --output results/AerialFuseCV_Testing/visualizations/overlays \
         --alpha 0.35
 """
 
@@ -117,10 +117,10 @@ def clone_structure(source_root: Path, output_root: Path):
     candidates = []
     # hierarchical (train/val)
     for split in ("train", "val"):
-        for sub in ("labels", "semantic_masks"):
+        for sub in ("labels_obb", "semantic_masks"):
             candidates.append((source_root / split / sub, output_root / split / sub))
     # flat
-    for sub in ("labels", "semantic_masks"):
+    for sub in ("labels_obb", "semantic_masks"):
         candidates.append((source_root / sub, output_root / sub))
 
     for src_dir, dst_dir in candidates:
@@ -132,8 +132,8 @@ def clone_structure(source_root: Path, output_root: Path):
 
 def main():
     parser = argparse.ArgumentParser(description="Create overlay visualizations for AerialFuseCV-style dataset.")
-    parser.add_argument("--source", default="dataset/AerialFuseCV", help="Source dataset root.")
-    parser.add_argument("--output", default="results/AerialFuseCV_overlays", help="Destination clone folder.")
+    parser.add_argument("--source", default="dataset/AerialFuseCV_reconciled", help="Source dataset root.")
+    parser.add_argument("--output", default="results/AerialFuseCV_Testing/visualizations/overlays", help="Destination clone folder.")
     parser.add_argument("--alpha", type=float, default=0.35, help="Mask overlay alpha.")
     parser.add_argument("--copy-metadata", action="store_true", help="Copy labels/masks into the clone for reference.")
     args = parser.parse_args()
@@ -150,7 +150,7 @@ def main():
         for split in ("train", "val"):
             total += process_split(
                 src / split / "images",
-                src / split / "labels",
+                src / split / "labels_obb",
                 src / split / "semantic_masks",
                 dst / split / "images",
                 args.alpha,
@@ -159,7 +159,7 @@ def main():
     else:
         total += process_split(
             src / "images",
-            src / "labels",
+            src / "labels_obb",
             src / "semantic_masks",
             dst / "images",
             args.alpha,
