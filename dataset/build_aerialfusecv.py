@@ -7,7 +7,7 @@ written separately, to the descriptor's scope alone. See
 Run from the repo root, in AV_env:
 
     python dataset/build_aerialfusecv.py --dota dataset/DOTA_v1 \
-        --isaid dataset/iSAID --out dataset/AerialFuseCV_v1
+        --isaid dataset/iSAID --out dataset/AerialFuseCV_reconciled
 
 Matching modes:
 
@@ -467,7 +467,7 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--dota", type=Path, default=Path("dataset/DOTA_v1"))
     ap.add_argument("--isaid", type=Path, default=Path("dataset/iSAID"))
-    ap.add_argument("--out", type=Path, default=Path("dataset/AerialFuseCV_v1"))
+    ap.add_argument("--out", type=Path, default=Path("dataset/AerialFuseCV_reconciled"))
     ap.add_argument("--mask-source", choices=("instance", "semantic"), default="instance")
     ap.add_argument("--mask-mode", choices=("reconciled", "isaid"), default="reconciled",
                     help="reconciled = matched instance clipped to the oriented box "

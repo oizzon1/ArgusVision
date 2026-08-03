@@ -85,7 +85,24 @@ Before publishing numbers about anyone else's annotations.
 - [ ] **Gated on licensing answers** (NTUA research-data office · DOTA/iSAID
       authors · venue pre-submission enquiry)
 
-### 8. Clean the work area — ⛔ gated on step 7
+### 8. Clean the work area — ⚠ PARTIAL, done 2026-08-03
+- [x] Deleted `AerialFuseCV` (precursor combine intermediate — a product of the
+      two-step workflow we replaced; nothing produces or consumes it), plus
+      `AerialFuseCV_Refined` (regenerable exactly via `--mask-source semantic`,
+      proven 0 mismatches) and `AerialFuseCV_v1` (superseded by reconciled).
+      **28 GB freed; dataset/ 81 GB → 54 GB.** Active script defaults
+      repointed to `AerialFuseCV_reconciled`; loader and 62 tests verified
+      after deletion.
+- [x] Kept `AerialFuseCV_reconciled` (current) and `AerialFuseCV_regression`
+      (118 MB — the port-fidelity evidence, cheap to retain)
+- [ ] **Separate decision, not taken:** `DOTA_v1_YOLO_{oriented,vertical}_bboxes_dataset`
+      are 14 GB each and regenerable from `DOTA_v1` via committed scripts. The
+      vertical set serves only the parked VBB-vs-OBB paper; the oriented set
+      backs the detector benchmark and may serve P4. Deleting touches future
+      experiment plans rather than superseded work — user call.
+- [ ] Two thesis-era scripts now reference deleted paths and would fail if run:
+      `analyze_isaid_instance_colors.py` (superseded by `scan_isaid_colours.py`)
+      and `create_dataset_overlays.py`. Retire or repoint at the sweep.
 - [ ] Delete superseded dataset directories once the final build verifies
       (`AerialFuseCV`, `AerialFuseCV_Refined`, `AerialFuseCV_regression`,
       `AerialFuseCV_v1`) — all are deterministically regenerable

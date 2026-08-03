@@ -92,7 +92,7 @@ def render(image, sem_clip, exact, corners, origin, agreement, meta):
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--dataset", type=Path, default=Path("dataset/AerialFuseCV_v1"))
+    ap.add_argument("--dataset", type=Path, default=Path("dataset/AerialFuseCV_reconciled"))
     ap.add_argument("--split", default="val")
     ap.add_argument("--images", type=int, default=60)
     ap.add_argument("--top", type=int, default=10)
