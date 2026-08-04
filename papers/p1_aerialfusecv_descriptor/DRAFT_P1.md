@@ -233,6 +233,37 @@ iSAID download. `discarded.jsonl` records, per dropped object: whether it was a
 box or an instance, its category, image and split, the reason it was dropped,
 the best overlap it achieved, and its geometry or instance identity.
 
+### Provenance and ownership
+
+Data in Brief requires that a data article present data produced by its authors
+rather than a redistribution of data belonging to someone else. The distinction
+drawn above is what establishes that here: the deposit is not a copy, a subset
+or a reformatting of DOTA v1.0 or iSAID, and it contains no image, annotation
+or mask from either.
+
+What it contains is a set of assertions this work produced and that neither
+source makes. Each record in `correspondence.jsonl` states that one box in one
+image and one iSAID instance describe the same physical object, and reports the
+overlap achieved. That statement appears in neither distribution and cannot be
+read out of them; it is the output of the matching procedure given under
+Methods — decoding instances by exact colour against the published class-colour
+table, rasterising each oriented quadrilateral, and solving a one-to-one
+assignment per image and category. `discarded.jsonl` is the same kind of
+artefact in the negative, recording why each of the 2,121 unmatched boxes and
+349,716 unmatched instances was dropped and the best overlap it reached. The
+statistics, the checksums, the deposit manifest and the rebuild script were
+likewise written for this work. All six deposited files were produced by the
+author at the National Technical University of Athens.
+
+The two sources remain with their owners and are used as inputs under their
+academic terms. A correspondence record identifies a DOTA box by its ordinal
+position within the user's own annotation file, and an iSAID instance by its
+colour identity within the user's own mask, so no deposited record carries
+source content and none of them is usable without copies of both sources that
+the reader has obtained independently. What is released, and what this article
+describes, is the reconciliation between the two — the part that did not exist
+before this work.
+
 ### Image properties
 
 Imagery is inherited unchanged from DOTA v1.0 / iSAID. No resizing, retiling or
@@ -562,7 +593,10 @@ The authors have read and follow the ethical requirements for publication in
 Data in Brief. The work involved no human subjects, no animal experiments and
 no data collected from social media platforms. The dataset is derived entirely
 from publicly released aerial imagery benchmarks used under their academic
-terms; no imagery is redistributed.
+terms; neither their imagery nor their annotations are redistributed. The
+deposited data — the object-level correspondence, the discard records, the
+statistics, the checksums and the rebuild script — was produced by the author
+and is the author's own work, as set out under Provenance and ownership.
 
 ## CRediT Author Statement
 
