@@ -1,7 +1,7 @@
 # Pipeline evaluation on AerialFuseCV.
 # Identical to p2_pipeline_aerialfusecv_v1 except for the dataset, so the mask
 # definition is the only variable.
-experiment: pipeline_aerialfusecv
+experiment: argusvision__yolo11x_obb__sam_vit_b__full
 kind: pipeline
 dataset:
   type: aerialfusecv

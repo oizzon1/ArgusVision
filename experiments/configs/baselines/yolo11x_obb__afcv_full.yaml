@@ -1,10 +1,10 @@
 # Detection-only, full-image — the ablation against the tiled protocol.
 #
-# Identical to f6b_detection_yolo11x_obb_tiled.yaml except that tiling is off.
+# Identical to baselines/yolo11x_obb__afcv_tiled.yaml except that tiling is off.
 # Retained because the comparison is the argument: full-image inference shrinks
 # small objects below the detector's resolution, which is a property of the
 # input protocol and not of the detector.
-experiment: f6b_detection_yolo11x_obb_full
+experiment: baseline__yolo11x_obb__afcv_full
 kind: detection
 dataset:
   type: aerialfusecv

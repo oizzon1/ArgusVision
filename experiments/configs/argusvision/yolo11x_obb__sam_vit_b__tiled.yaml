@@ -8,7 +8,7 @@
 # detector saw them, so tiling is the protocol and full-image is the ablation.
 #
 # Evidence: results/experimental/f6b_tiling_yolo11x_obb/
-experiment: p2_pipeline_aerialfusecv_tiled
+experiment: argusvision__yolo11x_obb__sam_vit_b__tiled
 kind: pipeline
 dataset:
   type: aerialfusecv

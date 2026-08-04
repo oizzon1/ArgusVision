@@ -1,13 +1,13 @@
 # Detection-only, tiled — the P2 detector protocol.
 #
-# Pair with f6b_detection_yolo11x_obb_full.yaml: the two configs differ in the
+# Pair with baselines/yolo11x_obb__afcv_full.yaml: the two configs differ in the
 # `tiling` block and nothing else, which is what makes the comparison a
 # measurement rather than an anecdote.
 #
 # First measured by a standalone script (commit 95e3aa9,
 # experiments/tiling/yolo11x_obb_full_vs_tiled.py) before tiling moved into
 # argusvision.runtime.tiling. Results: results/experimental/f6b_tiling_yolo11x_obb/
-experiment: f6b_detection_yolo11x_obb_tiled
+experiment: baseline__yolo11x_obb__afcv_tiled
 kind: detection
 dataset:
   type: aerialfusecv

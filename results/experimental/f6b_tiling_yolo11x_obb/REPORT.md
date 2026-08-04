@@ -74,8 +74,8 @@ a platform capability — `argusvision.runtime.tiling.TiledDetector` — and the
 comparison is reproduced from configs rather than from a script:
 
 ```
-argusvision run experiments/configs/f6b_detection_yolo11x_obb_full.yaml
-argusvision run experiments/configs/f6b_detection_yolo11x_obb_tiled.yaml
+argusvision run experiments/configs/baselines/yolo11x_obb__afcv_full.yaml
+argusvision run experiments/configs/baselines/yolo11x_obb__afcv_tiled.yaml
 ```
 
 The original 479-line runner is preserved in git history at commit `95e3aa9`

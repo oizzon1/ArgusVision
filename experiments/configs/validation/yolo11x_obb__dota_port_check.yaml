@@ -2,7 +2,7 @@
 # Legacy baseline: results/experimental/yolo_evaluation/OBB/YOLOv11x-OBB_metrics.json
 #   ("map"=macro-F1 0.6240, greedy arbitrary-order matcher, polygon IoU@0.1,
 #    conf 0.25, 458 images).
-experiment: restructure_validation_yolo11x_obb
+experiment: validation__yolo11x_obb__dota_port_check
 kind: detection
 dataset:
   type: dota_yolo_obb
