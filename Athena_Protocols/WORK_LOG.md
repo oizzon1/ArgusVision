@@ -104,3 +104,16 @@ Rules:
 | Files changed | `ArgusVision_Strategic_Planning/Context/{README.md,2504.09203v1_AerOSeg_REVIEW.md}`; `Athena_Protocols/{ATHENA_RISE.md,ATHENA_STATE.md,WORK_LOG.md}`; `AGENTS.md`; `CLAUDE.md`; `GEMINI.md` |
 | Verification | `git diff --check` passed; `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md` confirmed byte-identical. |
 | Next actions | Keep surveying `Context/` on startup and before strategic advice; if more papers are added, create review notes before letting them affect roadmap decisions. |
+
+### 2026-08-04 — Mode(s): ADVISOR / OPERATOR
+
+| Field | Entry |
+|---|---|
+| Work hours | not tracked |
+| Work done | Surveyed and answered the iSAID-baseline threat question; logged the positioning in `ArgusVision_Strategic_Planning/Context/iSAID_baselines_positioning_NOTES.md`; mirrored the durable decision into `ATHENA_STATE.md`. |
+| Key issues | Existing iSAID work already includes supervised instance segmentation, SAM-family/adapted-SAM remote-sensing work, and open-vocabulary semantic segmentation. ArgusVision cannot be framed as first iSAID segmentation or first SAM-in-remote-sensing work. |
+| Findings | The literature narrows but does not invalidate ArgusVision. The strong need is the paired object-level detection-to-segmentation contract: detector geometry and outputs as prompts, evaluator separation of detector error from mask quality, and training-free-vs-supervised tradeoff analysis. |
+| Notes | P2 remains a rigorous comparison against supervised baselines, not a claim that SAM must beat them. P1/AerialFuseCV remains justified because detector-to-SAM evaluation needs paired object-level DOTA/iSAID geometry, masks, pairing metadata, and discard accounting. |
+| Files changed | `ArgusVision_Strategic_Planning/Context/iSAID_baselines_positioning_NOTES.md`; `Athena_Protocols/{ATHENA_STATE.md,WORK_LOG.md}` |
+| Verification | `git diff --check` passed. |
+| Next actions | Use this note when drafting P1/P2 related work and introduction; keep Mask R-CNN + YOLOv11-seg as P2 baselines; reserve PANet/Mask2Former/SAM-adaptation/open-vocabulary systems for related work or P4 expansion. |
