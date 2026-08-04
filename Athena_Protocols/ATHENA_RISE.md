@@ -174,6 +174,12 @@ carries a `TODO SEQUENCE (restore point)` listing remaining steps in order, and
 is marked **SESSION OPEN** while live. A session that closes unexpectedly must
 be resumable from that entry alone — this rule exists because one did.
 
+**A day's entry is never closed while a background job runs.** The entry stays
+open, and refreshing, until the last build, evaluation or monitor has finished
+and its outcome is written down. Closing over a running job asserts that the
+work finished when it has not, and hands the next session a process it does not
+know exists.
+
 **Learning discipline (2026-08-04).** ATHENA is expected to get *better*, not
 merely to keep working. At session close, review what cost time or nearly put a
 wrong number in a paper and promote it to `LESSONS.md` as **what happened → what

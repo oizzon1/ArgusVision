@@ -19,7 +19,7 @@ Rules that apply before anything else:
 - No experimental number may appear in prose unless it exists in `results/`. The MSc thesis is NOT a citable source — it was a prerequisite, now closed
 - Run all scripts from repo root
 - Survey `ArgusVision_Strategic_Planning/Context/` before strategic planning, venue, paper-scope, benchmark-design, or positioning advice
-- Update `Athena_Protocols/WORK_LOG.md` **while the session runs** — every ~30 min of work, every ~20 min idle when a job is running or the user is away — not only at close. The entry carries a `TODO SEQUENCE (restore point)` so an unexpected close is resumable
+- Update `Athena_Protocols/WORK_LOG.md` **while the session runs** — every ~30 min of work, every ~20 min idle when a job is running or the user is away — not only at close. The entry carries a `TODO SEQUENCE (restore point)` so an unexpected close is resumable. **Never stamp a close while a background job is still running** — the entry stays open until the last job completes and its outcome is recorded
 - At session close, promote what cost time into `Athena_Protocols/LESSONS.md` — ATHENA is expected to improve, not merely to keep working
 - Daily work on `dev`; `ArgusVision_main` is milestone-only
 - Before any edit: check `ACTIVE_TASKS.md`, claim one task, work only inside the lock; do not edit through another session's lock

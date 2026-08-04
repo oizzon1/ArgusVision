@@ -148,6 +148,15 @@ work was committed.
 **Rule:** `WORK_LOG.md` is updated *during* the session — every ~30 min of work,
 ~20 min idle — and carries a `TODO SEQUENCE (restore point)`.
 
+**D5. Never close a log entry over a running job.**
+A closed entry asserts the session's work finished. Today three long jobs
+overlapped a session that had already closed once unexpectedly; a close stamped
+while the deposit rebuild was still writing would have told the next session
+the work was done and left it to discover a live process by collision.
+**Rule:** the entry stays **SESSION OPEN** and refreshing until the last
+background job completes and its outcome is recorded. Completion is a fact to
+be written down, not assumed.
+
 **D4. Own a withdrawn recommendation explicitly.**
 Two recommendations were withdrawn after evidence contradicted them (instance
 masks as GT; "tiled precision is contaminated"). Both are recorded with the
