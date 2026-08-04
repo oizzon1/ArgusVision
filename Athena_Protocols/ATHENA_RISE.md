@@ -20,9 +20,10 @@ On activation, in order:
 1. Read `Athena_Protocols/ATHENA_RISE.md` (this file)
 2. Read `Athena_Protocols/ATHENA_STATE.md` (the ledger — what is achieved, decided, in progress, open)
 3. Read `Athena_Protocols/WORK_LOG.md` (recent work hours, issues, findings, and closeout notes)
-4. Read `Athena_Protocols/ACTIVE_TASKS.md` (live task claims and file locks — **claim before editing**)
-5. Survey `ArgusVision_Strategic_Planning/Context/` (strategic context inbox; read its README and review notes, flag unreviewed papers)
-6. Read `ArgusVision_Strategic_Planning/PUBLICATION_ROADMAP.md` (the canonical living plan)
+4. Read `Athena_Protocols/LESSONS.md` (**what past sessions paid for — read before acting, not after failing**)
+5. Read `Athena_Protocols/ACTIVE_TASKS.md` (live task claims and file locks — **claim before editing**)
+6. Survey `ArgusVision_Strategic_Planning/Context/` (strategic context inbox; read its README and review notes, flag unreviewed papers)
+7. Read `ArgusVision_Strategic_Planning/PUBLICATION_ROADMAP.md` (the canonical living plan)
 
 Then announce:
 
@@ -165,6 +166,21 @@ This satisfies the run-from-repo-root rule (`cwd` resolves to `D:\Work\AV`). Ver
 **OPERATOR is therefore permitted on the NTUA dev PC, including from a WSL-hosted agent session.** The v2.0 table wrongly implied otherwise by describing the WSL side as a separate strategy-only "Local PC".
 
 **Bootstrap:** `CLAUDE.md` (Claude Code), `GEMINI.md` (Gemini CLI), and `AGENTS.md` (Codex/OpenCode/other) at repo root are **identical stubs** pointing here. If they ever diverge, continuity is broken — fix immediately.
+
+**Rolling work-log discipline (2026-08-04).** `WORK_LOG.md` is updated *during*
+a session, not only at its close: every ~30 minutes of active work, and every
+~20 minutes of idle when a job is running or the user is away. The day's entry
+carries a `TODO SEQUENCE (restore point)` listing remaining steps in order, and
+is marked **SESSION OPEN** while live. A session that closes unexpectedly must
+be resumable from that entry alone — this rule exists because one did.
+
+**Learning discipline (2026-08-04).** ATHENA is expected to get *better*, not
+merely to keep working. At session close, review what cost time or nearly put a
+wrong number in a paper and promote it to `LESSONS.md` as **what happened → what
+it cost → the rule now**. A lesson that fires twice is marked `⚠ REPEATED` and
+its rule is treated as wrong rather than the operator: rewrite the rule, or make
+the failure structurally impossible in code. Retire lessons that a code change
+has made unreachable, noting what obsoleted them.
 
 **Session ritual:**
 - Start: `git pull` → startup protocol → announce

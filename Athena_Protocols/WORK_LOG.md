@@ -27,6 +27,16 @@ At session close, append one entry under the current month using this shape:
 
 Rules:
 - **One entry per day** (merge multiple sessions of the same day into one entry).
+- **Rolling update while a session is open** (2026-08-04): refresh the day's
+  entry every **~30 minutes of active work**, and every **~20 minutes of idle**
+  when a long job is running or the user is away. The entry carries a
+  `TODO SEQUENCE (restore point)` field listing the remaining steps in order,
+  so a session that opens cold — or one that closes unexpectedly — can resume
+  mid-stream without re-deriving the plan. Mark the entry **SESSION OPEN** with
+  a timestamp while live; stamp the close when it ends.
+- Idle refreshes record what is *running*, what it is *waiting on*, and what
+  must not be touched meanwhile — an idle log entry that says only "waiting" is
+  not a restore point.
 - Record actual hours where known; otherwise write `not tracked`, never guess.
 - Keep experimental numbers out unless they already exist in `results/` or the thesis.
 - Use repo-relative file paths.
