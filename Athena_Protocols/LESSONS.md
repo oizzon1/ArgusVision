@@ -148,6 +148,18 @@ work was committed.
 **Rule:** `WORK_LOG.md` is updated *during* the session — every ~30 min of work,
 ~20 min idle — and carries a `TODO SEQUENCE (restore point)`.
 
+**D6. In a shipped script, pathological slowness is a correctness defect.**
+The deposit's rebuild script scans the full instance mask once per pair, so cost
+is pairs x pixels. On the second-densest image (1,718 pairs) it produced no
+output for over eleven minutes. It was computing correctly the whole time — but
+a stranger running the deposit would have concluded it had hung and killed it,
+and a reproduction script that appears to freeze is a reproducibility claim in
+name only. I diagnosed it only by sampling the CPU counter and checking pair
+density.
+**Rule:** anything shipped to a stranger is profiled on the *worst* input in the
+dataset, not the median one, and reports progress often enough that working and
+wedged are distinguishable from outside.
+
 **D5. Never close a log entry over a running job.**
 A closed entry asserts the session's work finished. Today three long jobs
 overlapped a session that had already closed once unexpectedly; a close stamped
