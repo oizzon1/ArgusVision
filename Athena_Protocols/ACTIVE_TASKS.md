@@ -1,0 +1,67 @@
+# ACTIVE_TASKS
+
+**Rule:** if a file/area is locked by an `active` task, no other session edits it.
+Claim **before** creating a task branch. One owner, one task, one locked area.
+
+**Orchestrator rule (2026-08-04):** whichever session has repo access and reads
+the protocol files is the orchestrator. Model brand tables are advisory only;
+**context continuity beats vendor positioning.** Control files
+(`ATHENA_STATE.md`, `PUBLICATION_ROADMAP.md`, this file) are orchestrator-owned
+except for a worker’s own claim-row update when assigned.
+
+**Fast-track parallelism (v2.4 corrected):** F1 → F2 → F3 → F4 are **serial**.
+Do not parallelize P1 final numbers with F1. Genuinely parallel now: licensing
+admin (no repo writes) and hostile review (notes only). Multi-model code
+parallelism starts at F6–F8.
+
+**Branch rule and its one exception.** Worker tasks run on `task/<id>-<slug>`
+branches and are merged by the orchestrator. **Orchestrator-owned critical-path
+work runs directly on `dev` by design** — there is no second writer to isolate
+from, and a branch would add a merge step without adding safety. Any row whose
+branch is `dev` must be orchestrator-owned and say so; workers always branch.
+
+Allowed statuses: `planned` · `active` · `blocked` · `ready-for-review` · `merged` · `cancelled`
+
+| ID | Owner | Role | Branch | Status | Locked files/areas | Started | Handoff |
+|---|---|---|---|---|---|---|---|
+| F1 | Claude-Orchestrator | OPERATOR | `dev` — orchestrator-owned, per branch exception above | active | `dataset/build_aerialfusecv.py`; `dataset/verify_build.py`; `dataset/README.md`; `zenodo_release/**`; deposit packaging docs under `documentation/` as needed | 2026-08-04 | Blocks F2–F4; no other writer on final P1 numbers until ready-for-review |
+| F2 | — | OPERATOR | — | planned | `zenodo_release/**` (after F1) | — | Needs F1 |
+| F3 | user + any scout | STRATEGIST | no-edit | planned | licensing/admin notes in `Context/` only (no code) | — | Parallel OK; no lock on code |
+| F4 | — | WRITER | — | planned | `papers/p1_aerialfusecv_descriptor/**` | — | Needs F1 numbers + F2 DOI |
+| F5 | — | REVIEWER | — | planned | review notes only | — | After F4 draft |
+| F6–F8 | — | OPERATOR | — | planned | experiments / models / tests (partition when claimed) | — | Parallelism window opens here |
+| REVIEW-V24 | — | REVIEWER | no-edit | planned | `ArgusVision_Strategic_Planning/Context/**_REVIEW.md` only | — | Parallel OK now; no edits to roadmap/state |
+
+## How to claim
+
+1. `git switch dev && git pull`
+2. Read this file; confirm no lock overlap.
+3. Add or update **one** row: Owner, Branch, Status=`active`, Locked files/areas, Started.
+4. Work only inside the lock.
+5. On finish: Status → `ready-for-review` or `blocked`; update `WORK_LOG.md`; commit; push.
+6. Orchestrator merges to `dev` (workers do not merge independently).
+
+## Releasing a lock
+
+A lock is live for exactly as long as the row says `active` or
+`ready-for-review`. Nothing else releases it — not a finished branch, not a
+closed session.
+
+- The **orchestrator** sets the row to `merged` and clears the locked-files cell
+  at merge time. That is the only moment a lock lifts.
+- A worker that stops without finishing sets `blocked`, records why in the
+  Handoff cell, and keeps the lock only over files it actually changed.
+- Any row `active` for **more than 3 days** with no matching commits is stale:
+  challenge it, and the orchestrator may reclaim it. A stale lock blocking live
+  work is the failure mode this table exists to prevent — an abandoned claim is
+  worse than no claim, because it looks authoritative.
+
+## Control files (orchestrator-owned)
+
+Do not edit unless the orchestrator explicitly assigns:
+
+- `Athena_Protocols/ATHENA_STATE.md`
+- `Athena_Protocols/ATHENA_RISE.md`
+- `ArgusVision_Strategic_Planning/PUBLICATION_ROADMAP.md`
+- `Athena_Protocols/ACTIVE_TASKS.md` (except your claim row)
+- `Athena_Protocols/MULTI_MODEL_ORCHESTRATION.md`

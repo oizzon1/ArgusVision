@@ -467,18 +467,27 @@ For each worker handoff:
 
 ---
 
-## Current Recommended Parallel Assignment
+## Current Recommended Assignment (corrected 2026-08-04)
 
-For roadmap v2.4:
+**Context continuity beats model brand.** Whichever session has repo access and
+reads the protocol files is the orchestrator. Vendor “best for X” tables are
+advisory only.
 
-| Track | Worker | Start now? | Notes |
+**Critical path is serial:** F1 → F2 → F3 → F4 (deposit script → package →
+licensing MVP → P1 rewrite). Handing F1 to one model and P1 prose to another
+mostly produces prose that gets rewritten when numbers and DOI land.
+
+| Track | Assignment | Start now? | Notes |
 |---|---|---|---|
-| F1 deposit rebuild + verify | Operator worker | yes | highest priority |
-| P1 Value/Data rewrite | Writer worker | yes, with placeholders | do not wait for every number |
-| F3 licensing/admin checklist | Strategist/literature worker | yes | admin runs in parallel |
-| F6 Mask R-CNN feasibility | Operator worker | yes, after F1 starts | do not let Windows dependency risk surprise us |
-| v2.4 hostile review | Reviewer worker | yes | no edits, only findings |
-| P4 / C1 / C2 / C3 | no worker | no | frozen until P1 submitted and P2 experiments done |
+| F1 deposit rebuild + verify | **Orchestrator, single-threaded** | yes | highest priority; do not hand off for fake parallelism |
+| F2 Zenodo packaging | Orchestrator after F1 | after F1 | same lane |
+| F3 licensing/admin checklist | user + optional scout | yes | admin; Context notes only; no code lock |
+| F4 P1 rewrite | after F1+F2 | no | needs numbers + DOI |
+| REVIEW-V24 hostile review | optional reviewer worker | yes | **no edits**; notes only — cleanest parallel task |
+| F6–F8 Mask R-CNN / YOLO-seg / filtering | OPERATOR workers | later | real parallelism window |
+| P4 / C1 / C2 / C3 | frozen | no | until P1 submitted and P2 experiments done |
+
+Hard stop rule stands: if coordination becomes confusing, one orchestrator-controlled task at a time.
 
 ---
 
