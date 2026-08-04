@@ -1,25 +1,10 @@
-# P1 Background — DRAFT v0.1 (2026-07-29) — ~190 words
+# P1 Background — superseded 2026-08-04 (task P1-WRITE)
 
-> Template: motivation and context for compiling the dataset.
+**Not maintained.** Canonical text: `../DRAFT_P1.md` § Background.
 
-DOTA v1.0 [xia2018dota] is a widely used benchmark for object detection in
-aerial imagery, annotating objects with oriented bounding boxes across 15
-categories. iSAID [zamir2019isaid] later re-annotated the same source
-imagery with pixel-level, color-encoded instance masks for the same
-categories. Although the two benchmarks describe the same scenes, their
-annotations were produced independently: there is no published
-correspondence between a DOTA box and the iSAID mask of the same physical
-object, and their instance counts differ.
-
-Research on aerial instance segmentation increasingly needs both annotation
-forms simultaneously — for training mask heads on detector outputs, for
-evaluating detection-to-segmentation pipelines, and for prompting
-segmentation foundation models [kirillov2023sam] with detected boxes while
-scoring against ground-truth masks. Producing such paired supervision by
-manual re-annotation is prohibitively expensive at the scale of these
-benchmarks.
-
-AerialFuseCV was compiled to close this gap by reconciling the two existing
-annotation sets at instance level under a conservative, fully documented
-matching rule, so that the correspondence itself — not only the source
-annotations — is a validated, reusable artifact.
+The v0.1 text stopped at "the two sources publish no correspondence". The
+rewrite adds the measured premise the article now rests on — that the two
+protocols also disagree about how much of an object an annotation should cover,
+systematically and by category — and states the source populations over the
+shared images (127,843 boxes against 475,438 instances) from the build rather
+than from benchmark-wide figures.

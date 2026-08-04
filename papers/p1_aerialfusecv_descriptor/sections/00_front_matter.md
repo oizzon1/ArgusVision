@@ -1,43 +1,15 @@
-# P1 Front Matter — DRAFT v0.1 (2026-07-29)
+# P1 Front Matter — superseded 2026-08-04 (task P1-WRITE)
 
-> Template rules: title must contain "data"/"dataset"; keywords 4–8,
-> semicolon-separated, no title-word repeats; abstract 100–500 words
-> describing collection + dataset + reuse potential, no interpretation.
+**Not maintained.** Canonical text: `../DRAFT_P1.md` § Article title / Keywords
+/ Abstract.
 
-## Article title
+The v0.1 content removed from here took its numbers from the MSc thesis, which
+is not a source for this program, and described the precursor build (1,857
+images, 125,102 pairs, 97.9% box pairing, 12 excluded images). Those counts are
+superseded by build `d4c191a`: 1,862 images, 125,722 pairs, 98.34% box pairing,
+7 excluded images. The title and abstract were also rewritten onto the protocol
+spine.
 
-AerialFuseCV: an instance-level paired oriented-box and instance-mask
-dataset for aerial imagery derived from DOTA v1.0 and iSAID
-
-## Keywords (6; none repeat a title word)
-
-object detection; segmentation; remote sensing; deep learning; annotation
-reconciliation; earth observation
-
-## Abstract — DRAFT (~210 words; window 100–500)
-
-AerialFuseCV pairs the oriented bounding-box annotations of DOTA v1.0 with
-the pixel-level instance masks of iSAID at the level of individual object
-instances. Although both benchmarks annotate the same aerial imagery, their
-annotations were produced independently and share no instance
-correspondence. The dataset was constructed by decoding iSAID's
-color-encoded masks into per-category binary masks, isolating candidate
-instances as connected components within the neighborhood of each DOTA box,
-and pairing every box with its highest-overlap candidate under a permissive
-intersection-over-union rule (IoU ≥ 0.1); images retaining no pair were
-excluded (12 in total).
-The result contains 1,857 images (1,401 training, 456 validation) with
-125,102 validated box–mask pairs across the 15 DOTA v1.0 object categories,
-meaning that 97.9% of DOTA boxes acquired a mask (98.1% training, 97.2%
-validation). Pairing is anchored on the boxes, so a smaller fraction of the
-more numerous iSAID mask instances is retained; both rates and per-category
-figures are reported. The
-deposit provides all pairing annotations and metadata, per-class statistics,
-and a construction pipeline with verification checksums that rebuilds the
-dataset from the official DOTA v1.0 and iSAID distributions, whose imagery
-cannot be redistributed directly. AerialFuseCV supports training and
-evaluation of aerial instance-segmentation methods that require linked box
-and mask supervision, including detection-to-segmentation pipelines built on
-promptable segmentation models, without any re-annotation effort.
-
-*Every number above traces to `ATHENA_STATE.md` § verified thesis results.*
+It was deleted rather than kept alongside the draft, because two texts carrying
+different numbers for the same dataset is how a wrong figure reaches a
+submission.
