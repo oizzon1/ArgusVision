@@ -397,14 +397,21 @@ the rebuild path that regenerates them into place.]]
 
 ### Figures
 
-- **Figure 1.** [[PLACEHOLDER: one image with a paired oriented box and its
-  reconciled instance mask overlaid.]]
-- **Figure 2.** [[PLACEHOLDER: category distribution, log scale — regenerate
-  from `results/experimental/AerialFuseCV_Testing/eda/`.]]
-- **Figure 3.** [[PLACEHOLDER: construction pipeline.]]
-- **Figure 4.** [[PLACEHOLDER: representative divergence between the source
-  protocols — a harbor and a baseball-diamond case, box against unclipped
-  instance.]]
+- **Figure 1.** Paired annotations in a scene: eight ships in P0259 with their
+  DOTA oriented boxes (yellow) and released instance masks (green).
+  `results/experimental/AerialFuseCV_Testing/eda/figures/F1_paired_example.png`
+- **Figure 2.** Paired instances per category, log scale — from ship (36,854)
+  to ground-track-field (450).
+  `results/experimental/AerialFuseCV_Testing/eda/figures/F2_class_distribution.png`
+- **Figure 3.** Construction pipeline: two sources in, a one-to-one match on
+  the oriented polygon, two discard streams out. Every figure on the diagram
+  is read from `dataset_statistics.json`, so it cannot drift from the build.
+  `results/experimental/AerialFuseCV_Testing/eda/figures/F3_construction_pipeline.png`
+- **Figure 4.** Why reconciliation is needed, in two kinds. A baseball-diamond
+  where the sources differ by *convention* (DOTA annotates the infield, iSAID
+  the whole field, +2,346 px), and a ship where iSAID's instance is simply
+  *wrong* — one label spanning a boat, its dock and a second boat.
+  `results/experimental/AerialFuseCV_Testing/eda/figures/F4_source_divergence.png`
 
 ---
 
