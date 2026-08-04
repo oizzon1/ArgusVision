@@ -29,7 +29,7 @@ Allowed statuses: `planned` · `packet-ready` (packet written, awaiting a worker
 | F3 | **user** (drafts ready) | STRATEGIST | no-edit | active | `Context/licensing_emails_DRAFTS.md` — three emails ready to send | 2026-08-04 | Send today; log replies in `Context/` |
 | P1-WRITE (F4) | packet issued → `task_packets/P1-WRITE.md` | WRITER | `task/p1-dib-rewrite` | packet-ready | `papers/p1_aerialfusecv_descriptor/**` | 2026-08-04 | Numbers already exist in `results/`; only DOI + deposit inventory stay as placeholders |
 | F5 | — | REVIEWER | — | planned | review notes only | — | After F4 draft |
-| F6 | packet issued → `task_packets/F6-MASKRCNN.md` | OPERATOR | `task/f6-maskrcnn-windows` | packet-ready | `experiments/maskrcnn_setup/**`; `dataset/convert_aerialfusecv_to_coco.py` (new files only; NEW conda env, never AV_env) | 2026-08-04 | Closes OPEN 5; unblocks F7 |
+| F6 | Codex-Operator | OPERATOR | `task/f6-maskrcnn-windows` | active | `experiments/maskrcnn_setup/**`; `dataset/convert_aerialfusecv_to_coco.py` (new files only; NEW conda env, never AV_env) | 2026-08-04 | Closes OPEN 5; unblocks F7 |
 | F7–F8 | — | OPERATOR | — | planned | experiments / training (partition when claimed) | — | After F6 |
 | REVIEW-V24 | — | REVIEWER | no-edit | planned | `ArgusVision_Strategic_Planning/Context/**_REVIEW.md` only | — | Parallel OK now; no edits to roadmap/state |
 
