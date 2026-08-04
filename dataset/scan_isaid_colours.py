@@ -30,7 +30,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from argusvision.data.constants import ISAID_COLOR_TO_CLASS_ID, CLASS_ID_TO_NAME
 
 ISAID_ROOT = Path("dataset/iSAID")
-OUT_PATH = Path("results/AerialFuseCV_Testing/isaid_colour_audit/colour_audit.json")
+OUT_PATH = Path("results/experimental/AerialFuseCV_Testing/isaid_colour_audit/colour_audit.json")
 
 
 def pack(rgb: np.ndarray) -> np.ndarray:

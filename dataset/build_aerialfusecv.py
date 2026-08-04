@@ -480,7 +480,7 @@ def main() -> int:
     ap.add_argument("--splits", nargs="+", default=list(SPLITS))
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 2) - 1))
-    ap.add_argument("--results-root", type=Path, default=Path("results/AerialFuseCV_Testing/aerialfusecv_build"))
+    ap.add_argument("--results-root", type=Path, default=Path("results/experimental/AerialFuseCV_Testing/aerialfusecv_build"))
     args = ap.parse_args()
 
     missing = [str(p) for s in args.splits

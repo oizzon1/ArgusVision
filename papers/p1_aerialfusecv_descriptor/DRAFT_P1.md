@@ -13,14 +13,14 @@ must be transferred into the official `.docx`, which is partially locked.
 
 **Provenance of the numbers.** Build counts, per-category tables, matched-IoU
 statistics and the discard breakdown come from
-`results/AerialFuseCV_Testing/aerialfusecv_build/20260804_095041_d4c191a/dataset_statistics.json`
+`results/experimental/AerialFuseCV_Testing/aerialfusecv_build/20260804_095041_d4c191a/dataset_statistics.json`
 (git sha `d4c191a`). Protocol-divergence figures come from
-`results/AerialFuseCV_Testing/annotation_discrepancy/discrepancy_summary.json`
+`results/experimental/AerialFuseCV_Testing/annotation_discrepancy/discrepancy_summary.json`
 (all 125,722 pairs, no sampling). Threshold sensitivity, object-size and GSD
-ranges come from `results/AerialFuseCV_Testing/eda/DATASET_ANALYSIS.md`. Source
+ranges come from `results/experimental/AerialFuseCV_Testing/eda/DATASET_ANALYSIS.md`. Source
 instance totals and colour-table completeness come from
-`results/AerialFuseCV_Testing/isaid_colour_audit/`. Orientation statistics come
-from `results/AerialFuseCV_Testing/FINDINGS.md` §2.
+`results/experimental/AerialFuseCV_Testing/isaid_colour_audit/`. Orientation statistics come
+from `results/experimental/AerialFuseCV_Testing/FINDINGS.md` §2.
 
 ---
 
@@ -400,7 +400,7 @@ the rebuild path that regenerates them into place.]]
 - **Figure 1.** [[PLACEHOLDER: one image with a paired oriented box and its
   reconciled instance mask overlaid.]]
 - **Figure 2.** [[PLACEHOLDER: category distribution, log scale — regenerate
-  from `results/AerialFuseCV_Testing/eda/`.]]
+  from `results/experimental/AerialFuseCV_Testing/eda/`.]]
 - **Figure 3.** [[PLACEHOLDER: construction pipeline.]]
 - **Figure 4.** [[PLACEHOLDER: representative divergence between the source
   protocols — a harbor and a baseball-diamond case, box against unclipped
@@ -596,7 +596,7 @@ annotation pairs for aerial imagery [dataset], Zenodo, 2026.
       inventory and reference [6].
 - [ ] Deposit inventory written from the actual uploaded package.
 - [ ] Authorship, affiliation, institutional email and CRediT resolved.
-- [ ] Four figures produced from `results/AerialFuseCV_Testing/`.
+- [ ] Four figures produced from `results/experimental/AerialFuseCV_Testing/`.
 - [ ] Official DiB `.docx` template filled; instructional text deleted.
 - [ ] Reference details verified against publisher records; ≤20 references.
 - [ ] Confirm the current APC.
@@ -611,7 +611,7 @@ annotation pairs for aerial imagery [dataset], Zenodo, 2026.
 This draft replaces DRAFT v0.1 in full.
 
 **What changed.** Every number is now sourced from build `d4c191a` and the
-measurement artefacts under `results/AerialFuseCV_Testing/`; nothing derives
+measurement artefacts under `results/experimental/AerialFuseCV_Testing/`; nothing derives
 from the MSc thesis, which is not a source for this program. The argument was
 rebuilt around protocol divergence: the article now states that two expert
 protocols on the same imagery disagree about what an object is, measures that

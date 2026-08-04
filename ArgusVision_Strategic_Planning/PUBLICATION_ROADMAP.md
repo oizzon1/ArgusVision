@@ -29,7 +29,7 @@ Most of the science is already done. The bottleneck is no longer discovery; it i
 The 2024–2026 literature is dense on *methods* (RSPrompter, SAM-RSIS, OBSeg, SOPSeg/ReSOS, InstructSAM, AerOSeg, YOLO+SAM engineering papers) and still thin on *annotation contracts* and *cascade failure science*. ArgusVision therefore does **not** compete as “another SAM wrapper.” It competes on three durable assets:
 
 1. **Instance-level DOTA↔iSAID pairing with discard accounting** — iSAID shares DOTA imagery but was annotated from scratch; no public release links oriented boxes to masks object-by-object with pairing metadata and discard reasons.
-2. **Protocol divergence, measured exhaustively** — extent disagreement vs foreign contamination across all matched pairs; class-level conventions (e.g. harbor, baseball-diamond) disagree by design, not noise. Evidence: `results/AerialFuseCV_Testing/` and `documentation/DECISION_reconciled_masks.md`.
+2. **Protocol divergence, measured exhaustively** — extent disagreement vs foreign contamination across all matched pairs; class-level conventions (e.g. harbor, baseball-diamond) disagree by design, not noise. Evidence: `results/experimental/AerialFuseCV_Testing/` and `documentation/DECISION_reconciled_masks.md`.
 3. **An evaluator that separates detector failure from mask quality** under a pairs-only contract — so a cascade paper remains valid even if supervised baselines win on absolute score.
 
 Full competitive map and claim landmines: `ArgusVision_Strategic_Planning/Context/competitive_landscape_2026-08_NOTES.md`.
@@ -68,7 +68,7 @@ Beyond P0–P4: parked / candidate papers stay **frozen**. No C1/C2/C3 activatio
 
 | Asset | Status |
 |---|---|
-| Corrected AerialFuseCV build (oriented matching, pairs-only, reconciled masks) | Done — evidence in `results/AerialFuseCV_Testing/` |
+| Corrected AerialFuseCV build (oriented matching, pairs-only, reconciled masks) | Done — evidence in `results/experimental/AerialFuseCV_Testing/` |
 | Protocol divergence measurement (extent vs foreign) | Done |
 | Pipeline evaluation on reconciled masks | Done |
 | EDA + P1 figures | Done |
@@ -207,7 +207,7 @@ The DOI becomes the citation anchor for P1, P2, P3, P4, and any activated candid
 |---|---|
 | Type | Data descriptor, ~3000 words (DiB template) |
 | Target submit | **≤ 2026-09-05** (fast track) |
-| Content source | Corrected build + `results/AerialFuseCV_Testing/` + decision records; **not** the MSc thesis as evidence |
+| Content source | Corrected build + `results/experimental/AerialFuseCV_Testing/` + decision records; **not** the MSc thesis as evidence |
 | Scale (corrected build; cite `results/` at write time) | Pairs-only dataset; 15 classes; oriented-polygon matching; reconciled masks = matched iSAID instance ∩ oriented DOTA box |
 
 ### Central claims (must survive hostile review)
@@ -369,7 +369,7 @@ Ideas identified in the 2026-08-04 competitive review that can stand competition
 | **C2** | **Annotation amplification / auto-mask quality** — score SAM/SOPSeg-style box→mask generators against AerialFuseCV dual-human pairs | Turns dataset into a test bed for automatic annotation without racing ReSOS on scale | TGRS / ISPRS OJPRS / EarthVision | After P2 core experiments |
 | **C3** | **Cascade reliability systems note** (if P2 is too long) — confidence filtering + operational photogrammetry angle | Fits Ioannidis lab narrative; lower novelty than C1/C2 | IGARSS / photogrammetry venue | Only if P2 splits |
 
-**Priority among candidates:** C1 highest originality-per-effort (evidence already in `results/AerialFuseCV_Testing/`); C2 strongest follow-on once P0 DOI exists; C3 only if writing pressure forces a split.
+**Priority among candidates:** C1 highest originality-per-effort (evidence already in `results/experimental/AerialFuseCV_Testing/`); C2 strongest follow-on once P0 DOI exists; C3 only if writing pressure forces a split.
 
 ---
 

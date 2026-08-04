@@ -101,3 +101,13 @@ F6 has a working Windows Mask R-CNN path:
 Recommended next F7 action after orchestrator review: build a proper training
 script/config around the torchvision path, then run YOLOv11-seg and Mask R-CNN
 baselines under the frozen evaluator.
+
+---
+
+**Storage note (2026-08-04, results/ restructure).** This directory moved from
+`experiments/maskrcnn_setup/` to `results/experimental/f6_maskrcnn_setup/`; the
+scripts that produced it moved to `experiments/baselines/maskrcnn/`. Evidence
+that must stay in git — `pip_freeze.txt`, `probe_env.json`,
+`smoke_train_50iter.jsonl` — now lives under `evidence/`. `coco_smoke/` is not
+tracked: it is a 50-image COCO subset regenerable with
+`dataset/convert_aerialfusecv_to_coco.py`.

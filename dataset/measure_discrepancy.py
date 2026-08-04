@@ -106,7 +106,7 @@ def main() -> int:
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 2) - 1))
     ap.add_argument("--out", type=Path,
-                    default=Path("results/AerialFuseCV_Testing/annotation_discrepancy"))
+                    default=Path("results/experimental/AerialFuseCV_Testing/annotation_discrepancy"))
     args = ap.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
 

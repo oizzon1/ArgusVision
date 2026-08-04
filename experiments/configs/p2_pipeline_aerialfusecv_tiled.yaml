@@ -7,7 +7,7 @@
 # barely moved. Full-image inference was destroying small objects before the
 # detector saw them, so tiling is the protocol and full-image is the ablation.
 #
-# Evidence: results/f6b_tiling_yolo11x_obb/
+# Evidence: results/experimental/f6b_tiling_yolo11x_obb/
 experiment: p2_pipeline_aerialfusecv_tiled
 kind: pipeline
 dataset:

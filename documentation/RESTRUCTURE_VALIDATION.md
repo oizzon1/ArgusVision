@@ -3,13 +3,13 @@
 **Date:** 2026-07-29 · **Branch:** `AV_dev` · **Author:** ATHENA (OPERATOR)
 **Purpose:** before the `argusvision` package replaces the thesis-era code, prove that the new evaluation stack reproduces the legacy numbers, and quantify — deliberately, on our terms — every methodological delta a reviewer could later discover (TODO_RESTRUCTURE.md Phase 4).
 
-All runs: `experiments/run_evaluation.py` + configs in `experiments/configs/`, executed in `AV_env` on the RTX 3090 Ti at clean git state `106c7af`. Full metrics + manifests under `results/restructure_validation_*/`.
+All runs: `experiments/run_evaluation.py` + configs in `experiments/configs/`, executed in `AV_env` on the RTX 3090 Ti at clean git state `106c7af`. Full metrics + manifests under `results/experimental/restructure_validation_*/`.
 
 ---
 
 ## Question 1 — Is the port faithful? (run: `pipeline_aabb` vs legacy V2)
 
-New stack in legacy-comparable mode (per-class Hungarian @ IoU 0.1, **AABB** IoU as legacy V2 silently used) against `results/ArgusVision_v2_evaluation/evaluation_metrics_v2.json`. Same 456 AerialFuseCV_Refined val images, YOLOv11x-OBB → SAM ViT-B (box).
+New stack in legacy-comparable mode (per-class Hungarian @ IoU 0.1, **AABB** IoU as legacy V2 silently used) against `results/experimental/ArgusVision_v2_evaluation/evaluation_metrics_v2.json`. Same 456 AerialFuseCV_Refined val images, YOLOv11x-OBB → SAM ViT-B (box).
 
 | Metric | Legacy V2 | New (aabb) | Δ |
 |---|---|---|---|
@@ -40,7 +40,7 @@ Identical run under exact polygon IoU (the new canonical default).
 
 ## Question 3 — Did the greedy matcher's order-dependence distort the thesis YOLO benchmark? (run: `yolo11x_obb`)
 
-New stack (Hungarian + confidence-ranked AP, polygon IoU) vs legacy greedy arbitrary-order benchmark (`results/yolo_evaluation/OBB/YOLOv11x-OBB_metrics.json`). Same 458 DOTA-YOLO val images, conf 0.25.
+New stack (Hungarian + confidence-ranked AP, polygon IoU) vs legacy greedy arbitrary-order benchmark (`results/experimental/yolo_evaluation/OBB/YOLOv11x-OBB_metrics.json`). Same 458 DOTA-YOLO val images, conf 0.25.
 
 | Metric | Legacy (greedy) | New (Hungarian) | Δ |
 |---|---|---|---|

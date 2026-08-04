@@ -153,7 +153,7 @@ masking, which would be ~444 × 21 M operations on a large image.
 
 Smoke run (6 images): 8 distinct semantic colours, 0 unknown, 1,159 instances,
 **0 instances spanning multiple classes**. Output:
-`results/AerialFuseCV_Testing/isaid_colour_audit/colour_audit.json`.
+`results/experimental/AerialFuseCV_Testing/isaid_colour_audit/colour_audit.json`.
 
 ---
 

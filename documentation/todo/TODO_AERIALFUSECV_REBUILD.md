@@ -1,8 +1,8 @@
 # TODO — AerialFuseCV Clean Rebuild & Annotation-Discrepancy Study
 
 **Status: STEPS 1–6 COMPLETE.** Opened 2026-07-31; steps 1–6 executed same day.
-**Consolidated findings: `results/AerialFuseCV_Testing/FINDINGS.md`.**
-**All evidence for this work lives in `results/AerialFuseCV_Testing/`** — a
+**Consolidated findings: `results/experimental/AerialFuseCV_Testing/FINDINGS.md`.**
+**All evidence for this work lives in `results/experimental/AerialFuseCV_Testing/`** — a
 one-time job whose artefacts become legacy once the dataset is released.
 **Companion records:** `TODO_RECREATION_SCRIPT.md` (build design and findings
 R1–R5, licensing), `documentation/DECISION_unpaired_annotations.md` (scope),
@@ -42,7 +42,7 @@ Decides whether a reconciled-mask claim is true at all.
 - [ ] Quantify multi-piece colour instances dataset-wide (2.4% in a sample)
 - [ ] Classify causes: convention difference · iSAID annotation error · our
       extraction merging
-- [ ] Output → `results/AerialFuseCV_Testing/annotation_discrepancy/` with a
+- [ ] Output → `results/experimental/AerialFuseCV_Testing/annotation_discrepancy/` with a
       manifest, plus figure material
 
 ### 2. Fix what is ours — ⚠ PARTIAL: measured (2.61% of pairs), extraction not yet component-aware
@@ -71,10 +71,10 @@ Before publishing numbers about anyone else's annotations.
 
 ### 5. Re-run the pipeline experiment — ✅ DONE (+0.0012 seg IoU; required a loader fix first)
 - [ ] Same models and config; compare against
-      `results/AerialFuseCV_Testing/pipeline_aerialfusecv_v1`
+      `results/experimental/AerialFuseCV_Testing/pipeline_aerialfusecv_v1`
 - [ ] This is the "effect on evaluation" evidence the paper needs
 
-### 6. EDA — ✅ DONE (`results/AerialFuseCV_Testing/eda/`)
+### 6. EDA — ✅ DONE (`results/experimental/AerialFuseCV_Testing/eda/`)
 - [ ] `dataset/analyze_aerialfusecv.py` → `dataset_statistics.json` +
       `DATASET_ANALYSIS.md` + the four P1 figures
 - [ ] Funnel, per-class statistics, IoU distributions, discrepancy tables
@@ -106,7 +106,7 @@ Before publishing numbers about anyone else's annotations.
 - [ ] Delete superseded dataset directories once the final build verifies
       (`AerialFuseCV`, `AerialFuseCV_Refined`, `AerialFuseCV_regression`,
       `AerialFuseCV_v1`) — all are deterministically regenerable
-- [ ] Keep `results/AerialFuseCV_Testing/` as the evidence record
+- [ ] Keep `results/experimental/AerialFuseCV_Testing/` as the evidence record
 
 ### 9. Papers
 - [ ] Re-source P1 numerically from `dataset_statistics.json` — every current
@@ -125,5 +125,5 @@ Before publishing numbers about anyone else's annotations.
 
 ---
 
-*Every step lands in `results/AerialFuseCV_Testing/` with a manifest; every
+*Every step lands in `results/experimental/AerialFuseCV_Testing/` with a manifest; every
 decision becomes a dated record in `documentation/`.*

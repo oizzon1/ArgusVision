@@ -5,7 +5,7 @@ Example:
   python dataset/visualize_dota_boxes.py ^
     --image dataset/DOTA_v1/train/images/P0000.png ^
     --labels dataset/DOTA_v1/train/labels/P0000.txt ^
-    --outdir results/dota_example
+    --outdir results/visualization/dota_example
 """
 
 from __future__ import annotations
@@ -97,7 +97,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Visualize DOTA OBB and derived VBB for a single image.")
     parser.add_argument("--image", required=True, help="Path to a DOTA image (.png).")
     parser.add_argument("--labels", required=True, help="Path to a DOTA label file (.txt).")
-    parser.add_argument("--outdir", default="results/dota_example", help="Output directory.")
+    parser.add_argument("--outdir", default="results/visualization/dota_example", help="Output directory.")
     parser.add_argument("--prefix", default=None, help="Output filename prefix (defaults to image stem).")
     parser.add_argument("--thickness", type=int, default=2, help="Box line thickness.")
     args = parser.parse_args()

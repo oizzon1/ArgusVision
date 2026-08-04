@@ -27,7 +27,7 @@ needs in order to be scored on both stages against the same object.
 
 DOTA v1.0 and iSAID annotate the same imagery independently, so their object
 sets do not coincide. Measured over all 1,869 images
-(`results/AerialFuseCV_Testing/isaid_colour_audit/colour_audit.json`):
+(`results/experimental/AerialFuseCV_Testing/isaid_colour_audit/colour_audit.json`):
 
 - iSAID contains **475,438** instances; DOTA contains **127,843** boxes.
 - iSAID annotators included many objects DOTA omitted — small and partially

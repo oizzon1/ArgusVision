@@ -10,8 +10,8 @@ READ FIRST
   Athena_Protocols/ATHENA_RISE.md · ATHENA_STATE.md · ACTIVE_TASKS.md
   ArgusVision_Strategic_Planning/PUBLICATION_ROADMAP.md  (v2.4 — P1 section)
   ArgusVision_Strategic_Planning/Context/competitive_landscape_2026-08_NOTES.md
-  results/AerialFuseCV_Testing/FINDINGS.md
-  results/AerialFuseCV_Testing/eda/DATASET_ANALYSIS.md
+  results/experimental/AerialFuseCV_Testing/FINDINGS.md
+  results/experimental/AerialFuseCV_Testing/eda/DATASET_ANALYSIS.md
   documentation/DECISION_reconciled_masks.md · DECISION_unpaired_annotations.md
   papers/shared/venues/data-in-brief/NOTES.md  (template v19 rules)
   papers/p1_aerialfusecv_descriptor/DRAFT_P1.md  (current draft — being replaced)

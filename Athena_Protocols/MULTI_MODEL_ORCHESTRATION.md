@@ -299,7 +299,7 @@ Locked files/areas:
 - dataset/build_aerialfusecv.py
 - dataset/README.md
 - zenodo_release/**
-- results/AerialFuseCV_Testing/aerialfusecv_build/**
+- results/experimental/AerialFuseCV_Testing/aerialfusecv_build/**
 
 Do not edit:
 - ATHENA_STATE.md

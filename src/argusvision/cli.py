@@ -56,7 +56,7 @@ from argusvision.runtime.banner import (
 from argusvision.runtime.status import RunStatus, latest_run_dir, read_status
 from argusvision.runtime.tiling import maybe_tile
 
-DEFAULT_RESULTS_ROOT = Path("results")
+DEFAULT_RESULTS_ROOT = Path("results/experimental")
 
 
 # --------------------------------------------------------------------------

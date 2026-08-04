@@ -36,7 +36,7 @@ python src/experiments/evaluate_sam.py
 # Test mode (10 images)
 python src/experiments/evaluate_sam.py --test
 ```
-**Results:** `results/sam_evaluation/{config}/` with metrics + 10 best/worst examples
+**Results:** `results/experimental/sam_evaluation/{config}/` with metrics + 10 best/worst examples
 
 ## 🛰️ Phase 3: ArgusVision Pipeline
 ```cmd
@@ -49,7 +49,7 @@ python src/experiments/evaluate_ArgusVision.py --max-images 10
 # Full evaluation (1,783 images, ~30-40 min)
 python src/experiments/evaluate_ArgusVision.py
 ```
-**Results:** `results/ArgusVision_evaluation/` with metrics + 10 best/worst visualizations
+**Results:** `results/experimental/ArgusVision_evaluation/` with metrics + 10 best/worst visualizations
 
 ## 🔧 Optional Arguments
 ```cmd
@@ -64,6 +64,6 @@ python src/experiments/evaluate_ArgusVision.py \
 ```
 
 ## 📊 Results Locations
-- **YOLO:** `results/yolo_evaluation/OBB/` and `results/yolo_evaluation/VBB/`
-- **SAM:** `results/sam_evaluation/{config}/`
-- **ArgusVision:** `results/ArgusVision_evaluation/`
+- **YOLO:** `results/experimental/yolo_evaluation/OBB/` and `results/experimental/yolo_evaluation/VBB/`
+- **SAM:** `results/experimental/sam_evaluation/{config}/`
+- **ArgusVision:** `results/experimental/ArgusVision_evaluation/`

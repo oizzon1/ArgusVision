@@ -5,7 +5,7 @@ whole DOTA image (up to ~13000 px) to a 640-px network shrinks a car to a few
 pixels and the detector never sees it. F6b measured the cost on the 456-image
 AerialFuseCV val split: full-image YOLOv11x-OBB recall 0.607 against 0.852
 tiled, with small-vehicle recall 0.530 -> 0.790 and ship 0.597 -> 0.936
-(`results/f6b_tiling_yolo11x_obb/`). Large objects barely moved, which is what
+(`results/experimental/f6b_tiling_yolo11x_obb/`). Large objects barely moved, which is what
 identifies the cause as input scale rather than detector quality.
 
 `TiledDetector` wraps a detector rather than replacing it: it satisfies the

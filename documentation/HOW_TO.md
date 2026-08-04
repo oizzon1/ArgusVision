@@ -71,7 +71,7 @@ python src/experiments/evaluate_yolo_vbb.py
 ```cmd
 python src/experiments/evaluate_sam.py
 ```
-Output: `results/sam_evaluation/{config}/` with metrics + 10 best/worst examples
+Output: `results/experimental/sam_evaluation/{config}/` with metrics + 10 best/worst examples
 
 ### ArgusVision Pipeline (Phase 3)
 - **Quick Test** (1 image, ~10 seconds):
@@ -89,7 +89,7 @@ python src/experiments/evaluate_ArgusVision.py --max-images 10
 python src/experiments/evaluate_ArgusVision.py
 ```
 
-Output: `results/ArgusVision_evaluation/` with metrics + 10 best/worst visualizations
+Output: `results/experimental/ArgusVision_evaluation/` with metrics + 10 best/worst visualizations
 
 ## 8) VS Code Tips
 - Select Interpreter: Ctrl+Shift+P → "Python: Select Interpreter" → choose `AV_env`.

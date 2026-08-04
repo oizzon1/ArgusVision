@@ -73,10 +73,10 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dataset", type=Path, default=Path("dataset/AerialFuseCV"))
     ap.add_argument("--discrepancy", type=Path,
-                    default=Path("results/AerialFuseCV_Testing/annotation_discrepancy/"
+                    default=Path("results/experimental/AerialFuseCV_Testing/annotation_discrepancy/"
                                  "discrepancy_summary.json"))
     ap.add_argument("--out", type=Path,
-                    default=Path("results/AerialFuseCV_Testing/eda"))
+                    default=Path("results/experimental/AerialFuseCV_Testing/eda"))
     args = ap.parse_args()
     figs = args.out / "figures"; figs.mkdir(parents=True, exist_ok=True)
 
@@ -208,7 +208,7 @@ def main() -> int:
     A("## Provenance\n")
     A(f"Build manifest: `{args.dataset}/build_manifest.json`. "
       f"Statistics: `{args.dataset}/dataset_statistics.json`. "
-      f"Evidence for this analysis: `results/AerialFuseCV_Testing/`.\n")
+      f"Evidence for this analysis: `results/experimental/AerialFuseCV_Testing/`.\n")
 
     report = "\n".join(L)
     (args.out / "DATASET_ANALYSIS.md").write_text(report, encoding="utf-8")

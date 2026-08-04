@@ -96,7 +96,7 @@ def main() -> int:
     ap.add_argument("--split", default="val")
     ap.add_argument("--images", type=int, default=60)
     ap.add_argument("--top", type=int, default=10)
-    ap.add_argument("--out", type=Path, default=Path("results/AerialFuseCV_Testing/gt_mask_comparison"))
+    ap.add_argument("--out", type=Path, default=Path("results/experimental/AerialFuseCV_Testing/gt_mask_comparison"))
     args = ap.parse_args()
 
     root = args.dataset / args.split

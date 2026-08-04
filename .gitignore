@@ -48,6 +48,15 @@ results/**
 !results/**/*manifest.json
 !results/**/*_audit.json
 !results/**/dataset_statistics.json
+# Reports and findings are the prose that interprets the metrics beside them.
+# They were previously tracked only because individual files had been
+# force-added, which meant a new report silently stayed out of git.
+!results/**/*.md
+# Anything a run needs kept beyond metrics — env freezes, probe output, loss
+# logs — goes in an `evidence/` folder and is tracked whatever its extension.
+# One convention instead of a growing list of per-filename exceptions.
+# Keep it small: bulk regenerable payloads stay outside it.
+!results/**/evidence/**
 
 # Ignore huge restore points specifically
 results/**/restore_points/

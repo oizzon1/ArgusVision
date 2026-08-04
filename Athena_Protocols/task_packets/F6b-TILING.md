@@ -20,7 +20,7 @@ READ FIRST
   Athena_Protocols/ATHENA_RISE.md · ACTIVE_TASKS.md
   src/argusvision/models/yolo.py · src/argusvision/evaluation/*
   experiments/run_evaluation.py · experiments/configs/validation_yolo11x_obb.yaml
-  results/AerialFuseCV_Testing/  (the full-image baseline lives here)
+  results/experimental/AerialFuseCV_Testing/  (the full-image baseline lives here)
 
 CLAIM
   Add a row to ACTIVE_TASKS.md: ID=F6b, Owner=<model>, Status=active.
@@ -30,7 +30,7 @@ LOCKED TO YOU (new files only)
 DO NOT EDIT
   src/argusvision/**  — the evaluation stack is FROZEN. If you believe it needs
   a change, STOP and report; do not edit it.
-  dataset/**, papers/**, results/AerialFuseCV_Testing/**, control files.
+  dataset/**, papers/**, results/experimental/AerialFuseCV_Testing/**, control files.
 
 OBJECTIVE
   Measure how much of the detection gap is explained by input scale, using ONE

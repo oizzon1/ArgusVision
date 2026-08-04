@@ -19,7 +19,7 @@ Usage
       --labels dataset/DOTA_v1/train/labels/P0000.txt
 
   # Output to custom folder:
-  python dataset/visualize_obb_vs_vbb_thesis.py --autoselect --outdir results/thesis_figures
+  python dataset/visualize_obb_vs_vbb_thesis.py --autoselect --outdir results/visualization/thesis_figures
 """
 from __future__ import annotations
 
@@ -311,7 +311,7 @@ def main() -> None:
         "--min-objects", type=int, default=3,
         help="Minimum number of matching objects for a valid image (default: 3).")
     parser.add_argument(
-        "--outdir", type=str, default="results/thesis_figures",
+        "--outdir", type=str, default="results/visualization/thesis_figures",
         help="Output directory for the figure(s).")
     parser.add_argument(
         "--dpi", type=int, default=300,

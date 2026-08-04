@@ -194,7 +194,7 @@ class AnnotationVisualizer:
         print(f"Input: {input_path}")
         
         # Output directory
-        output_dir = Path('results/Visualize_Annotation')
+        output_dir = Path('results/visualization/Visualize_Annotation')
         output_dir.mkdir(parents=True, exist_ok=True)
         
         # Parse input

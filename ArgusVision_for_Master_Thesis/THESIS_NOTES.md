@@ -3034,9 +3034,9 @@ ArgusVision Actual:      67.9% IoU ← Phase 3 actual result ✅
 
 **Additional Materials:**
 - [x] SAM_EVALUATION_SUMMARY.md created ✅
-- [x] results/sam_evaluation/{config}/metrics.json saved ✅
-- [x] results/sam_evaluation/{config}/examples/best/ (15 per class) ✅
-- [x] results/sam_evaluation/{config}/examples/worst/ (15 per class) ✅
+- [x] results/experimental/sam_evaluation/{config}/metrics.json saved ✅
+- [x] results/experimental/sam_evaluation/{config}/examples/best/ (15 per class) ✅
+- [x] results/experimental/sam_evaluation/{config}/examples/worst/ (15 per class) ✅
 
 ---
 
@@ -3567,7 +3567,7 @@ ArgusVision Actual:      67.9% IoU ← Phase 3 actual result ✅
 
 **Features Implemented:**
 1. ✅ **Auto-save every 50 images**
-   - Saves: `results/ArgusVision_evaluation/restore_points/eval_restore_point_XXXX.json`
+   - Saves: `results/experimental/ArgusVision_evaluation/restore_points/eval_restore_point_XXXX.json`
    - Includes: metrics, examples data, progress
    
 2. ✅ **Auto-resume on restart**
@@ -3627,17 +3627,17 @@ Evaluating:  15.0% |   66/438 | P0145.png...
 **Upon Completion:**
 
 1. **Metrics JSON** ✅
-   - `results/ArgusVision_evaluation/evaluation_metrics.json`
+   - `results/experimental/ArgusVision_evaluation/evaluation_metrics.json`
    - Overall: Seg IoU, Seg DICE, timing
    - Per-class: Detection (Recall/Precision/F1) + Segmentation (IoU/DICE)
 
 2. **Visualizations** ✅
-   - `results/ArgusVision_evaluation/examples/best/` (10 examples)
-   - `results/ArgusVision_evaluation/examples/worst/` (10 examples)
+   - `results/experimental/ArgusVision_evaluation/examples/best/` (10 examples)
+   - `results/experimental/ArgusVision_evaluation/examples/worst/` (10 examples)
    - Format: Image + YOLO bbox + GT mask + SAM mask
 
 3. **Failed Images Log** (if any)
-   - `results/ArgusVision_evaluation/failed_images.txt`
+   - `results/experimental/ArgusVision_evaluation/failed_images.txt`
    - List of images that encountered errors
 
 4. **Console Summary** ✅

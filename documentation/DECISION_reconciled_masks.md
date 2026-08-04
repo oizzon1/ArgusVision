@@ -1,7 +1,7 @@
 # Decision Record — Reconciled Masks
 
 **Status: ACCEPTED, 2026-07-31.** Evidence:
-`results/AerialFuseCV_Testing/annotation_discrepancy/` (125,722 pairs, all
+`results/experimental/AerialFuseCV_Testing/annotation_discrepancy/` (125,722 pairs, all
 measured — no sampling).
 **Companion:** `documentation/DECISION_unpaired_annotations.md` (scope),
 `TODO_AERIALFUSECV_REBUILD.md` (steps).
@@ -49,7 +49,7 @@ confirms exactly — so nothing is lost relative to the class-mask route.
 
 ## 3. Why extent disagreement is not an error to fix
 
-Inspection of the worst cases (`results/AerialFuseCV_Testing/gt_mask_comparison/`)
+Inspection of the worst cases (`results/experimental/AerialFuseCV_Testing/gt_mask_comparison/`)
 showed `extra = 0px` throughout: the sources **annotate different extents of
 the same object**, by convention rather than by mistake.
 

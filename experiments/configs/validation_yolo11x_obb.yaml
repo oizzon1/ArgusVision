@@ -1,5 +1,5 @@
 # Restructure Phase 4 validation: YOLOv11x-OBB under the new evaluator.
-# Legacy baseline: results/yolo_evaluation/OBB/YOLOv11x-OBB_metrics.json
+# Legacy baseline: results/experimental/yolo_evaluation/OBB/YOLOv11x-OBB_metrics.json
 #   ("map"=macro-F1 0.6240, greedy arbitrary-order matcher, polygon IoU@0.1,
 #    conf 0.25, 458 images).
 experiment: restructure_validation_yolo11x_obb

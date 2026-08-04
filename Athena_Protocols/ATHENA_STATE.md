@@ -19,7 +19,7 @@
 > future session can recognise what the precursor build reported and measure the
 > delta against it. **Where our own measurement already exists it supersedes
 > these outright** — e.g. the authoritative iSAID instance count is **475,438**
-> (`results/AerialFuseCV_Testing/isaid_colour_audit/colour_audit.json`), not the 330,693 implied by
+> (`results/experimental/AerialFuseCV_Testing/isaid_colour_audit/colour_audit.json`), not the 330,693 implied by
 > the precursor's connected-components counting.
 **AerialFuseCV dataset** — all values below read from thesis §3.1, Tables 6–7 (pp. 57–60) on 2026-07-30; Table 7 verified arithmetically (per-class matched sums to 97,070 train + 28,032 val = 125,102 exactly)
 - **Construction funnel:** DOTA v1.0 train+val = 2,806 images → intersection with iSAID = **1,869** (1,411 train / 458 val), 66.6%; the 937 test images excluded (no public iSAID masks) → **127,843 source boxes** (98,990 train / 28,853 val) → **125,102 matched pairs** (97,070 / 28,032) → **12 images discarded** (10 train / 2 val, zero pairs) → **1,857 images** (1,401 train / 456 val)

@@ -1,5 +1,5 @@
 # Restructure Phase 4 validation: integrated pipeline, LEGACY-comparable mode.
-# Legacy baseline: results/ArgusVision_v2_evaluation/evaluation_metrics_v2.json
+# Legacy baseline: results/experimental/ArgusVision_v2_evaluation/evaluation_metrics_v2.json
 #   (Hungarian@0.1 on AABB IoU, 456 images: recall .626, precision .877,
 #    f1 .731, seg_iou_tp .662, seg_iou_gt_anchored .415).
 # iou_mode aabb reproduces the legacy V2 OBB->AABB collapse deliberately.

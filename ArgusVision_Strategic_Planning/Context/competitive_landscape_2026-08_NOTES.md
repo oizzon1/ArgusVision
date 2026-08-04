@@ -23,7 +23,7 @@ and iSAID, and the evaluator that separates detector error from mask quality.
    reasons.
 
 2. **Protocol divergence, measured exhaustively**  
-   Evidence in `results/AerialFuseCV_Testing/` (see `FINDINGS.md`): over all
+   Evidence in `results/experimental/AerialFuseCV_Testing/` (see `FINDINGS.md`): over all
    matched pairs, disagreement decomposes into ~90% extent / ~10% foreign
    contamination; harbor and baseball-diamond are convention differences, not
    noise. Reconciled masks = matched iSAID instance ∩ oriented DOTA box
@@ -83,7 +83,7 @@ and iSAID, and the evaluator that separates detector error from mask quality.
 
 | Artefact | Role |
 |---|---|
-| `results/AerialFuseCV_Testing/FINDINGS.md` | Consolidated rebuild + discrepancy findings |
+| `results/experimental/AerialFuseCV_Testing/FINDINGS.md` | Consolidated rebuild + discrepancy findings |
 | `documentation/DECISION_reconciled_masks.md` | Released-mask definition |
 | `documentation/DECISION_unpaired_annotations.md` | Pairs-only scope |
 | `Context/iSAID_baselines_positioning_NOTES.md` | Why iSAID baselines do not kill the program |

@@ -70,7 +70,7 @@ conda activate AV_env
 Run everything from repo root (path convention), e.g.:
 
 ```bash
-python src/experiments/evaluate_sam.py --output results/sam_evaluation
+python src/experiments/evaluate_sam.py --output results/experimental/sam_evaluation
 python src/experiments/evaluate_ArgusVision.py
 ```
 

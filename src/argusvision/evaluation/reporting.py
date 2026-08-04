@@ -64,8 +64,8 @@ def environment_provenance() -> Dict[str, object]:
     return env
 
 
-def create_run_dir(experiment: str, results_root: str = "results") -> Path:
-    """`results/<experiment>/<UTC timestamp>_<short sha>/`, created."""
+def create_run_dir(experiment: str, results_root: str = "results/experimental") -> Path:
+    """`results/experimental/<experiment>/<UTC timestamp>_<short sha>/`, created."""
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
     sha = git_provenance()["git_sha"]
     short = sha[:7] if isinstance(sha, str) and sha != "unknown" else "nosha"

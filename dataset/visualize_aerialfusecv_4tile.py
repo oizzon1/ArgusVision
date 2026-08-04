@@ -198,7 +198,7 @@ def main():
     parser = argparse.ArgumentParser(description="4-tile AerialFuseCV visualization (train/val auto-search)")
     parser.add_argument("--image-id", required=True, type=str, help="Image id, e.g. P0173")
     parser.add_argument("--root", type=str, default="dataset/AerialFuseCV", help="Dataset root")
-    parser.add_argument("--output", type=str, default="results/AerialFuseCV_Testing/visualizations/4tile", help="Output directory")
+    parser.add_argument("--output", type=str, default="results/experimental/AerialFuseCV_Testing/visualizations/4tile", help="Output directory")
     args = parser.parse_args()
 
     image_id = args.image_id.strip()

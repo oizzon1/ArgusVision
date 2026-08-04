@@ -1,5 +1,5 @@
 # Pipeline evaluation on the corrected AerialFuseCV build.
-# Mirrors the configuration behind results/ArgusVision_v2_evaluation so the only
+# Mirrors the configuration behind results/experimental/ArgusVision_v2_evaluation so the only
 # variable is the dataset: same models, same prompts, same evaluator.
 experiment: pipeline_aerialfusecv_v1
 kind: pipeline
