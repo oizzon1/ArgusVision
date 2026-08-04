@@ -126,9 +126,44 @@ def figure_1(d, pairs, out: Path, split: str):
     print(f"  figure 1: {img_id} ({n} x {cls})")
 
 
+def pick_divergence_cases(d, pairs, isaid: Path, split: str, scan: int, top: int):
+    """Choose the cases by measured excess rather than by hand.
+
+    Hand-picking drifted once already: a case chosen from an earlier build
+    matched a different instance after rematching, leaving the figure caption
+    describing something the panel no longer showed.
+    """
+    found = []
+    for n, img_id in enumerate(list(pairs)[:scan], 1):
+        gts = d.load_ground_truth(img_id)
+        recs = pairs[img_id]
+        if len(gts) != len(recs):
+            continue
+        released_all = d.ground_truth_masks(img_id, gts)
+        ins = cv2.cvtColor(cv2.imread(str(isaid / split / "instance_masks" /
+                                          f"{img_id}_instance_id_RGB.png")), cv2.COLOR_BGR2RGB)
+        for rec, rel in zip(recs, released_all):
+            raw = np.all(ins == np.array(rec["instance_rgb"], np.uint8), axis=-1)
+            excess = int((raw & ~rel).sum())
+            if excess > 0:
+                found.append((excess, rec["class_name"], img_id))
+        if n % 20 == 0:
+            print(f"  scanning {n}/{scan}", flush=True)
+    found.sort(reverse=True)
+    chosen, seen = [], set()
+    for excess, cls, img_id in found:
+        if cls in seen:
+            continue
+        chosen.append((cls, img_id)); seen.add(cls)
+        if len(chosen) == top:
+            break
+    print(f"  cases by measured excess: {chosen}")
+    return chosen
+
+
 def figure_4(d, pairs, isaid: Path, out: Path, split: str, cases):
     """Box vs raw iSAID instance vs released mask, for the clearest divergences."""
-    panels = []
+    panels, measurements = [], []
     for want_cls, want_img in cases:
         recs = pairs.get(want_img, [])
         idx = next((i for i, r in enumerate(recs) if r["class_name"] == want_cls), None)
@@ -154,10 +189,22 @@ def figure_4(d, pairs, isaid: Path, out: Path, split: str, cases):
         cv2.polylines(c, [box], True, BOX_COLOUR, 2, cv2.LINE_AA)
 
         excess = int((raw & ~released).sum())
+        # Every number rendered into a caption is also written to results/ —
+        # a figure is not a licence to invent a value (LESSONS C5).
+        measurements.append({"image_id": want_img, "class_name": want_cls,
+                             "excess_px": excess,
+                             "released_px": int(released.sum()),
+                             "raw_px": int(raw.sum())})
         row = np.hstack([caption(a, "DOTA oriented box"),
                          caption(b, f"iSAID raw instance (+{excess:,} px)"),
                          caption(c, "AerialFuseCV released mask")])
         panels.append(caption(row, f"{want_img} — {want_cls}", 30))
+
+    if measurements:
+        (out / "figure_values.json").write_text(
+            json.dumps({"released_masks_from": str(d.root), "raw_masks_from": str(isaid),
+                        "split": split,
+                        "cases": measurements}, indent=2), encoding="utf-8")
 
     if panels:
         # Rows come from different crops, so scale each to a common width rather
@@ -178,6 +225,8 @@ def main() -> int:
     ap.add_argument("--dataset", type=Path, default=Path("dataset/AerialFuseCV"))
     ap.add_argument("--isaid", type=Path, default=Path("dataset/iSAID"))
     ap.add_argument("--split", default="val")
+    ap.add_argument("--scan", type=int, default=120, help="images to scan for divergence cases")
+    ap.add_argument("--top", type=int, default=2)
     ap.add_argument("--out", type=Path,
                     default=Path("results/experimental/AerialFuseCV_Testing/eda/figures"))
     args = ap.parse_args()
@@ -188,8 +237,9 @@ def main() -> int:
     print(f"{len(pairs)} images with pairs in {args.split}")
 
     figure_1(d, pairs, args.out, args.split)
-    figure_4(d, pairs, args.isaid, args.out, args.split,
-             [("baseball-diamond", "P0130"), ("ship", "P0262")])
+    cases = pick_divergence_cases(d, pairs, args.isaid, args.split,
+                                  args.scan, args.top)
+    figure_4(d, pairs, args.isaid, args.out, args.split, cases)
     print(f"figures -> {args.out}")
     return 0
 
