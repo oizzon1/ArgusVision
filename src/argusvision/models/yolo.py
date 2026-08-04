@@ -66,7 +66,28 @@ class YoloDetector:
             source=image_rgb, conf=self.conf_threshold, verbose=False, device=self.device
         )[0]
         self.last_inference_ms = (time.time() - t0) * 1000.0
+        return self._detections_from_result(res)
 
+    def predict_batch(self, images_rgb: List[np.ndarray]) -> List[List[Detection]]:
+        """One forward pass over several images; results in input order.
+
+        Same detections as calling `predict` per image — this exists for
+        throughput, and is what makes tiled inference affordable
+        (`argusvision.runtime.tiling`).
+        """
+        if not images_rgb:
+            return []
+        t0 = time.time()
+        results = self.model.predict(
+            source=list(images_rgb),
+            conf=self.conf_threshold,
+            verbose=False,
+            device=self.device,
+        )
+        self.last_inference_ms = (time.time() - t0) * 1000.0
+        return [self._detections_from_result(res) for res in results]
+
+    def _detections_from_result(self, res) -> List[Detection]:
         detections: List[Detection] = []
         if self.mode == "vbb":
             if res.boxes is not None:

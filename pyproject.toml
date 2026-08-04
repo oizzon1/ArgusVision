@@ -12,6 +12,9 @@ requires-python = ">=3.9"
 # ArgusVision_environment.lock.txt (exact closure) in the AV_env conda env.
 # Declaring pins here too would create a third, competing source of truth.
 
+[project.scripts]
+argusvision = "argusvision.cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["argusvision*"]

@@ -1,0 +1,29 @@
+# P2 primary protocol: tiled detection -> SAM segmentation on AerialFuseCV.
+#
+# Identical to p2_pipeline_aerialfusecv.yaml except that the detector runs over
+# overlapping 1024 px windows. F6b measured the difference on the same val
+# split: detector recall 0.607 -> 0.852 at IoU 0.5, driven by small objects
+# (small-vehicle 0.530 -> 0.790, ship 0.597 -> 0.936), while large-vehicle
+# barely moved. Full-image inference was destroying small objects before the
+# detector saw them, so tiling is the protocol and full-image is the ablation.
+#
+# Evidence: results/f6b_tiling_yolo11x_obb/
+experiment: p2_pipeline_aerialfusecv_tiled
+kind: pipeline
+dataset:
+  type: aerialfusecv
+  path: dataset/AerialFuseCV/val
+detector:
+  name: yolo11x-obb
+  conf_threshold: 0.25
+tiling:
+  enabled: true
+  tile_size: 1024
+  overlap: 200        # ~20%: an object up to 200 px wide fits whole in a tile
+  nms_iou: 0.5        # class-wise rotated NMS across tile seams
+  batch_size: 8
+segmenter:
+  name: sam-vit-b
+iou_thresholds: [0.1, 0.3, 0.5]
+iou_mode: auto
+seg_match_threshold: 0.1

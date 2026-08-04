@@ -1,0 +1,25 @@
+# Detection-only, tiled — the P2 detector protocol.
+#
+# Pair with f6b_detection_yolo11x_obb_full.yaml: the two configs differ in the
+# `tiling` block and nothing else, which is what makes the comparison a
+# measurement rather than an anecdote.
+#
+# First measured by a standalone script (commit 95e3aa9,
+# experiments/tiling/yolo11x_obb_full_vs_tiled.py) before tiling moved into
+# argusvision.runtime.tiling. Results: results/f6b_tiling_yolo11x_obb/
+experiment: f6b_detection_yolo11x_obb_tiled
+kind: detection
+dataset:
+  type: aerialfusecv
+  path: dataset/AerialFuseCV/val
+detector:
+  name: yolo11x-obb
+  conf_threshold: 0.25
+tiling:
+  enabled: true
+  tile_size: 1024
+  overlap: 200
+  nms_iou: 0.5
+  batch_size: 8
+iou_thresholds: [0.1, 0.3, 0.5]
+iou_mode: auto

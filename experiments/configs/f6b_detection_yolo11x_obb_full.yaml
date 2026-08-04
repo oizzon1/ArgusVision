@@ -1,0 +1,18 @@
+# Detection-only, full-image — the ablation against the tiled protocol.
+#
+# Identical to f6b_detection_yolo11x_obb_tiled.yaml except that tiling is off.
+# Retained because the comparison is the argument: full-image inference shrinks
+# small objects below the detector's resolution, which is a property of the
+# input protocol and not of the detector.
+experiment: f6b_detection_yolo11x_obb_full
+kind: detection
+dataset:
+  type: aerialfusecv
+  path: dataset/AerialFuseCV/val
+detector:
+  name: yolo11x-obb
+  conf_threshold: 0.25
+tiling:
+  enabled: false
+iou_thresholds: [0.1, 0.3, 0.5]
+iou_mode: auto

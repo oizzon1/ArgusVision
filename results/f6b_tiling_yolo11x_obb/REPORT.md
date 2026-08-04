@@ -64,3 +64,30 @@ through PR curves rather than treating conf=0.25 and NMS=0.5 as final.
 
 - Metrics: `D:\Work\AV\.worktrees\f6b\results\f6b_tiling_yolo11x_obb\20260804_105739_207e1f0\metrics.json`
 - Manifest: `D:\Work\AV\.worktrees\f6b\results\f6b_tiling_yolo11x_obb\20260804_105739_207e1f0\manifest.json`
+
+---
+
+## Status after the platform move (2026-08-04)
+
+The standalone runner that produced this report has been removed. Tiling is now
+a platform capability — `argusvision.runtime.tiling.TiledDetector` — and the
+comparison is reproduced from configs rather than from a script:
+
+```
+argusvision run experiments/configs/f6b_detection_yolo11x_obb_full.yaml
+argusvision run experiments/configs/f6b_detection_yolo11x_obb_tiled.yaml
+```
+
+The original 479-line runner is preserved in git history at commit `95e3aa9`
+(`experiments/tiling/yolo11x_obb_full_vs_tiled.py`). It was removed rather than
+kept because it carried its own copies of the tile-origin, coordinate-shift and
+rotated-NMS logic; leaving a second implementation in the tree is how two parts
+of this codebase came to disagree about what "mAP" meant.
+
+**Open defect, carried to F8.** There is no tile-border truncation handling. An
+object crossing a seam produces two partial detections whose mutual IoU is near
+zero, so NMS keeps both and the object is counted twice. This inflates false
+positives and is part of why tiled precision (0.740) sits below full-image
+precision (0.853) at IoU 0.5. It must be quantified before any P2 number is
+final. It cannot reverse the finding: recall and AP gains of this size are not
+an artefact of duplicate boxes, which only ever cost precision.
