@@ -41,6 +41,7 @@ Allowed statuses: `planned` · `packet-ready` (packet written, awaiting a worker
 | P1-WRITE (F4) | Cursor-Writer (Opus 5) | WRITER | `task/p1-dib-rewrite` | **merged** (73d5c6f) | `papers/p1_aerialfusecv_descriptor/**` | 2026-08-04 | Draft rewritten from build `d4c191a`. Open: deposit DOI, deposit inventory, authorship/CRediT, 4 figures. **Merge note:** this row and F6's row are adjacent — expect a conflict in this table, resolve by keeping both |
 | F5 | — | REVIEWER | — | planned | review notes only | — | After F4 draft |
 | F6 | Codex-Operator | OPERATOR | `task/f6-maskrcnn-windows` | **merged** | `experiments/maskrcnn_setup/**`; `dataset/convert_aerialfusecv_to_coco.py` (new files only; NEW conda env, never AV_env) | 2026-08-04 | Chosen path: torchvision fallback in `P2_env`; COCO smoke subset + 50-iteration CUDA smoke run complete; see `experiments/maskrcnn_setup/REPORT.md` |
+| F6b | packet issued → `task_packets/F6b-TILING.md` | OPERATOR | `task/f6b-tiling` | packet-ready | `experiments/tiling/**` (new files only) | 2026-08-04 | Measures how much of the detection gap is input scale. Gates F7 protocol choice |
 | F7–F8 | — | OPERATOR | — | planned | experiments / training (partition when claimed) | — | After F6 |
 | REVIEW-V24 | — | REVIEWER | no-edit | planned | `ArgusVision_Strategic_Planning/Context/**_REVIEW.md` only | — | Parallel OK now; no edits to roadmap/state |
 
