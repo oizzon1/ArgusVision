@@ -85,12 +85,16 @@ neighbouring instance's pixels fall inside the box; 16.3% of pairs contain at
 least one such foreign pixel. The released mask is therefore the matched
 instance clipped to its own oriented box.
 
-The deposit provides oriented and axis-aligned box annotations in DOTA format,
-instance-identity and category-coloured masks, the pairing and discard records,
-per-category statistics, checksums, and a script that rebuilds the dataset from
-the official DOTA v1.0 and iSAID downloads, whose imagery is not
-redistributable. The data supports training and evaluation of aerial methods
-that require box and mask supervision linked on the same object.
+Neither source permits redistribution of its annotations, so the deposit
+publishes the correspondence rather than the annotations themselves: each
+record names an image, a category, the index of the box within that image's own
+DOTA annotation file, the identity of the matched iSAID instance, and the
+achieved overlap. Alongside it are the discard record, per-category statistics,
+checksums and a script that regenerates the full dataset — oriented and
+axis-aligned boxes in DOTA format, instance-identity and category-coloured
+masks — from a user's own DOTA v1.0 and iSAID downloads. The data supports
+training and evaluation of aerial methods that require box and mask supervision
+linked on the same object.
 
 > 319 words (template window 100–500).
 
@@ -227,10 +231,14 @@ Imagery is inherited unchanged from DOTA v1.0 / iSAID. No resizing, retiling or
 radiometric adjustment was applied, so per-image ground sample distance remains
 applicable and object scale varies by orders of magnitude across the
 collection. Instance areas span 10 to 1,080,673 px, median 631 px. Ground
-sample distance is recorded for 1,861 of the 1,862 retained images, spanning
-0.000–4.496 m/px with a median of 0.260; the single image without a value
-carries `gsd:null` in its DOTA header. The values are inherited verbatim from
-those headers, degenerate entries included, and are not corrected here.
+sample distance is recorded for 1,861 of the 1,862 retained images; the
+remaining image carries `gsd:null` in its DOTA header. Values are inherited
+verbatim from those headers and are not corrected here. 21 images carry an
+implausibly small value of 1.34e-06 m/px — at this imagery's resolution that
+would imply sub-micrometre ground sampling, so it is best read as a source
+metadata defect rather than a measurement. Excluding those, the range is
+0.092–4.496 m/px with a median of 0.260. Users filtering on ground sample
+distance should screen for the degenerate values.
 
 ### Scale and pairing outcome
 
@@ -445,7 +453,7 @@ category. The build re-checks this condition and reports it in
 ambiguous category.
 
 **Matching.** Matching is scored on the oriented quadrilateral rather than its
-axis-aligned hull. DOTA is genuinely oriented: in a measurement over 21,265
+axis-aligned hull. DOTA is genuinely oriented: in a sample of 21,265
 boxes, 95.5% are rotated, the median rotation is 17.1° off axis, and using the
 hull inflates the matching region by a median factor of 1.83 relative to the
 true box area, with 37% of boxes exceeding a factor of two. Scoring on the hull
@@ -479,9 +487,11 @@ mechanisms. Extent is bounded by the clip, so a released mask cannot exceed the
 annotation that delimits it. Foreign pixels cannot arise at all, because the
 mask is built from a single identified instance rather than from the
 category-coloured mask — a neighbouring object's pixels have no path into it.
-The two derivations coincide wherever the unlabelled component is zero, which
-the divergence measurement confirms exactly, so nothing is lost relative to
-starting from the category mask.
+The unlabelled component measured over every pair is exactly zero — no
+category-coloured pixel belongs to no instance — so the released mask omits
+nothing except the foreign pixels the definition exists to exclude. It is a
+strict subset of the category-mask derivation, and that is the intent rather
+than a loss.
 
 The matched instance's colour identity is preserved in `pairs.jsonl`, so the
 clip is reversible: the unclipped iSAID instance can always be recovered from
@@ -525,7 +535,7 @@ iSAID publishes no test-split masks. Source imagery cannot be redistributed, so
 the deposit provides annotations, metadata and a construction script rather
 than images.
 
-> 174 words (cap 200).
+> 182 words (cap 200).
 
 ---
 
@@ -565,7 +575,7 @@ in this paper.
 ## References
 
 > Template rule: **maximum 20**, numbered, cited as `[n]`; the deposited dataset
-> must itself be cited. Five used; all bibliographic details require
+> must itself be cited. Six used; all bibliographic details require
 > verification against the publisher record before submission (see
 > `references.bib`).
 
