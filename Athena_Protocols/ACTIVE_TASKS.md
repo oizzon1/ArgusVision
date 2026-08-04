@@ -14,6 +14,17 @@ Do not parallelize P1 final numbers with F1. Genuinely parallel now: licensing
 admin (no repo writes) and hostile review (notes only). Multi-model code
 parallelism starts at F6–F8.
 
+**Worktree rule (2026-08-04, learned twice in one day).** All sessions share
+ONE checkout. `git switch` there changes the branch under every live session,
+and `git add -A` then sweeps their uncommitted work into your commit. Any
+session working on a branch other than the checkout current branch MUST use
+`git worktree add .worktrees/<task> <branch>` and remove it when done. Never
+switch the shared checkout while another session is active.
+
+**Reporting rule (user directive 2026-08-04).** Reports to the user are
+TABLES first — status board, then decisions needed, then one next action.
+Prose only on request.
+
 **Branch rule and its one exception.** Worker tasks run on `task/<id>-<slug>`
 branches and are merged by the orchestrator. **Orchestrator-owned critical-path
 work runs directly on `dev` by design** — there is no second writer to isolate
@@ -27,7 +38,7 @@ Allowed statuses: `planned` · `packet-ready` (packet written, awaiting a worker
 | F1 | Claude-Orchestrator | OPERATOR | `dev` — orchestrator-owned, per branch exception above | active | `dataset/build_aerialfusecv.py`; `dataset/verify_build.py`; `dataset/README.md`; `zenodo_release/**`; deposit packaging docs under `documentation/` as needed | 2026-08-04 | Blocks F2–F4; no other writer on final P1 numbers until ready-for-review |
 | F2 | — | OPERATOR | — | planned | `zenodo_release/**` (after F1) | — | Needs F1 |
 | F3 | **user** (drafts ready) | STRATEGIST | no-edit | active | `Context/licensing_emails_DRAFTS.md` — three emails ready to send | 2026-08-04 | Send today; log replies in `Context/` |
-| P1-WRITE (F4) | Cursor-Writer (Opus 5) | WRITER | `task/p1-dib-rewrite` — run from git worktree `.worktrees/p1`, main checkout left on F6's branch | ready-for-review | `papers/p1_aerialfusecv_descriptor/**` | 2026-08-04 | Draft rewritten from build `d4c191a`. Open: deposit DOI, deposit inventory, authorship/CRediT, 4 figures. **Merge note:** this row and F6's row are adjacent — expect a conflict in this table, resolve by keeping both |
+| P1-WRITE (F4) | Cursor-Writer (Opus 5) | WRITER | `task/p1-dib-rewrite` | **merged** (73d5c6f) | `papers/p1_aerialfusecv_descriptor/**` | 2026-08-04 | Draft rewritten from build `d4c191a`. Open: deposit DOI, deposit inventory, authorship/CRediT, 4 figures. **Merge note:** this row and F6's row are adjacent — expect a conflict in this table, resolve by keeping both |
 | F5 | — | REVIEWER | — | planned | review notes only | — | After F4 draft |
 | F6 | Codex-Operator | OPERATOR | `task/f6-maskrcnn-windows` | active | `experiments/maskrcnn_setup/**`; `dataset/convert_aerialfusecv_to_coco.py` (new files only; NEW conda env, never AV_env) | 2026-08-04 | Closes OPEN 5; unblocks F7 |
 | F7–F8 | — | OPERATOR | — | planned | experiments / training (partition when claimed) | — | After F6 |

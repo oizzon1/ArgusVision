@@ -146,3 +146,6 @@ __pycache__/
 # Per DECIDED: everything text-based in git; DOCX/PDF are human-facing mirrors
 # (Drive), regenerable from the markdown source with pandoc.
 papers/**/exports/
+
+# Session worktrees
+/.worktrees/
