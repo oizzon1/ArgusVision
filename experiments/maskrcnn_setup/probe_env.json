@@ -1,0 +1,31 @@
+{
+  "platform": "Windows-10-10.0.19045-SP0",
+  "python": "3.9.25",
+  "torch": "2.5.1+cu124",
+  "cuda_available": true,
+  "cuda_device": "NVIDIA GeForce RTX 3090 Ti",
+  "torchvision": {
+    "available": true,
+    "version": "0.20.1+cu124"
+  },
+  "mmdet": {
+    "available": false,
+    "error": "ModuleNotFoundError(\"No module named 'mmdet'\")"
+  },
+  "mmcv": {
+    "available": false,
+    "error": "ModuleNotFoundError(\"No module named 'mmcv'\")"
+  },
+  "mmengine": {
+    "available": false,
+    "error": "ModuleNotFoundError(\"No module named 'mmengine'\")"
+  },
+  "PIL": {
+    "available": true,
+    "version": "11.3.0"
+  },
+  "numpy": {
+    "available": true,
+    "version": "2.0.2"
+  }
+}
