@@ -1,6 +1,6 @@
 # 🦉 ATHENA_RISE — Context Restoration & Orchestration Protocol
 ### ArgusVision PhD Program — Unified Protocol
-**Version 2.1 — July 2026**
+**Version 2.2 — August 2026**
 **Replaces:** `ATHENA_RISE.md` v1.3 + `ATHENA_STRATEGIST_RISE.md` v1.3 (archived in `archive/`, untouched, historical record)
 
 ---
@@ -30,6 +30,36 @@ Then announce:
 
 Do not begin work before the announcement. If `ATHENA_STATE.md` is missing or stale (>30 days), say so explicitly before proceeding. If `ACTIVE_TASKS.md` shows another session locking files you need, **stop** and report the conflict — do not edit through a lock.
 
+### Execution mode — ASK EVERY SESSION (user directive, 2026-08-04)
+
+Immediately after the announcement, **before taking any objective**, ask:
+
+> **Execution mode for this session — single-operator or parallel?**
+>
+> | Mode | What it means |
+> |---|---|
+> | **Single-operator** (default) | ATHENA executes each task itself, one at a time, reporting completion before starting the next |
+> | **Parallel** | Task packets dispatched to other models on `task/*` branches under the lock table |
+
+State the last session's mode (from `WORK_LOG.md`) as context, then wait for the
+answer. **Never assume it carries over** — the user's control over their own
+attention is the thing being decided, and it changes with what else they are
+doing that day.
+
+Record the chosen mode in the day's `WORK_LOG.md` entry.
+
+**Why this is asked and not configured:** parallelism trades the user's
+oversight cost against wall-clock time. That trade is only worth taking on some
+days and for some work, so it is theirs to make each time — not a setting to
+inherit. Suspended 2026-08-04 after three lanes in one day produced two
+branch-collision incidents, a 66 MB artefact swept into a merge, and an orphaned
+worktree.
+
+**In single-operator mode:** issue no task packets. The machinery — locks,
+packets, `MULTI_MODEL_ORCHESTRATION.md` — stays documented and valid, dormant
+until the user selects parallel. Propose parallel only for work that is
+genuinely long-running *and* file-disjoint; multi-day training is the archetype.
+
 ### Claim discipline (mandatory before any edit)
 
 1. Sync: `git switch dev && git pull`
@@ -41,7 +71,7 @@ Do not begin work before the announcement. If `ATHENA_STATE.md` is missing or st
 
 **Orchestrator rule:** the session with repo access that reads the protocol files is the orchestrator. **As of 2026-08-04 the Claude Code session on the NTUA dev PC holds that lane**; other models act as workers on bounded task packets it issues. Context continuity beats model brand. Control files (`ATHENA_STATE.md`, `PUBLICATION_ROADMAP.md`, `ACTIVE_TASKS.md`) are orchestrator-owned. Full multi-model plan: `Athena_Protocols/MULTI_MODEL_ORCHESTRATION.md`.
 
-**Fast-track note:** F1→F2→F3→F4 are serial. Parallel workers now are reviewer-only or admin/licensing notes. Code parallelism opens at F6–F8.
+**Fast-track note:** F1→F2→F3→F4 are serial regardless of execution mode. F6–F8 are the first tasks that *could* run in parallel — offer it there, do not assume it.
 
 ---
 
@@ -189,10 +219,11 @@ ATHENA must:
 |---|---|---|
 | 1.3 | Nov 2025 | Master-thesis-phase protocols (two files: STRATEGIST + OPERATOR). Archived. |
 | 2.1 | 2026-07-29 | Machine table corrected to reality: one primary NTUA dev PC (Windows work + WSL2 agents + 3090 Ti), all four modes; home PC secondary, no CUDA. Windows-conda-via-interop execution model documented. Env canonicalized to `AV_env`; lock file added. |
+| 2.2 | 2026-08-04 | **Execution mode is asked at every session start** — single-operator or parallel — and never inherited. Single-operator is the default and the current mode; parallel machinery retained dormant. Parallelism trades the user's oversight cost against wall-clock time, so the trade is theirs to make each session. |
 | 2.1.2 | 2026-08-04 | Stub self-reference unified so the divergence check is meaningful; branch-rule exception stated for orchestrator-owned critical-path work; lock-release procedure added (only the orchestrator clears a lock, at merge; `active` >3 days without commits is stale). Claude session named orchestrator. |
 | 2.1.1 | 2026-08-04 | Claim discipline: `ACTIVE_TASKS.md` mandatory at startup; orchestrator = repo-connected session; control-file ownership; fast-track serial F1–F4. |
 | 2.0 | Jul 2026 | PhD-phase rewrite. Thesis complete (10/10). Single identity, four modes (STRATEGIST/ADVISOR/OPERATOR/REVIEWER). Ledger file added (`ATHENA_STATE.md`). Multi-agent bootstrap (CLAUDE/GEMINI/AGENTS stubs). Roadmap Revision Protocol added. Scope guard rewritten for publication phase. |
 
 ---
 
-*End of Document — Version 2.1*
+*End of Document — Version 2.2*

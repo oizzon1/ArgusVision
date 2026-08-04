@@ -1,5 +1,28 @@
 # ACTIVE_TASKS
 
+## MODE: SINGLE-OPERATOR (user directive, 2026-08-04)
+
+**Parallel dispatch is suspended.** One task at a time, executed by the ATHENA
+session, reported before the next begins. The user retains control by seeing
+each task complete rather than tracking concurrent lanes.
+
+Reason (user, verbatim): *"parallel works created too much overhead for me. I
+want more control for now."* The overhead was real — three lanes produced two
+branch-collision incidents, a 66 MB artefact in a merge, and a worktree that
+outlived its task, all in one day. None of that was worker error; it is the
+coordination cost of parallelism at this repo's size.
+
+**The machinery below is retained, not deleted.** Locks, task packets, branch
+rules, and `MULTI_MODEL_ORCHESTRATION.md` stay valid and stay documented.
+Resume parallel dispatch when (a) a task is genuinely long-running and
+file-disjoint — multi-day training is the archetype — and (b) the user asks.
+Until then no packet is issued to another model.
+
+Everything else in this file describes how parallel mode works **when it is
+switched back on**.
+
+---
+
 **Rule:** if a file/area is locked by an `active` task, no other session edits it.
 Claim **before** creating a task branch. One owner, one task, one locked area.
 
@@ -41,9 +64,9 @@ Allowed statuses: `planned` · `packet-ready` (packet written, awaiting a worker
 | P1-WRITE (F4) | Cursor-Writer (Opus 5) | WRITER | `task/p1-dib-rewrite` | **merged** (73d5c6f) | `papers/p1_aerialfusecv_descriptor/**` | 2026-08-04 | Draft rewritten from build `d4c191a`. Open: deposit DOI, deposit inventory, authorship/CRediT, 4 figures. **Merge note:** this row and F6's row are adjacent — expect a conflict in this table, resolve by keeping both |
 | F5 | — | REVIEWER | — | planned | review notes only | — | After F4 draft |
 | F6 | Codex-Operator | OPERATOR | `task/f6-maskrcnn-windows` | **merged** | `experiments/maskrcnn_setup/**`; `dataset/convert_aerialfusecv_to_coco.py` (new files only; NEW conda env, never AV_env) | 2026-08-04 | Chosen path: torchvision fallback in `P2_env`; COCO smoke subset + 50-iteration CUDA smoke run complete; see `experiments/maskrcnn_setup/REPORT.md` |
-| F6b | packet issued → `task_packets/F6b-TILING.md` | OPERATOR | `task/f6b-tiling` | packet-ready | `experiments/tiling/**` (new files only) | 2026-08-04 | Measures how much of the detection gap is input scale. Gates F7 protocol choice |
-| F7–F8 | — | OPERATOR | — | planned | experiments / training (partition when claimed) | — | After F6 |
-| REVIEW-V24 | — | REVIEWER | no-edit | planned | `ArgusVision_Strategic_Planning/Context/**_REVIEW.md` only | — | Parallel OK now; no edits to roadmap/state |
+| F6b | Claude-Orchestrator | OPERATOR | `dev` | queued (packet retained: `task_packets/F6b-TILING.md`) | `experiments/tiling/**` (new files only) | — | Never dispatched. Measures how much of the detection gap is input scale. Gates F7 protocol choice |
+| F7–F8 | Claude-Orchestrator | OPERATOR | `dev` | planned | experiments / training | — | After F6b. Needs `InstanceSegmenter` protocol + `models/baselines/` — see F7 packet |
+| REVIEW-V24 | — | REVIEWER | no-edit | planned | `ArgusVision_Strategic_Planning/Context/**_REVIEW.md` only | — | Deferred with parallel mode |
 
 ## How to claim
 
