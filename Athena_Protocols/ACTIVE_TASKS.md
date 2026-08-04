@@ -20,16 +20,17 @@ work runs directly on `dev` by design** — there is no second writer to isolate
 from, and a branch would add a merge step without adding safety. Any row whose
 branch is `dev` must be orchestrator-owned and say so; workers always branch.
 
-Allowed statuses: `planned` · `active` · `blocked` · `ready-for-review` · `merged` · `cancelled`
+Allowed statuses: `planned` · `packet-ready` (packet written, awaiting a worker to claim) · `active` · `blocked` · `ready-for-review` · `merged` · `cancelled`
 
 | ID | Owner | Role | Branch | Status | Locked files/areas | Started | Handoff |
 |---|---|---|---|---|---|---|---|
 | F1 | Claude-Orchestrator | OPERATOR | `dev` — orchestrator-owned, per branch exception above | active | `dataset/build_aerialfusecv.py`; `dataset/verify_build.py`; `dataset/README.md`; `zenodo_release/**`; deposit packaging docs under `documentation/` as needed | 2026-08-04 | Blocks F2–F4; no other writer on final P1 numbers until ready-for-review |
 | F2 | — | OPERATOR | — | planned | `zenodo_release/**` (after F1) | — | Needs F1 |
-| F3 | user + any scout | STRATEGIST | no-edit | planned | licensing/admin notes in `Context/` only (no code) | — | Parallel OK; no lock on code |
-| F4 | — | WRITER | — | planned | `papers/p1_aerialfusecv_descriptor/**` | — | Needs F1 numbers + F2 DOI |
+| F3 | **user** (drafts ready) | STRATEGIST | no-edit | active | `Context/licensing_emails_DRAFTS.md` — three emails ready to send | 2026-08-04 | Send today; log replies in `Context/` |
+| P1-WRITE (F4) | packet issued → `task_packets/P1-WRITE.md` | WRITER | `task/p1-dib-rewrite` | packet-ready | `papers/p1_aerialfusecv_descriptor/**` | 2026-08-04 | Numbers already exist in `results/`; only DOI + deposit inventory stay as placeholders |
 | F5 | — | REVIEWER | — | planned | review notes only | — | After F4 draft |
-| F6–F8 | — | OPERATOR | — | planned | experiments / models / tests (partition when claimed) | — | Parallelism window opens here |
+| F6 | packet issued → `task_packets/F6-MASKRCNN.md` | OPERATOR | `task/f6-maskrcnn-windows` | packet-ready | `experiments/maskrcnn_setup/**`; `dataset/convert_aerialfusecv_to_coco.py` (new files only; NEW conda env, never AV_env) | 2026-08-04 | Closes OPEN 5; unblocks F7 |
+| F7–F8 | — | OPERATOR | — | planned | experiments / training (partition when claimed) | — | After F6 |
 | REVIEW-V24 | — | REVIEWER | no-edit | planned | `ArgusVision_Strategic_Planning/Context/**_REVIEW.md` only | — | Parallel OK now; no edits to roadmap/state |
 
 ## How to claim
