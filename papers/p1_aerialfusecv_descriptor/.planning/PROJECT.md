@@ -10,10 +10,18 @@ paper #1 of the PhD publication sequence (Roadmap v2.2).
 
 ## Core Argument
 
-AerialFuseCV is the **first dataset to pair DOTA v1.0 OBB annotations with
-iSAID instance masks at the instance level** — 125,102 validated bbox–mask
-pairs across 1,857 images and 15 classes at a 97.9% match rate, with a fully
-reproducible construction pipeline from the official source downloads.
+*(Revised 2026-08-04, task P1-WRITE, to roadmap v2.3/v2.4 and build `d4c191a`.)*
+
+Two expert annotation protocols on the same imagery disagree about what an
+object **is**. AerialFuseCV measures that disagreement over every pair,
+defines a reconciled mask contract as the response, and releases the
+instance-level correspondence with exact discard accounting — 125,722 pairs
+across 1,862 images and 15 categories, 98.34% box pairing, reproducible from
+the official source downloads.
+
+The novelty claim is the **contract**, not priority over any method line: a
+correspondence neither source publishes, with pairing metadata and a logged
+reason for every excluded object.
 
 ## Requirements
 
@@ -33,12 +41,12 @@ reproducible construction pipeline from the official source downloads.
 - [ ] Title contains "data"/"dataset"; keywords 4–8, no title-word repeats; ≤20 numbered references incl. the Zenodo deposit
 - [ ] Ethics statement, CRediT, Declaration of Competing Interests
 - [ ] **Zenodo DOI live before submission (P0 — blocking dependency)**
-- [ ] Every number traces to `results/`, the thesis, or `ATHENA_STATE.md`
+- [ ] Every number traces to a `results/` artefact. The thesis is **not** a source
 
 ### Should Have
 
-- [ ] Per-class match-rate table (worst: helicopter 83.6% val, harbor 89.6% train)
-- [ ] Class-distribution figure (71% concentration in top-3 classes)
+- [ ] Per-class match-rate table (worst: soccer-ball-field 94.2%, basketball-court 95.2%)
+- [ ] Class-distribution figure (70.4% concentration in top-3 classes)
 - [ ] Example image + paired annotations figure
 - [ ] Construction-pipeline flow diagram
 
@@ -80,3 +88,5 @@ future P2/P3/P4 reviewers checking the dataset citation.
 | Core argument = first paired dataset | The novelty claim is the memorable fact; method and utility support it | 2026-07-29 |
 | Workflow Interactive + Standard | First submission of the program; gates on | 2026-07-29 |
 | Planning docs committed, no branches | Monorepo everything-in-git decision; existing branch policy | 2026-07-29 |
+| Core argument = protocol divergence + reconciled contract (**supersedes "first paired dataset"**) | A bare priority claim invites a reviewer to hunt for a counterexample, and the competitive review found neighbours close enough to make that a real risk. The measured disagreement is ours regardless of who else pairs boxes with masks | 2026-08-04 |
+| `DRAFT_P1.md` is the single source of truth; `sections/*.md` reduced to pointers | Two texts with different numbers for one dataset is how a wrong figure reaches submission | 2026-08-04 |

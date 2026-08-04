@@ -1,79 +1,98 @@
 # P1 — Assembled Draft
 
-**Status: DRAFT v0.1, 2026-07-30. Not submission-ready.**
-Target venue: **Data in Brief** (Elsevier), data-article type. Section order
+**Status: DRAFT v1.0, 2026-08-04. Re-sourced from `results/`. Not submission-ready.**
+Target venue: **Data in Brief** (Elsevier), data-article type. The section order
 below follows the mandatory template v19 (Dec 2024); at submission the content
 must be transferred into the official `.docx`, which is partially locked.
 
 **Conventions in this file**
-- `[[PLACEHOLDER: … ]]` — content not yet available; reason given.
-- ⚠ — value derived by ATHENA from thesis Table 7 rather than stated in the
-  thesis. Must be regenerated from the deposit's `Dataset_Statistics.md` at P0
-  and cited from there. **No ⚠ value may survive into submission.**
-- Every other number traces to thesis §3.1 (pp. 55–60) or its Tables 6–7.
+
+- `[[PLACEHOLDER: … ]]` — content not yet available; the reason is given.
+- Every number traces to a build artefact. No value is quoted from the MSc
+  thesis, which is not a source for this program.
+
+**Provenance of the numbers.** Build counts, per-category tables, matched-IoU
+statistics and the discard breakdown come from
+`results/AerialFuseCV_Testing/aerialfusecv_build/20260804_095041_d4c191a/dataset_statistics.json`
+(git sha `d4c191a`). Protocol-divergence figures come from
+`results/AerialFuseCV_Testing/annotation_discrepancy/discrepancy_summary.json`
+(all 125,722 pairs, no sampling). Threshold sensitivity, object-size and GSD
+ranges come from `results/AerialFuseCV_Testing/eda/DATASET_ANALYSIS.md`. Source
+instance totals and colour-table completeness come from
+`results/AerialFuseCV_Testing/isaid_colour_audit/`. Orientation statistics come
+from `results/AerialFuseCV_Testing/FINDINGS.md` §2.
 
 ---
 
 ## Article title
 
-AerialFuseCV: an instance-level paired oriented-box and instance-mask **dataset**
-for aerial imagery derived from DOTA v1.0 and iSAID
+AerialFuseCV: a **dataset** of reconciled oriented-box and instance-mask
+annotation pairs for aerial imagery, with measured protocol divergence
 
-> Template rule satisfied: title contains "dataset".
+> Template rule satisfied: the title contains "dataset".
 
 ## Authors
 
 [[PLACEHOLDER: authorship not yet decided. Fragkos is author; whether the
 supervisor (Prof. Charalampos Ioannidis) is co-author on the data article — and
 in what order — is a supervisor question, not an ATHENA decision. Resolve
-before submission; CRediT statement below depends on it.]]
+before submission; the CRediT statement below depends on it.]]
 
 ## Affiliations
 
-[[PLACEHOLDER: full postal address required by template — School of Rural,
-Surveying and Geoinformatics Engineering (or SECE, per the authorship
-outcome), National Technical University of Athens, Greece. Exact department
-and address to confirm.]]
+[[PLACEHOLDER: full postal address required by the template — School of Rural,
+Surveying and Geoinformatics Engineering (or SECE, per the authorship outcome),
+National Technical University of Athens, Greece. Exact department and address
+to confirm.]]
 
 ## Corresponding author's email and Twitter handle
 
-[[PLACEHOLDER: template requires an *institutional* address; the NTUA address
-is not recorded in the repo. Twitter handle optional.]]
+[[PLACEHOLDER: the template requires an *institutional* address; the NTUA
+address is not recorded in the repo. Twitter handle optional.]]
 
 ## Keywords
 
-object detection; segmentation; remote sensing; deep learning; annotation
-reconciliation; earth observation
+remote sensing; earth observation; object detection; segmentation; label
+quality; ground truth
 
-> Template rules satisfied: 6 keywords (4–8), semicolon-separated, none
-> repeats a title word.
+> Template rules satisfied: 6 keywords (4–8), semicolon-separated, none repeats
+> a title word.
 
 ## Abstract
 
-AerialFuseCV pairs the oriented bounding-box annotations of DOTA v1.0 with the
-pixel-level instance masks of iSAID at the level of individual object
-instances. Although both benchmarks annotate the same aerial imagery, their
-annotations were produced independently and share no instance correspondence.
-The dataset was constructed by decoding iSAID's colour-encoded masks into
-per-category binary masks, isolating candidate instances as connected
-components within the neighbourhood of each DOTA box, and pairing every box
-with its highest-overlap candidate under a permissive intersection-over-union
-rule (IoU ≥ 0.1); images retaining no pair were excluded (12 in total). The
-result contains 1,857 images (1,401 training, 456 validation) with 125,102
-validated box–mask pairs across the 15 DOTA v1.0 object categories, meaning
-that 97.9% of DOTA boxes acquired a mask (98.1% training, 97.2% validation).
-Pairing is anchored on the boxes, so a smaller fraction of the more numerous
-iSAID mask instances is retained; both rates and per-category figures are
-reported. The deposit provides all pairing annotations and metadata,
-per-category statistics, and a construction pipeline with verification
-checksums that rebuilds the dataset from the official DOTA v1.0 and iSAID
-distributions, whose imagery cannot be redistributed directly. AerialFuseCV
-supports training and evaluation of aerial instance-segmentation methods that
-require linked box and mask supervision, including detection-to-segmentation
-pipelines built on promptable segmentation models, without any re-annotation
-effort.
+DOTA v1.0 annotates aerial imagery with oriented bounding boxes and iSAID
+annotates the same imagery with pixel-level instance masks, but the two
+annotation efforts were independent and publish no correspondence between an
+individual box and the mask of the same physical object. AerialFuseCV supplies
+that correspondence. Each DOTA box was matched to an iSAID instance of the same
+category by an optimal one-to-one assignment maximising total
+intersection-over-union between the rasterised oriented quadrilateral and the
+instance, with matches accepted from an intersection-over-union of 0.1. Across
+the 1,869 images the two sources annotate in common, 127,843 boxes and 475,438
+mask instances yielded 125,722 pairs over 1,862 retained images: a box pairing
+rate of 98.34% and an instance pairing rate of 26.44%. The two rates differ
+because pairing is anchored on the boxes and iSAID annotates many objects that
+DOTA does not. Every unpaired box and every unpaired instance is recorded with
+the reason it was dropped, and the accounting is exact — pairs plus discards
+equal each source population.
 
-> 236 words (template window 100–500).
+Before the released mask definition was fixed, two candidate ground truths were
+compared over all 125,722 pairs: the category-coloured mask clipped by the box,
+and the exact iSAID instance. They coincide for 21.7% of objects (mean
+agreement 0.918). Of the disagreeing pixels, 90.0% arise because iSAID
+annotates a larger extent than the box delimits and 10.0% because a
+neighbouring instance's pixels fall inside the box; 16.3% of pairs contain at
+least one such foreign pixel. The released mask is therefore the matched
+instance clipped to its own oriented box.
+
+The deposit provides oriented and axis-aligned box annotations in DOTA format,
+instance-identity and category-coloured masks, the pairing and discard records,
+per-category statistics, checksums, and a script that rebuilds the dataset from
+the official DOTA v1.0 and iSAID downloads, whose imagery is not
+redistributable. The data supports training and evaluation of aerial methods
+that require box and mask supervision linked on the same object.
+
+> 319 words (template window 100–500).
 
 ---
 
@@ -81,64 +100,80 @@ effort.
 
 | Field | Entry |
 |---|---|
-| Subject | [[PLACEHOLDER: select from template dropdown — "Computer Vision and Pattern Recognition" expected; confirm available options in the .docx]] |
-| Specific subject area | Instance-level paired object detection and segmentation annotations for aerial and satellite imagery *(93 chars excl. spaces; limit 150)* |
-| Type of data | Annotation files (text, DOTA format); pairing metadata (JSON); per-category statistics (JSON/CSV); construction scripts (Python); verification checksums (text). Processed and analysed, derived from public source datasets. |
-| Data collection | Derived by reconciling two existing annotation sets over the same aerial imagery: oriented bounding boxes from DOTA v1.0 and colour-encoded instance masks from iSAID. Per-category masks were decoded by exact colour match; candidate instances were isolated as connected components within each box's neighbourhood and paired with the box under an IoU ≥ 0.1 criterion. Twelve images retaining no pair were excluded. No new imagery was collected and no imagery was modified. |
+| Subject | [[PLACEHOLDER: select from the template dropdown — "Computer Vision and Pattern Recognition" expected; confirm the available options in the .docx]] |
+| Specific subject area | Instance-level paired object detection and segmentation annotations for aerial and satellite imagery *(100 chars incl. spaces; limit 150)* |
+| Type of data | Annotation files (text, DOTA format, oriented and axis-aligned); instance-identity and category-coloured masks (PNG); pairing and discard records (JSONL); per-category statistics (JSON); verification checksums (text); construction script (Python). Processed and analysed, derived from public source datasets. |
+| Data collection | Derived by reconciling two existing annotation sets over the same aerial imagery: oriented bounding boxes from DOTA v1.0 and colour-encoded instance masks from iSAID. iSAID instances were decoded by exact colour match against the published class-colour table, then assigned to DOTA boxes of the same category by an optimal one-to-one assignment maximising total intersection-over-union between the rasterised oriented quadrilateral and the instance, accepting matches from 0.1. The released mask for each pair is the matched instance clipped to its oriented box. Seven images retaining no pair were excluded. No new imagery was collected and no imagery was modified. |
 | Data source location | Source datasets: DOTA v1.0 and iSAID, official public distributions. Deposit: Zenodo. Institution: National Technical University of Athens, Athens, Greece. |
-| Data accessibility | Repository name: Zenodo · Data identification number: [[PLACEHOLDER: DOI — blocked by P0 release]] · Direct URL: [[PLACEHOLDER: blocked by P0]] · Instructions: annotations and metadata download directly; imagery-linked portions are rebuilt from the official DOTA v1.0 and iSAID downloads with the included construction script and verified by checksums, since the source imagery is not redistributable. |
+| Data accessibility | Repository name: Zenodo · Data identification number: [[PLACEHOLDER: DOI — arrives with the deposit]] · Direct URL: [[PLACEHOLDER: arrives with the deposit]] · Instructions: annotations, masks, pairing metadata and statistics download directly; the source imagery is not redistributable, so it is obtained from the official DOTA v1.0 and iSAID downloads and the dataset is regenerated with the included construction script, verified against the deposited checksums. |
 | Related research article | None. This data article is not related to a research article. |
 
 ---
 
 ## Value of the Data
 
-- AerialFuseCV is, to the authors' knowledge, the first publicly available
-  dataset linking oriented bounding boxes and pixel-level instance masks for
-  the same object instances in aerial imagery: 125,102 validated box–mask
-  pairs over 1,857 images and the 15 DOTA v1.0 categories.
-- Researchers in aerial and satellite computer vision can train and evaluate
-  methods that require joint box and mask supervision — instance
-  segmentation, detection-to-segmentation pipelines, and prompt-based
-  segmentation with box prompts — without performing any re-annotation.
-- Every pairing decision is transparent: the deposit reports per-category
-  pairing rates on both the box and the mask side, the acceptance threshold,
-  and the excluded images, so users can assess fitness category by category.
-- The construction pipeline and verification checksums make the dataset
-  reproducible from the official DOTA v1.0 and iSAID distributions, and the
-  reconciliation methodology transfers directly to other box-annotated /
-  mask-annotated dataset pairs that share source imagery.
+- The dataset resolves, object by object, a correspondence that neither source
+  publishes: 125,722 oriented boxes from DOTA v1.0 linked to the individual
+  iSAID instances that describe the same physical objects, over 1,862 images
+  and 15 categories. No public release known to the authors provides this
+  linkage.
+- Aerial and satellite imaging work that depends on an object's *extent* rather
+  than only its location — port and infrastructure monitoring, urban land-use
+  inventory, agricultural and environmental mapping, damage assessment after
+  disasters — can use the data to train and evaluate methods requiring linked
+  box and mask supervision, including instance segmentation, detector →
+  promptable segmenter cascades and weakly supervised mask learning, without
+  any re-annotation.
+- Each released mask is consistent with the annotation that delimits it and
+  contains no pixels of a neighbouring instance, so a method prompted with an
+  object's box is scored against ground truth that its prompt could in
+  principle produce.
+- Exclusion is auditable rather than silent: every unpaired box and every
+  unpaired instance is recorded with its reason and its best achieved overlap,
+  and pairing rates are reported per category on both the box and the instance
+  side, so users can judge fitness category by category.
+- The disagreement between the two source protocols is measured over every pair
+  and decomposed into extent and contamination components, giving a
+  quantitative reference for anyone combining independently produced annotation
+  sets over shared imagery.
+- The construction script and checksums regenerate the dataset from the
+  official distributions, and the reconciliation procedure transfers to other
+  box-annotated / mask-annotated dataset pairs that share source imagery.
 
 ---
 
 ## Background
 
 DOTA v1.0 [1] is a widely used benchmark for object detection in aerial
-imagery, annotating objects with oriented bounding boxes across 15 categories
-over 2,806 images at 0.12–3.0 m ground sample distance. iSAID [2] is its
-segmentation companion: it re-annotates the same imagery and the same splits
-with pixel-level instance masks for the same categories, encoded as RGB PNGs.
+imagery, annotating objects with oriented bounding boxes across 15 categories.
+iSAID [2] is its segmentation companion: it re-annotates the same imagery and
+the same splits with pixel-level instance masks for the same categories,
+encoded as colour PNGs.
 
-Although the imagery corresponds one-to-one, the two annotation efforts were
-independent — different teams, different times, separate protocols. DOTA
-emphasised object-level detection suitable for surveillance; iSAID emphasised
-precise instance boundaries suitable for GIS integration and area
-measurement. Consequently no correspondence between an individual box and the
-mask of the same physical object is published by either source, the two use
-incompatible file structures and naming conventions, and their instance counts
-differ substantially — 188,282 boxes against 655,451 mask instances — because
-iSAID annotators included very small and partially occluded objects that DOTA
-annotators omitted.
+Although the imagery corresponds one to one, the two annotation efforts were
+independent — different teams, different times, separate protocols. Neither
+source publishes a correspondence between an individual box and the mask of the
+same physical object, the two use incompatible file structures and naming
+conventions, and their instance counts differ substantially: over the images
+they share, 127,843 boxes against 475,438 mask instances, because the iSAID
+protocol includes many small and partially occluded objects that the DOTA
+protocol omits.
 
-Research on aerial instance segmentation increasingly needs both annotation
-forms at once: to train mask heads on detector outputs, to evaluate
-detection-to-segmentation pipelines, and to prompt segmentation foundation
-models [3] with detected boxes while scoring against ground-truth masks.
-Producing such paired supervision by manual re-annotation is prohibitively
-expensive at benchmark scale. AerialFuseCV was compiled to close this gap by
-reconciling the two existing annotation sets at instance level under a
-documented matching rule, so that the correspondence itself — not only the
-source annotations — becomes a validated, reusable artefact.
+The two protocols also disagree about how much of an object an annotation
+should cover. The disagreement is systematic rather than incidental, and it is
+category-dependent, so it cannot be dismissed as annotation noise or removed by
+a tolerance.
+
+Aerial instance-segmentation research increasingly needs both annotation forms
+attached to the same object at once: to train mask heads on detector outputs,
+to evaluate detection-to-segmentation cascades, and to prompt a promptable
+segmentation model [3] with a detected box while scoring the result against a
+ground-truth mask. Producing such paired supervision by manual re-annotation is
+prohibitively expensive at benchmark scale. AerialFuseCV was compiled to close
+that gap by reconciling the two existing annotation sets at instance level
+under a documented matching rule and a documented mask definition, so that the
+correspondence itself — not only the source annotations — becomes a released,
+verifiable artefact.
 
 ---
 
@@ -146,237 +181,344 @@ source annotations — becomes a validated, reusable artefact.
 
 ### Organisation
 
-Three parallel directories per split, so a detector can consume images and
-labels by standard YOLO conventions, a segmentation model can read the mask
-directory, and an integrated pipeline can use all three at once:
-
 ```
 AerialFuseCV/
-├── train/
-│   ├── images/           1,401 PNG
-│   ├── labels/           1,401 TXT   (paired boxes only)
-│   └── semantic_masks/   1,401 PNG   (RGB, paired instances only)
-├── val/
-│   ├── images/             456 PNG
-│   ├── labels/             456 TXT
-│   └── semantic_masks/      456 PNG
-└── Dataset_Statistics.md
+├── train/                          1,406 images
+│   ├── images/                     P####.png
+│   ├── labels_obb/                 P####.txt    oriented quadrilaterals
+│   ├── labels_hbb/                 P####.txt    axis-aligned hulls
+│   ├── instance_masks/             P####_instance_id_RGB.png
+│   └── semantic_masks/             P####_instance_color_RGB.png
+├── val/                              456 images, same five subdirectories
+├── pairs.jsonl                     one record per paired object
+├── discarded.jsonl                 one record per unpaired box or instance
+├── dataset_statistics.json         totals, per split, per category, discards
+├── images_gsd_mapping.json         per-image ground sample distance
+├── build_manifest.json             run identity, git sha, arguments, environment
+├── checksums.sha256                every non-image file
+└── DATASET_ANALYSIS.md             generated summary of the build
 ```
 
-Each label line carries one paired object in DOTA convention —
-`x₁ y₁ x₂ y₂ x₃ y₃ x₄ y₄ class-name difficulty` — preserving the oriented
-geometry of the source annotation. Masks are named
-`<image-id>_instance_color_RGB.png` and share the exact pixel dimensions of
-their image. Mask pixels are coloured by **category**, not by instance
-identity, using the iSAID class-colour table; black denotes the absence of any
-annotated object.
+Annotations stay in DOTA's own format — two header lines (`imagesource`,
+`gsd`), then one object per line as `x₁ y₁ x₂ y₂ x₃ y₃ x₄ y₄ class-name
+difficulty` in absolute pixel coordinates. Both geometries are written: the
+oriented quadrilateral in `labels_obb/`, and its axis-aligned hull, expressed in
+the same four-corner form, in `labels_hbb/`. Only paired objects appear.
+
+Two mask encodings accompany each image, both sharing its exact pixel
+dimensions. `instance_masks/` assigns a distinct colour per object instance, so
+individual objects are separable directly from the mask. `semantic_masks/`
+paints each object in its category colour from the iSAID class-colour table,
+preserving compatibility with iSAID-style evaluation. Black denotes the absence
+of any annotated object in both.
+
+`pairs.jsonl` records, per paired object: image identifier, split, category,
+the oriented and axis-aligned geometries, the DOTA difficulty flag, the
+achieved intersection-over-union, and the matched iSAID instance's colour
+identity and pixel area. That identity is what makes the derivation reversible:
+the original unclipped iSAID instance remains recoverable from a user's own
+iSAID download. `discarded.jsonl` records, per dropped object: whether it was a
+box or an instance, its category, image and split, the reason it was dropped,
+the best overlap it achieved, and its geometry or instance identity.
 
 ### Image properties
 
-Imagery is inherited unchanged from DOTA v1.0 / iSAID: variable-size
-high-resolution scenes at 0.12–3.0 m ground sample distance from Google Earth,
-the JL-1 satellite and the Gaofen-2 satellite. No resizing, retiling or
-radiometric adjustment was applied, so per-image GSD metadata remains
-applicable and object scale varies by more than an order of magnitude across
-the collection.
+Imagery is inherited unchanged from DOTA v1.0 / iSAID. No resizing, retiling or
+radiometric adjustment was applied, so per-image ground sample distance remains
+applicable and object scale varies by orders of magnitude across the
+collection. Instance areas span 10 to 1,080,673 px, median 631 px. Ground
+sample distance is recorded for 1,861 of the 1,862 retained images, spanning
+0.000–4.496 m/px with a median of 0.260; the single image without a value
+carries `gsd:null` in its DOTA header. The values are inherited verbatim from
+those headers, degenerate entries included, and are not corrected here.
 
 ### Scale and pairing outcome
 
-The collection begins from the 1,869 images (1,411 training, 458 validation)
-that DOTA v1.0 and iSAID annotate in common — 66.6% of DOTA's 2,806
-train-and-validation images. The 937 test images are excluded because iSAID
-publishes no masks for them. Twelve images (10 training, 2 validation)
-retained no pair and were dropped, leaving 1,857.
+The collection covers the 1,869 images that DOTA v1.0 and iSAID annotate in
+common. The DOTA test split is outside the collection because iSAID publishes
+no masks for it. Seven images retained no pair and were dropped (P1531, P1674,
+P2123, P2152, P2330, P2352, P2380), leaving 1,862.
 
 **Table 1.** Pairing outcome by split.
 
-| Split | Source boxes | Paired | Box pairing rate | Images retained |
-|---|---|---|---|---|
-| Train | 98,990 | 97,070 | 98.1% | 1,401 |
-| Validation | 28,853 | 28,032 | 97.2% | 456 |
-| **Total** | **127,843** | **125,102** | **97.9%** | **1,857** |
+| Split | Images in common | Images retained | Source boxes | Source instances | Pairs | Box pairing rate |
+|---|---|---|---|---|---|---|
+| Train | 1,411 | 1,406 | 98,990 | 358,166 | 97,590 | 98.59% |
+| Validation | 458 | 456 | 28,853 | 117,272 | 28,132 | 97.50% |
+| **Total** | **1,869** | **1,862** | **127,843** | **475,438** | **125,722** | **98.34%** |
 
 ### Pairing is box-anchored: two retention rates
 
-Matching takes the DOTA boxes as its baseline, so the 97.9% figure is a
-**box-side** rate: 97.9% of annotated boxes received a mask. The mask side
-behaves differently, because iSAID annotates far more objects than DOTA.
-Within the 1,869-image subset the source masks contain ⚠ 330,693 instances, of
-which the 125,102 pairs represent ⚠ 37.8%; ⚠ 205,591 mask instances have no
-corresponding box and are therefore absent from the released masks. The
-imbalance is category-dependent and extreme for small objects: in the training
-split iSAID marks ⚠ 6.2× more small-vehicle instances than DOTA boxes
-(160,844 against 26,126).
+Matching takes the DOTA boxes as its baseline, so 98.34% is a **box-side**
+rate: that share of annotated boxes received a mask. The instance side behaves
+differently, because iSAID annotates far more objects than DOTA. The 125,722
+pairs represent **26.44%** of the 475,438 source instances; 349,716 instances
+have no box and are therefore not part of any pair. The asymmetry is
+category-dependent and largest for small objects, where iSAID records 339,902
+instances against 31,564 DOTA boxes.
 
-This is a definition rather than a defect. AerialFuseCV inherits DOTA's
-annotation policy, and every released mask instance is one that a box
-confirms. Work needing exhaustive mask coverage of small objects should use
-iSAID directly.
+This is a property of the design, not a defect. AerialFuseCV inherits DOTA's
+annotation policy on which objects exist, and every released mask instance is
+one that a box confirms. Work needing exhaustive mask coverage of small objects
+should use iSAID directly.
 
 ### Per-category statistics
 
-All 15 categories pair between 83.6% and 100%. The lowest rates are helicopter
-(83.6% validation — objects typically 10–20 px, giving ambiguous box–mask
-boundaries), harbor (89.6% training — irregular dock and pier geometry
-annotated differently by the two sources), soccer-ball-field (92.2%
-validation), and basketball-court and large-vehicle (both 93.2% validation,
-attributable to occlusion and density in urban scenes).
+**Table 2.** Source boxes, source instances, pairs and box pairing rate per
+category, with each category's share of the dataset. Ordered by pairs.
 
-**Table 2.** Source boxes, paired boxes and pairing rate per category and
-split, with the resulting share of the dataset. Ordered by total pairs.
+| Category | Source boxes | Source instances | Pairs | Box pairing rate | Share of pairs |
+|---|---|---|---|---|---|
+| ship | 37,028 | 48,119 | 36,854 | 99.5% | 29.3% |
+| small-vehicle | 31,564 | 339,902 | 30,932 | 98.0% | 24.6% |
+| large-vehicle | 21,356 | 45,694 | 20,765 | 97.2% | 16.5% |
+| plane | 10,586 | 10,846 | 10,432 | 98.5% | 8.3% |
+| harbor | 8,073 | 8,313 | 7,862 | 97.4% | 6.3% |
+| storage-tank | 7,917 | 9,591 | 7,757 | 98.0% | 6.2% |
+| tennis-court | 3,127 | 3,288 | 3,103 | 99.2% | 2.5% |
+| bridge | 2,511 | 2,569 | 2,480 | 98.8% | 2.0% |
+| swimming-pool | 2,176 | 3,191 | 2,147 | 98.7% | 1.7% |
+| helicopter | 703 | 743 | 684 | 97.3% | 0.5% |
+| baseball-diamond | 629 | 685 | 627 | 99.7% | 0.5% |
+| basketball-court | 647 | 721 | 616 | 95.2% | 0.5% |
+| roundabout | 578 | 617 | 562 | 97.2% | 0.4% |
+| soccer-ball-field | 479 | 640 | 451 | 94.2% | 0.4% |
+| ground-track-field | 469 | 519 | 450 | 95.9% | 0.4% |
+| **Total** | **127,843** | **475,438** | **125,722** | **98.34%** | **100%** |
 
-| Category | Train boxes | Train paired | Train rate | Val boxes | Val paired | Val rate | Total pairs | Share |
-|---|---|---|---|---|---|---|---|---|
-| ship | 28,068 | 27,969 | 99.6% | 8,960 | 8,934 | 99.7% | 36,903 | 29.5% |
-| small-vehicle | 26,126 | 25,798 | 98.7% | 5,438 | 5,275 | 97.0% | 31,073 | 24.8% |
-| large-vehicle | 16,969 | 16,709 | 98.5% | 4,387 | 4,088 | 93.2% | 20,797 | 16.6% |
-| plane | 8,055 | 7,689 | 95.5% | 2,531 | 2,478 | 97.9% | 10,167 | 8.1% |
-| storage-tank | 5,029 | 4,960 | 98.6% | 2,888 | 2,822 | 97.7% | 7,782 | 6.2% |
-| harbor | 5,983 | 5,360 | 89.6% | 2,090 | 1,954 | 93.5% | 7,314 | 5.8% |
-| tennis-court | 2,367 | 2,355 | 99.5% | 760 | 748 | 98.4% | 3,103 | 2.5% |
-| bridge | 2,047 | 2,004 | 97.9% | 464 | 446 | 96.1% | 2,450 | 2.0% |
-| swimming-pool | 1,736 | 1,699 | 97.9% | 440 | 434 | 98.6% | 2,133 | 1.7% |
-| helicopter | 630 | 609 | 96.7% | 73 | 61 | 83.6% | 670 | 0.5% |
-| baseball-diamond | 415 | 413 | 99.5% | 214 | 214 | 100.0% | 627 | 0.5% |
-| basketball-court | 515 | 494 | 95.9% | 132 | 123 | 93.2% | 617 | 0.5% |
-| roundabout | 399 | 386 | 96.7% | 179 | 176 | 98.3% | 562 | 0.4% |
-| soccer-ball-field | 326 | 312 | 95.7% | 153 | 141 | 92.2% | 453 | 0.4% |
-| ground-track-field | 325 | 313 | 96.3% | 144 | 138 | 95.8% | 451 | 0.4% |
-| **Total** | **98,990** | **97,070** | **98.1%** | **28,853** | **28,032** | **97.2%** | **125,102** | **100%** |
-
-*Reproduced from thesis Table 7; the total-pairs and share columns are computed
-from it and reconcile with the thesis's independently stated percentages and
-with Table 1's totals. Source mask-instance counts per category are in the
-deposit's `Dataset_Statistics.md`.*
+Box pairing rates run from 94.2% (soccer-ball-field) to 99.7%
+(baseball-diamond). The instance column shows the box-anchored asymmetry
+concentrated in the dense categories: small-vehicle contributes 339,902 of the
+475,438 source instances but 31,564 of the 127,843 boxes.
 
 ### Category distribution
 
-The distribution is severely imbalanced, mirroring both source datasets and
-real-world aerial imagery. Three transport and maritime categories supply
-71.0% of all pairs. Six categories are moderately represented, together 26.3%.
-The remaining six each contribute under 0.6%, 2.7% in total. Aggregate metrics
-computed over this dataset are therefore dominated by vehicle and ship
-performance, and per-category reporting is advisable; every category
-nonetheless retains enough absolute instances for meaningful per-class
-evaluation. The distribution closely tracks that of the sources, indicating
-that pairing introduced no systematic category bias.
+The distribution is severely imbalanced, mirroring both source datasets. Three
+transport and maritime categories supply 70.4% of pairs; six categories
+contribute under 0.6% each, 2.7% in total. Aggregate metrics computed over the
+dataset are therefore dominated by vehicle and ship performance, and
+per-category reporting is advisable; every category nonetheless retains enough
+absolute instances for per-category evaluation.
+
+### Matching quality
+
+Intersection-over-union between the oriented box polygon and its matched
+instance has mean 0.671, median 0.715, 5th percentile 0.276 and 95th percentile
+0.887 over the 125,722 pairs. The acceptance threshold of 0.1 is permissive by
+design; raising it discards pairs at the following cost.
+
+**Table 3.** Pairs lost if the acceptance threshold were raised.
+
+| Threshold | Pairs lost | Share |
+|---|---|---|
+| ≥ 0.15 | 175 | 0.1% |
+| ≥ 0.20 | 1,701 | 1.4% |
+| ≥ 0.30 | 7,797 | 6.2% |
+| ≥ 0.50 | 20,346 | 16.2% |
+
+### Objects not paired
+
+2,121 boxes and 349,716 instances were not paired. The accounting is exact and
+checked on every build: pairs plus discards equal each source population, on
+both sides.
+
+**Table 4.** Discards by recorded reason.
+
+| Reason | Count |
+|---|---|
+| `instance:no_box_of_class` — no box of that category in the image | 303,451 |
+| `instance:no_overlapping_box` — boxes exist, none overlaps | 44,021 |
+| `instance:unassigned` — overlapped, not selected by the assignment | 2,244 |
+| `box:no_overlapping_instance` — instances exist, none overlaps | 1,572 |
+| `box:below_iou_threshold` — best overlap under the acceptance threshold | 223 |
+| `box:lost_to_one_to_one_assignment` — instance went to a better-fitting box | 215 |
+| `box:no_mask_instance_of_class` — no instance of that category in the image | 111 |
+
+### Divergence between the two source protocols
+
+Two candidate definitions of a pair's mask were compared over all 125,722
+pairs: the category-coloured mask clipped by the oriented box, and the exact
+iSAID instance. Mean agreement is 0.918 and median 0.946; the two definitions
+coincide (agreement above 0.99) for 21.7% of objects, and agreement falls below
+0.70 for 3.5%.
+
+**Table 5.** Decomposition of the disagreeing pixels.
+
+| Cause | Pixels | Share |
+|---|---|---|
+| Extent — iSAID annotates beyond the oriented box | 15,270,258 | 90.0% |
+| Foreign — a neighbouring instance's pixels fall inside the box | 1,689,081 | 10.0% |
+| Unlabelled — category-coloured pixels belonging to no instance | 0 | 0.0% |
+
+20,489 pairs (16.3%) contain at least one foreign pixel; averaged over pairs,
+foreign pixels make up 1.1% of an instance.
+
+**Table 6.** Agreement per category, incidence of foreign pixels, and the share
+of each category's disagreement attributable to extent.
+
+| Category | Agreement | Pairs with foreign px | Disagreement that is extent |
+|---|---|---|---|
+| storage-tank | 0.857 | 27.6% | 85.5% |
+| small-vehicle | 0.899 | 16.9% | 93.2% |
+| bridge | 0.908 | 2.3% | 97.9% |
+| large-vehicle | 0.912 | 14.1% | 93.5% |
+| harbor | 0.920 | 1.5% | 99.5% |
+| ship | 0.925 | 19.4% | 85.6% |
+| baseball-diamond | 0.937 | 0.2% | 100.0% |
+| basketball-court | 0.957 | 8.9% | 97.1% |
+| soccer-ball-field | 0.960 | 0.9% | 99.9% |
+| plane | 0.963 | 25.2% | 21.8% |
+| ground-track-field | 0.967 | 0.2% | 100.0% |
+| tennis-court | 0.969 | 0.4% | 100.0% |
+| swimming-pool | 0.972 | 0.2% | 99.7% |
+| roundabout | 0.982 | 0.0% | 100.0% |
+| helicopter | 0.985 | 21.6% | 82.7% |
+
+The two components separate by category. Extent accounts for essentially all
+disagreement in the sports fields, roundabout, tennis-court, harbor and bridge,
+where the protocols delimit a different portion of the same object —
+baseball-diamond, for example, is boxed at the infield by DOTA and annotated as
+the whole field by iSAID. Foreign pixels concentrate where objects are densely
+packed: storage-tank 27.6%, plane 25.2%, helicopter 21.6%, ship 19.4%. plane is
+the one category whose disagreement is mostly contamination rather than extent.
+
+The released mask definition addresses each component by a different mechanism,
+described under Methods.
 
 ### Deposit contents
 
-[[PLACEHOLDER: file-by-file inventory of the Zenodo deposit — blocked by P0.
-Will list annotation and pairing files, per-category statistics, the
-construction script, checksums and licence. Source imagery is not
-redistributable, so the deposit ships annotations plus a rebuild path rather
-than images.]]
+[[PLACEHOLDER: file-by-file inventory of the Zenodo deposit, with sizes and
+per-file checksums — arrives with the deposit. It will list the annotation
+files, the two mask encodings, `pairs.jsonl`, `discarded.jsonl`,
+`dataset_statistics.json`, `images_gsd_mapping.json`, `build_manifest.json`,
+`checksums.sha256`, the construction script and the licence. Source imagery is
+not redistributable, so the deposit ships everything except the images, plus
+the rebuild path that regenerates them into place.]]
 
 ### Figures
 
-- **Figure 1.** [[PLACEHOLDER: example image with paired oriented box and
-  instance mask overlaid.]]
-- **Figure 2.** [[PLACEHOLDER: category distribution, log scale — cf. thesis
-  Figure 16.]]
-- **Figure 3.** [[PLACEHOLDER: construction pipeline, five stages — cf. thesis
-  Figure 15.]]
-- **Figure 4.** [[PLACEHOLDER: representative annotation discrepancies between
-  the sources, illustrating why pairing is non-trivial — cf. thesis
-  Figure 14.]]
+- **Figure 1.** [[PLACEHOLDER: one image with a paired oriented box and its
+  reconciled instance mask overlaid.]]
+- **Figure 2.** [[PLACEHOLDER: category distribution, log scale — regenerate
+  from `results/AerialFuseCV_Testing/eda/`.]]
+- **Figure 3.** [[PLACEHOLDER: construction pipeline.]]
+- **Figure 4.** [[PLACEHOLDER: representative divergence between the source
+  protocols — a harbor and a baseball-diamond case, box against unclipped
+  instance.]]
 
 ---
 
 ## Experimental Design, Materials and Methods
 
-Construction proceeded in five stages.
+Construction is performed by a single script that reads the official DOTA v1.0
+and iSAID distributions and writes the dataset described above, recording its
+own git revision, arguments and library versions in `build_manifest.json`.
 
-**Stage 1 — Image identification and matching.** The intersection of the two
-image sets was identified by filename pattern matching with dimension
-verification. Of the 2,806 images in the DOTA v1.0 train and validation
-splits, 1,869 (1,411 training, 458 validation) have corresponding iSAID masks,
-66.6% of those splits. The 937 test-split images were excluded because iSAID
-publishes no masks for that subset. The original DOTA split assignment was
-preserved throughout.
+**Image identification.** The intersection of the two image sets is taken over
+the DOTA train and validation splits, giving 1,869 images (1,411 training, 458
+validation). The DOTA test split is excluded because iSAID publishes no masks
+for it. The original DOTA split assignment is preserved throughout.
 
-**Stage 2 — Annotation format conversion.** Detection annotations were
-converted from DOTA text format (`x₁ y₁ … x₄ y₄ class-name difficulty`) to
-YOLO OBB format with coordinates normalised to [0, 1], preserving rotation —
-essential for aerial objects — while making the labels consumable by
-OBB-capable detectors. 127,843 bounding-box instances (98,990 training, 28,853
-validation) across 15 categories were converted and verified for spatial
-correspondence with their source images.
+**Annotation parsing.** DOTA annotations are read in their native format and
+kept in it. For each object the four oriented corners are retained, together
+with the axis-aligned hull written to `labels_hbb/`. Coordinates stay in
+absolute pixels; no normalisation or framework-specific conversion is applied,
+since such conversions are lossy and no single framework format serves every
+consumer.
 
-**Stage 3 — Segmentation mask integration.** iSAID masks were retained in
-their original PNG form and reorganised into the per-split directory layout.
-Each mask was verified to share the exact dimensions of its image,
-guaranteeing pixel-level alignment. The iSAID RGB class-colour encoding was
-preserved unmodified, keeping compatibility with iSAID evaluation protocols.
+**Instance decoding.** iSAID publishes both an instance-identity encoding and a
+category-colour encoding of the same objects. Instances are decoded from the
+identity encoding, and each instance's category is read from the
+category-coloured mask at the same pixels. An exhaustive audit of the source
+masks over all 1,869 images found the published class-colour table complete and
+correct — 16 colour values, no unknown colour observed and no table entry
+unobserved — and found 475,438 instances, of which none spans more than one
+category. The build re-checks this condition and reports it in
+`dataset_statistics.json`; the current build records zero instances of
+ambiguous category.
 
-**Stage 4 — Instance-level refinement.** The refinement algorithm takes the
-DOTA boxes as the baseline — not the iSAID masks — and attempts to attach a
-mask instance to each box. For each image a binary mask per category is
-obtained by exact colour equality against the class-colour table. Labels are
-parsed in DOTA format, retaining only the 15 known category names; for each
-object both the four oriented corners and their axis-aligned hull are kept.
-Each box is then processed independently:
+**Matching.** Matching is scored on the oriented quadrilateral rather than its
+axis-aligned hull. DOTA is genuinely oriented: in a measurement over 21,265
+boxes, 95.5% are rotated, the median rotation is 17.1° off axis, and using the
+hull inflates the matching region by a median factor of 1.83 relative to the
+true box area, with 37% of boxes exceeding a factor of two. Scoring on the hull
+therefore admits overlap that the annotated object does not cover.
 
-1. The category mask is cropped to the box's axis-aligned hull expanded by 20%
-   of the box's longer side, so instances extending slightly beyond the
-   annotated box remain whole.
-2. Connected components within the crop become candidate instances.
-3. Each candidate is scored by intersection-over-union against the box's hull
-   rendered as a filled rectangle.
-4. The best-scoring candidate is accepted if its IoU reaches 0.1; otherwise
-   the box remains unpaired.
+For each image and each category independently, an intersection-over-union
+matrix is computed between every box's rasterised oriented quadrilateral and
+every instance of that category, skipping pairs whose bounding rectangles do
+not intersect. An optimal one-to-one assignment maximising the total
+intersection-over-union is then solved on that matrix [4,5], and matches
+reaching 0.1 are accepted. The one-to-one constraint means that two boxes
+cannot claim the same instance, so a box that overlapped adequately but lost
+its instance to a better-fitting box is discarded with that reason recorded
+rather than silently duplicating a mask.
 
-The threshold of 0.1 is a conservative criterion requiring only minimal
-spatial overlap: it establishes that box and mask refer to the same object
-while tolerating the inconsistencies inherent in independent annotation. A
-higher threshold such as 0.3 would reject valid pairs where a DOTA box extends
-beyond its iSAID mask or vice versa; a lower one such as 0.05 would risk
-accepting false matches. The value was settled by trial and error as the
-balance between avoiding false matches and retaining valid pairs with
-imperfect alignment. Matching treats each box independently and does not
-enforce a one-to-one assignment between boxes and mask components.
+The acceptance threshold of 0.1 is deliberately permissive. It establishes that
+a box and an instance refer to the same object while tolerating the extent
+differences that independent annotation produces; a stricter threshold would
+reject valid pairs wherever the two protocols delimit an object differently, at
+the cost quantified in Table 3.
 
-**Stage 5 — Output construction, organisation and documentation.** For every
-image retaining at least one pair, three artefacts are written: the image,
-unchanged; a label file containing only paired boxes, in standard DOTA corner
-order; and a mask containing only paired instances, each painted in its
-category colour. Images yielding no pair are excluded entirely — 12 images, 10
-training and 2 validation. Because output masks carry category rather than
-per-instance colours, adjacent instances of one category merge in the mask
-file; the paired box is the means of isolating a single instance, so consumers
-should intersect mask with box rather than re-run connected components. Per
-category and split, source boxes, source mask instances, paired boxes and both
-classes of discard are counted and reported in the deposit.
+**Mask reconciliation.** The released mask for a pair is the matched iSAID
+instance clipped to that object's oriented box:
+
+```
+reconciled_mask = iSAID_instance(matched) ∩ polygon(DOTA oriented box)
+```
+
+This addresses the two measured components of protocol divergence by different
+mechanisms. Extent is bounded by the clip, so a released mask cannot exceed the
+annotation that delimits it. Foreign pixels cannot arise at all, because the
+mask is built from a single identified instance rather than from the
+category-coloured mask — a neighbouring object's pixels have no path into it.
+The two derivations coincide wherever the unlabelled component is zero, which
+the divergence measurement confirms exactly, so nothing is lost relative to
+starting from the category mask.
+
+The matched instance's colour identity is preserved in `pairs.jsonl`, so the
+clip is reversible: the unclipped iSAID instance can always be recovered from
+the user's own iSAID download.
+
+**Output and verification.** For every image retaining at least one pair, the
+script writes the image unchanged, the two label files containing only paired
+objects, and the two mask encodings containing only paired instances. Images
+yielding no pair are excluded entirely. Per category and split, source boxes,
+source instances, pairs and every discard are counted and written to
+`dataset_statistics.json`, and the identity of every paired and every discarded
+object is written to `pairs.jsonl` and `discarded.jsonl`. The build asserts that
+pairs plus discarded boxes equal the source boxes and that pairs plus discarded
+instances equal the source instances. SHA-256 checksums are written for every
+non-image file, so a rebuild from the official downloads can be verified
+against the deposit.
 
 ---
 
 ## Limitations
 
-Pairing is box-anchored. 97.9% of DOTA boxes received a mask, but only about
-⚠ 37.8% of iSAID mask instances received a box, so roughly ⚠ 205,600 mask
-instances — overwhelmingly small vehicles — are absent from the released
-masks. Work requiring exhaustive small-object mask coverage should use iSAID
-directly.
+Pairing is anchored on the boxes. 98.34% of DOTA boxes received a mask, but
+only 26.44% of iSAID instances received a box, so 349,716 instances —
+overwhelmingly small vehicles — are absent. Work needing exhaustive
+small-object mask coverage should use iSAID directly.
 
-Each box is paired independently with its highest-overlap mask component,
-without a one-to-one constraint, so in crowded scenes two boxes of one
-category may reference the same component.
+Released masks are clipped to the oriented box, so wherever the two protocols
+disagree about an object's extent the dataset follows DOTA's convention. Users
+needing iSAID's extent can recover the unclipped instance through the identity
+recorded for every pair.
 
-Masks store category rather than per-instance colours; adjacent instances of
-one category are inseparable from the mask alone, and the paired box is
-required to isolate an instance.
+3,283 pairs (2.61%) reference an iSAID instance whose colour spans several
+disconnected components, partly occlusion splits and partly colour reuse.
+Extraction is not yet component-aware; clipping bounds the consequence but does
+not remove it.
 
-The category distribution is severely imbalanced: three categories supply
-71.0% of pairs while six contribute under 0.6% each.
+Annotation quality is bounded by the sources, and their errors propagate into
+the pairs. Categories are severely imbalanced: three supply 70.4% of pairs,
+six under 0.6% each. Only the training and validation splits are covered, as
+iSAID publishes no test-split masks. Source imagery cannot be redistributed, so
+the deposit provides annotations, metadata and a construction script rather
+than images.
 
-Annotation quality is bounded by the sources — geometry by DOTA v1.0, masks by
-iSAID — and their errors propagate into the pairs. Only training and
-validation splits are covered, as iSAID publishes no test-split masks.
-
-Source imagery cannot be redistributed, so the deposit provides annotations,
-metadata and a construction script rather than images.
-
-> 177 words (cap 200). ⚠ values to be restated from `Dataset_Statistics.md`.
+> 174 words (cap 200).
 
 ---
 
@@ -392,9 +534,9 @@ terms; no imagery is redistributed.
 
 [[PLACEHOLDER: depends on the authorship decision above. Expected for a
 single-author article — Panagiotis Fragkos: Conceptualization, Methodology,
-Software, Validation, Formal analysis, Data curation, Writing – original
-draft, Visualization. Add supervisory roles (Supervision, Writing – review &
-editing) if the supervisor is a co-author.]]
+Software, Validation, Formal analysis, Data curation, Writing – original draft,
+Visualization. Add supervisory roles (Supervision, Writing – review & editing)
+if the supervisor is a co-author.]]
 
 ## Acknowledgements
 
@@ -402,8 +544,8 @@ editing) if the supervisor is a co-author.]]
 
 Funding: [[PLACEHOLDER: if none, the template's sentence applies verbatim —
 "This research did not receive any specific grant from funding agencies in the
-public, commercial, or not-for-profit sectors." Confirm no NTUA/PhD funding
-must be declared.]]
+public, commercial, or not-for-profit sectors." Confirm that no NTUA/PhD
+funding must be declared.]]
 
 ## Declaration of Competing Interests
 
@@ -415,15 +557,15 @@ in this paper.
 
 ## References
 
-> Template rule: **maximum 20**, numbered, cited as `[n]`; the deposited
-> dataset must itself be cited. Four used; all bibliographic details require
+> Template rule: **maximum 20**, numbered, cited as `[n]`; the deposited dataset
+> must itself be cited. Five used; all bibliographic details require
 > verification against the publisher record before submission (see
 > `references.bib`).
 
 [1] G.-S. Xia, X. Bai, J. Ding, Z. Zhu, S. Belongie, J. Luo, M. Datcu,
 M. Pelillo, L. Zhang, DOTA: A large-scale dataset for object detection in
-aerial images, in: Proc. IEEE/CVF Conf. Computer Vision and Pattern
-Recognition (CVPR), 2018, pp. 3974–3983. [[VERIFY pages/DOI]]
+aerial images, in: Proc. IEEE/CVF Conf. Computer Vision and Pattern Recognition
+(CVPR), 2018, pp. 3974–3983. [[VERIFY pages/DOI]]
 
 [2] S. Waqas Zamir, A. Arora, A. Gupta, S. Khan, G. Sun, F. Shahbaz Khan,
 F. Zhu, L. Shao, G.-S. Xia, X. Bai, iSAID: A large-scale dataset for instance
@@ -435,53 +577,60 @@ S. Whitehead, A.C. Berg, W.-Y. Lo, P. Dollár, R. Girshick, Segment Anything,
 in: Proc. IEEE/CVF Int. Conf. Computer Vision (ICCV), 2023, pp. 4015–4026.
 [[VERIFY pages/DOI]]
 
-[4] P. Fragkos, AerialFuseCV: paired oriented-box and instance-mask
-annotations for aerial imagery [dataset], Zenodo, 2026.
-[[PLACEHOLDER: DOI — blocked by P0]]
+[4] H.W. Kuhn, The Hungarian method for the assignment problem, Naval Research
+Logistics Quarterly 2 (1–2) (1955) 83–97. [[VERIFY DOI]]
+
+[5] P. Virtanen, R. Gommers, T.E. Oliphant, et al., SciPy 1.0: fundamental
+algorithms for scientific computing in Python, Nature Methods 17 (2020)
+261–272. [[VERIFY author list truncation policy and DOI]]
+
+[6] P. Fragkos, AerialFuseCV: reconciled oriented-box and instance-mask
+annotation pairs for aerial imagery [dataset], Zenodo, 2026.
+[[PLACEHOLDER: DOI — arrives with the deposit]]
 
 ---
 
 ## Pre-submission checklist
 
-- [ ] **P0 complete**: Zenodo deposit live, DOI minted → fills Specifications
-      Table, deposit inventory, reference [4].
-- [ ] **P0 blocker (ledger OPEN 6)**: author and verify construction Stages 1
-      and 3 — they exist in no committed script, so the reproducibility claim
-      is currently unsupported.
-- [ ] Regenerate all ⚠ values from `Dataset_Statistics.md`; remove every ⚠.
-- [ ] Authorship, affiliation, institutional email, CRediT resolved.
-- [ ] Four figures produced.
+- [ ] **Deposit live, DOI minted** → fills the Specifications Table, the deposit
+      inventory and reference [6].
+- [ ] Deposit inventory written from the actual uploaded package.
+- [ ] Authorship, affiliation, institutional email and CRediT resolved.
+- [ ] Four figures produced from `results/AerialFuseCV_Testing/`.
 - [ ] Official DiB `.docx` template filled; instructional text deleted.
-- [ ] Reference details verified; ≤20 references.
-- [ ] Confirm current APC.
+- [ ] Reference details verified against publisher records; ≤20 references.
+- [ ] Confirm the current APC.
+- [ ] Re-verify every number against the build that the deposit actually ships,
+      if a further build is made after this draft.
 - [ ] 🔴 REVIEWER pass (hostile read) before submission.
 
 ---
 
-## ⛔ POLICY NOTICE — 2026-07-30: this draft must be re-sourced
+## Rewrite note — 2026-08-04 (task P1-WRITE)
 
-**The MSc thesis is not a citable source.** It was a degree prerequisite and is
-closed; every number this program publishes is measured by this program and
-lives in `results/` with a run manifest.
+This draft replaces DRAFT v0.1 in full.
 
-This draft was written before that directive and currently derives its
-numeric content and its Methods narrative from that document. It is therefore
-**provisional in full**:
+**What changed.** Every number is now sourced from build `d4c191a` and the
+measurement artefacts under `results/AerialFuseCV_Testing/`; nothing derives
+from the MSc thesis, which is not a source for this program. The argument was
+rebuilt around protocol divergence: the article now states that two expert
+protocols on the same imagery disagree about what an object is, measures that
+disagreement over every pair, defines the reconciled mask as the response, and
+releases the pairing with exact discard accounting.
 
-- Every count — 1,869 / 127,843 / 125,102 / 97.9% / all of Table 2 / the four ⚠
-  values — is superseded pending the corrected build's own output
-  (`dataset_statistics.json`).
-- The Methods section must be rewritten to describe **the script we ship**, not
-  a five-stage narrative inherited from elsewhere.
-- Already superseded by our own exhaustive measurement
-  (`results/AerialFuseCV_Testing/isaid_colour_audit/colour_audit.json`, 1,869 images): the iSAID
-  source contains **475,438 instances** (358,166 train / 117,272 val), not the
-  330,693 that connected-components counting implied — a 30.4% undercount. The
-  class-colour table is confirmed complete and correct (16 values, zero
-  unknown, zero unobserved), and **zero instances span more than one class**.
+**Superseded claims from v0.1, for the record.** The counts changed with the
+corrected build (1,857 → 1,862 images; 125,102 → 125,722 pairs; 97.9% → 98.34%
+box pairing). The instance-side figures in v0.1 (330,693 source instances,
+37.8% retention) were derived by connected-component counting and are wrong;
+the exhaustive colour audit measures 475,438 instances and a 26.44% rate. Two
+v0.1 limitations no longer hold: the dataset now enforces one-to-one assignment,
+so two boxes can no longer reference the same mask component, and it ships
+instance-identity masks, so adjacent objects of one category are separable
+without the box. Both were removed rather than softened.
 
-**Deliberately not rewritten yet.** The corrected build changes these numbers
-again, so re-sourcing now would mean writing the same prose twice. Rewrite once,
-from `dataset_statistics.json`, at Phase 4 of `TODO_RECREATION_SCRIPT.md`.
-Structure, argument and venue compliance all survive; only sourcing and figures
-change.
+**Deliberately not claimed.** Novelty is stated as the correspondence and its
+accounting, not as priority over any method line. The masks are described as
+consistent with the annotation that delimits them and free of neighbouring
+objects by construction — a statement about evaluation validity, not an
+agreement score. Pipeline and benchmark numbers are absent by venue rule and by
+scope; they belong to P2.
