@@ -62,13 +62,20 @@ def _load_config(path: Path) -> Dict:
         return yaml.safe_load(f)
 
 
+def _local_path(path_text: str) -> Path:
+    if path_text.startswith("/mnt/") and len(path_text) > 6 and path_text[6] == "/":
+        drive = path_text[5].upper()
+        return Path(f"{drive}:/{path_text[7:]}")
+    return Path(path_text)
+
+
 def _read_worktree_git_provenance() -> Dict[str, object]:
     git_pointer = REPO_ROOT / ".git"
     if git_pointer.is_file():
         text = git_pointer.read_text(encoding="utf-8").strip()
         if not text.startswith("gitdir:"):
             return {}
-        git_dir = Path(text.split(":", 1)[1].strip())
+        git_dir = _local_path(text.split(":", 1)[1].strip())
         if not git_dir.is_absolute():
             git_dir = (REPO_ROOT / git_dir).resolve()
     else:
