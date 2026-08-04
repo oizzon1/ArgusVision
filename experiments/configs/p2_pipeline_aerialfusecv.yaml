@@ -1,11 +1,11 @@
-# Pipeline evaluation on the reconciled-mask build.
+# Pipeline evaluation on AerialFuseCV.
 # Identical to p2_pipeline_aerialfusecv_v1 except for the dataset, so the mask
 # definition is the only variable.
-experiment: pipeline_aerialfusecv_reconciled
+experiment: pipeline_aerialfusecv
 kind: pipeline
 dataset:
   type: aerialfusecv
-  path: dataset/AerialFuseCV_reconciled/val
+  path: dataset/AerialFuseCV/val
 detector:
   name: yolo11x-obb
   conf_threshold: 0.25

@@ -25,7 +25,7 @@ only `*.py`, `*.md` and small `*.json` are tracked.
 
 ## Inspection and visualization
 
-All verified against `AerialFuseCV_reconciled` on 2026-08-03.
+All verified against `AerialFuseCV` on 2026-08-03.
 
 | Script | Purpose |
 |---|---|

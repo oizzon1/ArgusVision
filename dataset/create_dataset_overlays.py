@@ -8,7 +8,7 @@ For each image, the script:
 
 Usage example:
     python dataset/create_dataset_overlays.py \
-        --source dataset/AerialFuseCV_reconciled \
+        --source dataset/AerialFuseCV \
         --output results/AerialFuseCV_Testing/visualizations/overlays \
         --alpha 0.35
 """
@@ -132,7 +132,7 @@ def clone_structure(source_root: Path, output_root: Path):
 
 def main():
     parser = argparse.ArgumentParser(description="Create overlay visualizations for AerialFuseCV-style dataset.")
-    parser.add_argument("--source", default="dataset/AerialFuseCV_reconciled", help="Source dataset root.")
+    parser.add_argument("--source", default="dataset/AerialFuseCV", help="Source dataset root.")
     parser.add_argument("--output", default="results/AerialFuseCV_Testing/visualizations/overlays", help="Destination clone folder.")
     parser.add_argument("--alpha", type=float, default=0.35, help="Mask overlay alpha.")
     parser.add_argument("--copy-metadata", action="store_true", help="Copy labels/masks into the clone for reference.")

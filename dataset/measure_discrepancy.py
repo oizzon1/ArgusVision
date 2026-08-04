@@ -17,7 +17,7 @@ and decomposes their disagreement into causes that need different responses:
 Also counts instances whose colour spans multiple disconnected components,
 which is the one failure mode belonging to our own extraction.
 
-    python dataset/measure_discrepancy.py --dataset dataset/AerialFuseCV_reconciled
+    python dataset/measure_discrepancy.py --dataset dataset/AerialFuseCV
 """
 
 import argparse
@@ -101,7 +101,7 @@ def process(task):
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--dataset", type=Path, default=Path("dataset/AerialFuseCV_reconciled"))
+    ap.add_argument("--dataset", type=Path, default=Path("dataset/AerialFuseCV"))
     ap.add_argument("--splits", nargs="+", default=["train", "val"])
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 2) - 1))

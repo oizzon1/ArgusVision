@@ -5,7 +5,7 @@ Reads only artefacts the build produced — `dataset_statistics.json`,
 present, the annotation-discrepancy summary. Every number in the report is
 computed here, never quoted.
 
-    python dataset/analyze_aerialfusecv.py --dataset dataset/AerialFuseCV_reconciled
+    python dataset/analyze_aerialfusecv.py --dataset dataset/AerialFuseCV
 """
 
 import argparse
@@ -71,7 +71,7 @@ def fig_area_by_class(pairs, out):
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--dataset", type=Path, default=Path("dataset/AerialFuseCV_reconciled"))
+    ap.add_argument("--dataset", type=Path, default=Path("dataset/AerialFuseCV"))
     ap.add_argument("--discrepancy", type=Path,
                     default=Path("results/AerialFuseCV_Testing/annotation_discrepancy/"
                                  "discrepancy_summary.json"))

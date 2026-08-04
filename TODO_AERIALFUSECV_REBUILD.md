@@ -63,7 +63,7 @@ Before publishing numbers about anyone else's annotations.
       scored against ground truth its prompt could produce.
 - [ ] Write the decision document before implementing
 
-### 4. Rebuild with reconciled masks — ✅ DONE (`dataset/AerialFuseCV_reconciled`)
+### 4. Rebuild with reconciled masks — ✅ DONE (`dataset/AerialFuseCV`)
 - [ ] Masks become ours; the iSAID instance identifier stays in the
       correspondence so the original is always recoverable
 - [ ] Decide whether both mask directories ship
@@ -91,9 +91,9 @@ Before publishing numbers about anyone else's annotations.
       `AerialFuseCV_Refined` (regenerable exactly via `--mask-source semantic`,
       proven 0 mismatches) and `AerialFuseCV_v1` (superseded by reconciled).
       **28 GB freed; dataset/ 81 GB → 54 GB.** Active script defaults
-      repointed to `AerialFuseCV_reconciled`; loader and 62 tests verified
+      repointed to `AerialFuseCV`; loader and 62 tests verified
       after deletion.
-- [x] Kept `AerialFuseCV_reconciled` (current) and `AerialFuseCV_regression`
+- [x] Kept `AerialFuseCV` (current) and `AerialFuseCV_regression`
       (118 MB — the port-fidelity evidence, cheap to retain)
 - [ ] **Separate decision, not taken:** `DOTA_v1_YOLO_{oriented,vertical}_bboxes_dataset`
       are 14 GB each and regenerable from `DOTA_v1` via committed scripts. The

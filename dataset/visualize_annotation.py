@@ -14,7 +14,7 @@ Usage:
     
 Examples:
     python dataset/visualize_annotation.py dataset/iSAID/val/semantic_masks/P2695_instance_color_RGB.png
-    python dataset/visualize_annotation.py dataset/AerialFuseCV_reconciled/train/labels_obb/P0050.txt
+    python dataset/visualize_annotation.py dataset/AerialFuseCV/train/labels_obb/P0050.txt
 """
 
 import os

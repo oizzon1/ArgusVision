@@ -11,7 +11,7 @@ The script searches the requested image id in BOTH train and val splits.
 
 Usage:
     python dataset/visualize_aerialfusecv_4tile.py --image-id P0173
-    python dataset/visualize_aerialfusecv_4tile.py --image-id P0173 --root dataset/AerialFuseCV_reconciled
+    python dataset/visualize_aerialfusecv_4tile.py --image-id P0173 --root dataset/AerialFuseCV
     python dataset/visualize_aerialfusecv_4tile.py --image-id P0173 --output results/aerialfusecv_4tile
 """
 
@@ -197,7 +197,7 @@ def process_split(root: Path, split: str, image_id: str, output_dir: Path) -> Pa
 def main():
     parser = argparse.ArgumentParser(description="4-tile AerialFuseCV visualization (train/val auto-search)")
     parser.add_argument("--image-id", required=True, type=str, help="Image id, e.g. P0173")
-    parser.add_argument("--root", type=str, default="dataset/AerialFuseCV_reconciled", help="Dataset root")
+    parser.add_argument("--root", type=str, default="dataset/AerialFuseCV", help="Dataset root")
     parser.add_argument("--output", type=str, default="results/AerialFuseCV_Testing/visualizations/4tile", help="Output directory")
     args = parser.parse_args()
 
