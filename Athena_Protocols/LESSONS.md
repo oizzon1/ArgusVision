@@ -107,6 +107,13 @@ construction. Caught only by reading the script.
 **Rule:** every claim about how something works is sourced from the code line or
 data artefact before it is written.
 
+**C4. Verify the port before trusting the improvement.**
+Reproducing the precursor build exactly (0 label mismatches, 0 mask mismatches)
+is what made the corrected build's +620 pairs attributable to the fix rather
+than to a porting bug.
+**Rule:** when replacing a pipeline, first reproduce the old one bit-for-bit,
+then change one thing.
+
 **C5. Verify a number BEFORE writing it, not before publishing it.** ⚠ NEAR MISS
 While correcting an implausible ground-sample-distance range in the P1 draft, I
 wrote "15 images report exactly 0.000 m/px" — a figure I had read nowhere. It
@@ -118,13 +125,6 @@ the very plausibility that makes it dangerous is what writing it creates.
 **Rule:** open the artefact *first*, then write the sentence around what it
 says. "Every number traces to `results/`" is not a review step; it is a
 precondition for typing the number. This is the strict form of C3.
-
-**C4. Verify the port before trusting the improvement.**
-Reproducing the precursor build exactly (0 label mismatches, 0 mask mismatches)
-is what made the corrected build's +620 pairs attributable to the fix rather
-than to a porting bug.
-**Rule:** when replacing a pipeline, first reproduce the old one bit-for-bit,
-then change one thing.
 
 ---
 
