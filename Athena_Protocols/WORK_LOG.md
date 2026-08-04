@@ -110,10 +110,10 @@ Rules:
 | Field | Entry |
 |---|---|
 | Work hours | not tracked |
-| Work done | (1) iSAID-baseline positioning note. (2) Competitive literature deep-dive → roadmap v2.3. (3) Locked need-statement (box-rich/mask-poor; detector→promptable segmenter; supervised = ceiling). (4) **Roadmap → v2.4 FAST TRACK:** done/remaining/deferred inventory; week-by-week sprints; dates P0 ≤ 08-22, P1 ≤ 09-05, P2 experiments ≤ 09-15, P2 submit ≤ 2027-01-31; freeze P4/C*/parked; OPEN 6 status corrected (`build_aerialfusecv.py` exists). |
+| Work done | (1) iSAID-baseline positioning note. (2) Competitive literature deep-dive → roadmap v2.3. (3) Locked need-statement (box-rich/mask-poor; detector→promptable segmenter; supervised = ceiling). (4) **Roadmap → v2.4 FAST TRACK:** done/remaining/deferred inventory; week-by-week sprints; dates P0 ≤ 08-22, P1 ≤ 09-05, P2 experiments ≤ 09-15, P2 submit ≤ 2027-01-31; freeze P4/C*/parked; OPEN 6 status corrected (`build_aerialfusecv.py` exists). (5) Added multi-model orchestration plan for one ATHENA Orchestrator assigning bounded worker packets to terminal-based models. |
 | Key issues | Publishing speed is blocked by packaging/writing, not science. OPEN 5 (Mask R-CNN on Windows) still gates P2 baselines. Licensing admin must run in parallel, not serially. |
 | Findings | Most experimental/dataset work is done. Critical path is F1–F5 (P0+P1) then F6–F8 (P2 experiments) then write/submit. |
 | Notes | Do not activate C1 as a separate paper until P1 is submitted; discrepancy evidence goes inside P1. DiB over OJPRS for first acceptance speed. |
-| Files changed | `ArgusVision_Strategic_Planning/PUBLICATION_ROADMAP.md` (v2.3→v2.4); `ArgusVision_Strategic_Planning/Context/{competitive_landscape_2026-08_NOTES.md,iSAID_baselines_positioning_NOTES.md}`; `Athena_Protocols/{ATHENA_STATE.md,WORK_LOG.md}` |
+| Files changed | `ArgusVision_Strategic_Planning/PUBLICATION_ROADMAP.md` (v2.3→v2.4); `ArgusVision_Strategic_Planning/Context/{competitive_landscape_2026-08_NOTES.md,iSAID_baselines_positioning_NOTES.md}`; `Athena_Protocols/{ATHENA_STATE.md,WORK_LOG.md,MULTI_MODEL_ORCHESTRATION.md}` |
 | Verification | Roadmap changelog records fast-track trigger; STATE DECIDED + IN PROGRESS + OPEN 6 + STATE LOG updated. |
 | Next actions | **Start F1 this week:** deposit-scoped rebuild script + verify → Zenodo (P0) → P1 rewrite/submit. Parallel: F6 OPEN 5. |
