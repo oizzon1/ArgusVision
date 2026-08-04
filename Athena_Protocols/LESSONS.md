@@ -107,6 +107,18 @@ construction. Caught only by reading the script.
 **Rule:** every claim about how something works is sourced from the code line or
 data artefact before it is written.
 
+**C5. Verify a number BEFORE writing it, not before publishing it.** ⚠ NEAR MISS
+While correcting an implausible ground-sample-distance range in the P1 draft, I
+wrote "15 images report exactly 0.000 m/px" — a figure I had read nowhere. It
+was caught only because the artefact was checked before committing. The truth:
+*zero* images report 0.000; 21 carry 1.34e-06 m/px, which merely rounds to
+0.000 at three decimals. A fabricated number is hardest to spot once it sits in
+finished prose, surrounded by correct ones and matching the sentence's rhythm —
+the very plausibility that makes it dangerous is what writing it creates.
+**Rule:** open the artefact *first*, then write the sentence around what it
+says. "Every number traces to `results/`" is not a review step; it is a
+precondition for typing the number. This is the strict form of C3.
+
 **C4. Verify the port before trusting the improvement.**
 Reproducing the precursor build exactly (0 label mismatches, 0 mask mismatches)
 is what made the corrected build's +620 pairs attributable to the fix rather
