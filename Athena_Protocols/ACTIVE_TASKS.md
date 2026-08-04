@@ -56,6 +56,30 @@ closed session.
   work is the failure mode this table exists to prevent — an abandoned claim is
   worse than no claim, because it looks authoritative.
 
+## Worker rules (every task packet repeats these)
+
+- **Push your task branch only. Never push to `dev`.** The orchestrator merges.
+- **Prefix every commit message with your task ID** — `[F1] ...`, `[REVIEW-V24] ...`.
+  All models commit as the same git author, so the prefix is the *only*
+  attribution signal. Without it `git log` cannot tell you which lane produced
+  what.
+- Tell the user when you finish. The orchestrator has no notification of other
+  sessions and will not review a commit it does not know exists.
+
+## Orchestrator audit (run before any merge, and whenever in doubt)
+
+```bash
+# who last touched each control file — should be the orchestrator only
+for f in Athena_Protocols/ATHENA_STATE.md Athena_Protocols/ACTIVE_TASKS.md \
+         ArgusVision_Strategic_Planning/PUBLICATION_ROADMAP.md \
+         Athena_Protocols/WORK_LOG.md; do
+  printf "%-30s " "$(basename $f)"; git log -1 --format="%h %an %ar" -- "$f"
+done
+
+# work in flight outside dev
+git branch -a --format="%(refname:short) %(committerdate:relative)" | grep -v dev
+```
+
 ## Control files (orchestrator-owned)
 
 Do not edit unless the orchestrator explicitly assigns:
