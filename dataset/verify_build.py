@@ -4,8 +4,8 @@ Purpose: measure the delta between a new build and an existing one, so that a
 change in construction can be attributed to the change itself rather than to a
 porting mistake. Not shipped with the dataset.
 
-    python dataset/verify_build.py --build dataset/AerialFuseCV_regression \
-        --reference dataset/AerialFuseCV_Refined
+    python dataset/verify_build.py --build dataset/AerialFuseCV \
+        --reference D:/AI_Datasets/AerialFuseCV
 
 Three levels, all reported (the run does not stop at the first failure):
 

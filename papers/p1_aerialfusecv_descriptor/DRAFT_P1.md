@@ -208,7 +208,7 @@ AerialFuseCV/
 ├── images_gsd_mapping.json         per-image ground sample distance
 ├── build_manifest.json             run identity, git sha, arguments, environment
 ├── checksums.sha256                every non-image file
-└── DATASET_ANALYSIS.md             generated summary of the build
+└── summary.md                      generated summary of the build
 ```
 
 Annotations stay in DOTA's own format — two header lines (`imagesource`,

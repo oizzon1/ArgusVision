@@ -49,7 +49,7 @@ OUTPUT (dataset root)
     images_gsd_mapping.json per-image ground sample distance
     build_manifest.json     run identity, arguments, environment, timings
     checksums.sha256        expected hash of every regenerated annotation file
-    DATASET_ANALYSIS.md     generated summary of this build
+    summary.md              short summary of this build
 
 Requires: python >= 3.8, numpy, opencv-python.
 Licence: see LICENSE.txt. DOTA and iSAID remain under their own terms.
@@ -569,7 +569,7 @@ def main():
         json.dumps(manifest, indent=2), encoding="utf-8")
     print("  build_manifest.json      run identity recorded")
 
-    (args.out / "DATASET_ANALYSIS.md").write_text(
+    (args.out / "summary.md").write_text(
         f"""# AerialFuseCV — rebuild summary
 
 Rebuilt {manifest['rebuilt_utc']} from the deposited correspondence.
@@ -588,7 +588,7 @@ Rebuilt {manifest['rebuilt_utc']} from the deposited correspondence.
 Masks are the matched iSAID instance clipped to its DOTA oriented box.
 Only paired objects appear. See the data article for the full description.
 """, encoding="utf-8")
-    print("  DATASET_ANALYSIS.md      summary written")
+    print("  summary.md               build summary written")
 
     ok_build = not problems and pairs == total_records
 

@@ -107,6 +107,7 @@ dataset/*
 !dataset/**/*.txt
 !dataset/**/*.json
 !dataset/**/*.py
+!dataset/**/*.sh
 !dataset/**/*.pdf
 
 # Specifically ignore heavy data folders even if matched above

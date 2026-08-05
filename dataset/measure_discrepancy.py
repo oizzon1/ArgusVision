@@ -17,7 +17,12 @@ and decomposes their disagreement into causes that need different responses:
 Also counts instances whose colour spans multiple disconnected components,
 which is the one failure mode belonging to our own extraction.
 
-    python dataset/measure_discrepancy.py --dataset dataset/AerialFuseCV
+Both masks are read from the ORIGINAL iSAID distribution, not from the build.
+The released masks are already clipped to the box, so measuring against them
+would compare the clip with itself and report perfect agreement everywhere.
+
+    python dataset/measure_discrepancy.py --dataset dataset/AerialFuseCV \
+        --isaid D:/AI_Datasets/iSAID
 """
 
 import argparse
@@ -47,15 +52,26 @@ def pack(rgb):
     return (a[:, :, 0] << 16) | (a[:, :, 1] << 8) | a[:, :, 2]
 
 
+def read_rgb(path):
+    bgr = cv2.imread(str(path))
+    if bgr is None:
+        raise IOError(f"cannot read {path}")
+    return cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
+
+
 def process(task):
     root, split, img_id, recs = Path(task["root"]), task["split"], task["img_id"], task["recs"]
+    isaid = Path(task["isaid"])
     d = AerialFuseCVSplit(root / split)
     try:
+        # Boxes come from the build — those are the released paired boxes.
         gts = d.load_ground_truth(img_id)
-        sem = d.load_semantic_mask(img_id)
-        ins_rgb = cv2.cvtColor(
-            cv2.imread(str(root / split / "instance_masks" / f"{img_id}_instance_id_RGB.png")),
-            cv2.COLOR_BGR2RGB)
+        # Both masks come from the ORIGINAL iSAID distribution, never from the
+        # build. The released masks are already clipped to the box, so reading
+        # them here would compare the clip against itself and report perfect
+        # agreement for every object.
+        sem = read_rgb(isaid / split / "semantic_masks" / f"{img_id}_instance_color_RGB.png")
+        ins_rgb = read_rgb(isaid / split / "instance_masks" / f"{img_id}_instance_id_RGB.png")
     except Exception as exc:                       # noqa: BLE001
         return {"img_id": img_id, "error": str(exc), "rows": [], "multi": []}
     if len(gts) != len(recs):
@@ -102,6 +118,9 @@ def process(task):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dataset", type=Path, default=Path("dataset/AerialFuseCV"))
+    ap.add_argument("--isaid", type=Path, required=True,
+                    help="original iSAID root — the unclipped instance and "
+                         "semantic masks the comparison needs")
     ap.add_argument("--splits", nargs="+", default=["train", "val"])
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 2) - 1))
@@ -120,7 +139,8 @@ def main() -> int:
         ids = sorted({k[1] for k in by_image if k[0] == split})
         if args.limit:
             ids = ids[: args.limit]
-        tasks += [{"root": str(args.dataset), "split": split, "img_id": i,
+        tasks += [{"root": str(args.dataset), "isaid": str(args.isaid),
+                   "split": split, "img_id": i,
                    "recs": by_image[(split, i)]} for i in ids]
 
     print(f"measuring {len(tasks)} images with {args.workers} workers", flush=True)

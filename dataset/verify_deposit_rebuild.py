@@ -8,7 +8,7 @@ check against an existing tree and writes the outcome to `results/` as an
 artefact, so the reproducibility claim has a durable source.
 
     python dataset/verify_deposit_rebuild.py \
-        --tree dataset/_deposit_test \
+        --tree D:/AI_Datasets/AerialFuseCV \
         --checksums papers/p1_aerialfusecv_descriptor/deposit/checksums.sha256 \
         --out results/experimental/AerialFuseCV_Testing/deposit_verification
 """
