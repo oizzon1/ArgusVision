@@ -414,12 +414,13 @@ def main():
     args = ap.parse_args()
 
     print("=" * 66)
-    print("  AerialFuseCV — rebuild from DOTA v1.0 + iSAID")
+    print("AerialFuseCV".center(66))
     print("=" * 66)
-    print("\nThis reconstructs AerialFuseCV on your machine. Neither DOTA nor")
-    print("iSAID permits redistribution, so the deposit ships only the")
-    print("correspondence between them; the imagery and annotations come from")
-    print("your own copies of the two source datasets.")
+    print("\nThis constructs the AerialFuseCV dataset from the original DOTA v1.0")
+    print("and iSAID datasets, making exact pairing of detection bboxes and")
+    print("segmentation masks.")
+    print("Imagery and annotations come from your own copies of the two source")
+    print("datasets.")
 
     if not args.correspondence.exists():
         sys.exit(f"\ncorrespondence file not found: {args.correspondence}")
@@ -434,9 +435,17 @@ def main():
         if not args.isaid:
             args.isaid = prompt_path("iSAID root (contains train/ and val/)")
         if not args.out:
-            args.out = prompt_path("Where should AerialFuseCV be written?",
-                                   must_exist=False)
+            args.out = prompt_path(
+                "Where should AerialFuseCV be written? "
+                "(an AerialFuseCV/ folder is created inside)",
+                must_exist=False)
+    # Always build into a folder of its own, so pointing this at a directory
+    # holding other datasets does not scatter train/, val/ and the record files
+    # across it. Giving a path that already ends in AerialFuseCV is honoured
+    # as-is rather than nested twice.
     args.out = Path(args.out)
+    if args.out.name != "AerialFuseCV":
+        args.out = args.out / "AerialFuseCV"
 
     banner("Step 2 of 4 — checking the source layout")
     ok, lines = describe_sources(args.dota, args.isaid)
