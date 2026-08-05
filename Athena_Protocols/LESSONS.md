@@ -169,6 +169,32 @@ the work was done and left it to discover a live process by collision.
 background job completes and its outcome is recorded. Completion is a fact to
 be written down, not assumed.
 
+**E1. A long job's log must live at a repo-relative path, never a session-scoped one.**
+The deposit rebuild was launched with its stdout redirected into the launching
+session's job directory. The session closed accidentally; the job survived, but
+its log did not. Progress then had to be reconstructed by counting files in the
+output tree, and the run's own verification result — the single thing the
+multi-hour job existed to produce — was printed to a file nobody could read and
+was lost outright. It had to be recomputed afterwards by a separate script.
+**Rule:** a job that outlives a session writes its log inside the repo, under a
+path chosen before launch. A result that exists only in a session's scratch
+space is not a result.
+
+**E2. `kill -0` on a WSL relay stub does not detect a Windows process exiting.** ⚠ REPEATED
+A monitor was armed on PID 71033 to fire when the rebuild finished. The rebuild
+finished; the monitor never fired. 71033 was the WSL-side `bash` wrapper, and
+71055 the `/init` relay to `cmd.exe` — the real work ran as `python.exe` on the
+Windows side, invisible to `ps`. Both stubs stayed in state `S` indefinitely
+after the Windows process exited, so the liveness check passed forever. Thirteen
+hours were spent believing a finished job was still in its verify phase, and the
+completion criterion I had written down ("top-level artefacts not yet written")
+was itself wrong — the rebuild script never writes those files at all.
+**Rule:** across the WSL/Windows boundary, liveness is checked on the Windows
+side (`tasklist`), never on the Linux stub. Better, do not infer completion from
+process state at all: have the job write a terminal marker file, and watch for
+that. This is the process-level form of A3 — working and wedged must be
+distinguishable from outside.
+
 **D4. Own a withdrawn recommendation explicitly.**
 Two recommendations were withdrawn after evidence contradicted them (instance
 masks as GT; "tiled precision is contaminated"). Both are recorded with the
