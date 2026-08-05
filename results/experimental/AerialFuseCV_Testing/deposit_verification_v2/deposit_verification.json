@@ -1,0 +1,18 @@
+{
+  "verified_utc": "2026-08-05T12:08:59Z",
+  "tree": "/mnt/d/AI_Datasets/AerialFuseCV",
+  "checksums_file": "papers/p1_aerialfusecv_descriptor/deposit/checksums.sha256",
+  "checksums_file_sha256": "fbf16c57f5e330610b24a882f4d64e38737c0d891dc1c0954f7a8586a1996412",
+  "expected_files": 7448,
+  "ok": 7448,
+  "missing": 0,
+  "mismatched": 0,
+  "result": "PASS",
+  "elapsed_seconds": 100.7,
+  "by_kind": {},
+  "missing_examples": [],
+  "mismatch_examples": [],
+  "git_sha": "03785e4c8864853ce85123efa553e9fb4e816308",
+  "python": "3.13.0",
+  "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39"
+}

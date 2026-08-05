@@ -26,6 +26,7 @@ from pathlib import Path
 
 import cv2
 import numpy as np
+from scipy import ndimage
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from argusvision.data.aerialfusecv import AerialFuseCVSplit  # noqa: E402
@@ -126,49 +127,135 @@ def figure_1(d, pairs, out: Path, split: str):
     print(f"  figure 1: {img_id} ({n} x {cls})")
 
 
+divergence_kinds = ("extent", "split", "foreign")
+
+KIND_TITLE = {
+    "extent": "Extent — the sources annotate different amounts of the same object",
+    "split": "Source error — one iSAID instance spans several physical objects",
+    "foreign": "Contamination — a neighbour's pixels fall inside the box",
+}
+
+
 def pick_divergence_cases(d, pairs, isaid: Path, split: str, scan: int, top: int):
-    """Choose the cases by measured excess rather than by hand.
+    """Choose cases by measured property rather than by hand, one set per kind.
 
     Hand-picking drifted once already: a case chosen from an earlier build
     matched a different instance after rematching, leaving the figure caption
-    describing something the panel no longer showed.
+    describing something the panel no longer showed. Selection here is driven
+    entirely by quantities measured during the scan, so a changed build changes
+    the chosen cases rather than silently invalidating the caption.
+
+    The three kinds are the same decomposition the data article's disagreement
+    table uses, so a figure illustrates a row of that table rather than merely
+    being a striking picture:
+
+      extent   raw instance reaches well beyond the box, in ONE connected
+               piece — a protocol difference about how much of an object to
+               annotate, not an error by either source
+      split    the instance colour spans several disconnected components — one
+               iSAID instance covering more than one physical object
+      foreign  pixels inside the box carry a DIFFERENT instance identity — a
+               neighbour bleeding into the clip, concentrated in dense scenes
     """
-    found = []
+    found = {k: [] for k in divergence_kinds}
     for n, img_id in enumerate(list(pairs)[:scan], 1):
-        gts = d.load_ground_truth(img_id)
         recs = pairs[img_id]
-        if len(gts) != len(recs):
-            continue
-        released_all = d.ground_truth_masks(img_id, gts)
         ins = cv2.cvtColor(cv2.imread(str(isaid / split / "instance_masks" /
                                           f"{img_id}_instance_id_RGB.png")), cv2.COLOR_BGR2RGB)
-        for rec, rel in zip(recs, released_all):
-            raw = np.all(ins == np.array(rec["instance_rgb"], np.uint8), axis=-1)
+        ik = (ins[:, :, 0].astype(np.int32) << 16) | \
+             (ins[:, :, 1].astype(np.int32) << 8) | ins[:, :, 2].astype(np.int32)
+        h, w = ik.shape
+
+        # Locate every instance ONCE per image. Comparing the whole mask per
+        # pair, and labelling it per pair, is cost = pairs x image pixels —
+        # the defect this project already paid for once (LESSONS D6). Here it
+        # made the scan slow enough to halve its own throughput on dense val
+        # images.
+        uniq, inv = np.unique(ik, return_inverse=True)
+        boxes_of = ndimage.find_objects(inv.reshape(h, w) + 1)
+        where = {int(k): i for i, k in enumerate(uniq.tolist())}
+
+        for rec_idx, rec in enumerate(recs):
+            c = rec["instance_rgb"]
+            key = (int(c[0]) << 16) | (int(c[1]) << 8) | int(c[2])
+            slot = where.get(key)
+            if slot is None or boxes_of[slot] is None:
+                continue
+            sy, sx = boxes_of[slot]
+
+            # window = instance extent U box extent, so everything below is
+            # local to the object rather than to the image
+            pts = np.round(np.array(rec["obb"]).reshape(4, 2)).astype(np.int32)
+            y1 = max(0, min(sy.start, int(pts[:, 1].min())))
+            y2 = min(h, max(sy.stop, int(pts[:, 1].max()) + 1))
+            x1 = max(0, min(sx.start, int(pts[:, 0].min())))
+            x2 = min(w, max(sx.stop, int(pts[:, 0].max()) + 1))
+            sub = ik[y1:y2, x1:x2]
+
+            raw = sub == key
+            poly = np.zeros((y2 - y1, x2 - x1), np.uint8)
+            cv2.fillPoly(poly, [pts - [x1, y1]], 1)
+            inside = poly > 0
+            # released mask = instance clipped to its box, with the build's
+            # documented fallback to the whole instance when the clip is empty
+            rel = raw & inside
+            if not rel.any():
+                rel = raw
             excess = int((raw & ~rel).sum())
-            if excess > 0:
-                found.append((excess, rec["class_name"], img_id))
+            _, pieces = ndimage.label(raw)
+            foreign = int((inside & (sub != 0) & (sub != key)).sum())
+
+            # Every kind requires visible divergence. A 59-piece instance lying
+            # entirely inside its box is a true multi-piece case and a useless
+            # picture; ranking by piece count alone selected exactly that.
+            # The record INDEX travels with the case. Identifying a case only
+            # by (class, image) let the figure render the first object of that
+            # class instead of the measured one — in an image with 43 harbours,
+            # never the right one — so the caption described a different object
+            # than the panel showed.
+            if pieces > 1 and excess > 0:
+                found["split"].append((excess, rec["class_name"], img_id,
+                                       {"idx": rec_idx, "pieces": int(pieces)}))
+            if pieces == 1 and excess > 0:
+                found["extent"].append((excess, rec["class_name"], img_id,
+                                        {"idx": rec_idx, "pieces": 1}))
+            if foreign > 0:
+                found["foreign"].append((foreign, rec["class_name"], img_id,
+                                         {"idx": rec_idx, "foreign_px": foreign}))
         if n % 20 == 0:
             print(f"  scanning {n}/{scan}", flush=True)
-    found.sort(reverse=True)
-    chosen, seen = [], set()
-    for excess, cls, img_id in found:
-        if cls in seen:
-            continue
-        chosen.append((cls, img_id)); seen.add(cls)
-        if len(chosen) == top:
-            break
-    print(f"  cases by measured excess: {chosen}")
+
+    # Rarest kind picks first, and a class used anywhere is not reused. Six
+    # panels drawn from three categories illustrate those categories, not the
+    # three phenomena the figures exist to separate.
+    chosen, used = {}, set()
+    for kind in ("split", "foreign", "extent"):
+        found[kind].sort(key=lambda t: -t[0])
+        picked = []
+        for _, cls, img_id, extra in found[kind]:
+            if cls in used:
+                continue
+            picked.append((cls, img_id, extra)); used.add(cls)
+            if len(picked) == top:
+                break
+        chosen[kind] = picked
+        print(f"  {kind:8} cases: {[(c, i) for c, i, _ in picked]}", flush=True)
     return chosen
 
 
-def figure_4(d, pairs, isaid: Path, out: Path, split: str, cases):
-    """Box vs raw iSAID instance vs released mask, for the clearest divergences."""
+def figure_4(d, pairs, isaid: Path, out: Path, split: str, cases,
+             kind="extent", filename="F4_source_divergence.png"):
+    """Box vs raw iSAID instance vs released mask, for one kind of divergence.
+
+    Returns the measurement records so the caller can write every rendered
+    number to results/ in a single file.
+    """
     panels, measurements = [], []
-    for want_cls, want_img in cases:
+    for want_cls, want_img, extra in cases:
         recs = pairs.get(want_img, [])
-        idx = next((i for i, r in enumerate(recs) if r["class_name"] == want_cls), None)
-        if idx is None:
-            print(f"  figure 4: {want_cls} not found in {want_img}"); continue
+        idx = extra.get("idx")
+        if idx is None or idx >= len(recs) or recs[idx]["class_name"] != want_cls:
+            print(f"  figure 4: case {want_cls}/{want_img} no longer resolves"); continue
         rec = recs[idx]
         image = d.load_image(want_img)
         gts = d.load_ground_truth(want_img)
@@ -189,22 +276,31 @@ def figure_4(d, pairs, isaid: Path, out: Path, split: str, cases):
         cv2.polylines(c, [box], True, BOX_COLOUR, 2, cv2.LINE_AA)
 
         excess = int((raw & ~released).sum())
+        # released is the instance clipped to its box, so released + excess must
+        # equal raw. When it did not, the panel and its caption were describing
+        # two different objects — the failure this check exists to surface.
+        if int(released.sum()) + excess != int(raw.sum()):
+            print(f"  WARNING {want_img}/{want_cls}: released {int(released.sum()):,}"
+                  f" + excess {excess:,} != raw {int(raw.sum()):,} — panel and "
+                  f"measurement disagree, case skipped")
+            continue
         # Every number rendered into a caption is also written to results/ —
         # a figure is not a licence to invent a value (LESSONS C5).
-        measurements.append({"image_id": want_img, "class_name": want_cls,
+        measurements.append({"kind": kind, "figure": filename,
+                             "image_id": want_img, "class_name": want_cls,
                              "excess_px": excess,
                              "released_px": int(released.sum()),
-                             "raw_px": int(raw.sum())})
+                             "raw_px": int(raw.sum()), **extra})
+        if kind == "split":
+            note = f"iSAID raw instance ({extra.get('pieces', '?')} pieces, +{excess:,} px)"
+        elif kind == "foreign":
+            note = f"iSAID raw instance (+{excess:,} px; {extra.get('foreign_px', 0):,} foreign px in box)"
+        else:
+            note = f"iSAID raw instance (+{excess:,} px)"
         row = np.hstack([caption(a, "DOTA oriented box"),
-                         caption(b, f"iSAID raw instance (+{excess:,} px)"),
+                         caption(b, note),
                          caption(c, "AerialFuseCV released mask")])
         panels.append(caption(row, f"{want_img} — {want_cls}", 30))
-
-    if measurements:
-        (out / "figure_values.json").write_text(
-            json.dumps({"released_masks_from": str(d.root), "raw_masks_from": str(isaid),
-                        "split": split,
-                        "cases": measurements}, indent=2), encoding="utf-8")
 
     if panels:
         # Rows come from different crops, so scale each to a common width rather
@@ -215,9 +311,11 @@ def figure_4(d, pairs, isaid: Path, out: Path, split: str, cases):
                              interpolation=cv2.INTER_AREA)
                   for p in panels]
         panels = [np.pad(p, ((0, 12), (0, 0), (0, 0))) for p in panels]
-        cv2.imwrite(str(out / "F4_source_divergence.png"),
-                    cv2.cvtColor(np.vstack(panels), cv2.COLOR_RGB2BGR))
-        print(f"  figure 4: {len(panels)} case(s)")
+        stacked = np.vstack(panels)
+        stacked = caption(stacked, KIND_TITLE.get(kind, kind), 34)
+        cv2.imwrite(str(out / filename), cv2.cvtColor(stacked, cv2.COLOR_RGB2BGR))
+        print(f"  {filename}: {len(panels)} case(s)")
+    return measurements
 
 
 def main() -> int:
@@ -225,7 +323,10 @@ def main() -> int:
     ap.add_argument("--dataset", type=Path, default=Path("dataset/AerialFuseCV"))
     ap.add_argument("--isaid", type=Path, default=Path("dataset/iSAID"))
     ap.add_argument("--split", default="val")
-    ap.add_argument("--scan", type=int, default=120, help="images to scan for divergence cases")
+    ap.add_argument("--scan", type=int, default=300,
+                    help="images to scan for divergence cases; three kinds now "
+                         "compete for candidates, and split cases are rare "
+                         "(~0.5%% of pairs), so this is wider than it was")
     ap.add_argument("--top", type=int, default=2)
     ap.add_argument("--out", type=Path,
                     default=Path("results/experimental/AerialFuseCV_Testing/eda/figures"))
@@ -239,7 +340,27 @@ def main() -> int:
     figure_1(d, pairs, args.out, args.split)
     cases = pick_divergence_cases(d, pairs, args.isaid, args.split,
                                   args.scan, args.top)
-    figure_4(d, pairs, args.isaid, args.out, args.split, cases)
+
+    # Three candidate divergence figures, one per measured kind, so the best
+    # can be chosen for the article rather than settled on by whichever was
+    # rendered first.
+    files = {"extent": "F4a_source_divergence_extent.png",
+             "split":  "F4b_source_divergence_split.png",
+             "foreign": "F4c_source_divergence_foreign.png"}
+    all_measurements = []
+    for kind in divergence_kinds:
+        if not cases.get(kind):
+            print(f"  {kind}: no case found in the scanned images")
+            continue
+        all_measurements += figure_4(d, pairs, args.isaid, args.out, args.split,
+                                     cases[kind], kind, files[kind])
+
+    if all_measurements:
+        (args.out / "figure_values.json").write_text(
+            json.dumps({"released_masks_from": str(d.root),
+                        "raw_masks_from": str(args.isaid),
+                        "split": args.split, "scanned_images": args.scan,
+                        "cases": all_measurements}, indent=2), encoding="utf-8")
     print(f"figures -> {args.out}")
     return 0
 

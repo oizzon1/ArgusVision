@@ -1,0 +1,102 @@
+{
+  "build": "dataset\\AerialFuseCV",
+  "reference": "dataset\\AerialFuseCV_reconciled",
+  "levels": {
+    "1_structural": {
+      "per_split": {
+        "train": {
+          "build_images": 1406,
+          "reference_images": 1406,
+          "only_in_build": [],
+          "only_in_reference": [],
+          "n_only_in_build": 0,
+          "n_only_in_reference": 0
+        },
+        "val": {
+          "build_images": 456,
+          "reference_images": 456,
+          "only_in_build": [],
+          "only_in_reference": [],
+          "n_only_in_build": 0,
+          "n_only_in_reference": 0
+        }
+      },
+      "passed": true
+    },
+    "2_content": {
+      "label_mismatches": [],
+      "mask_mismatches": [],
+      "missing_masks": [],
+      "passed": true,
+      "labels_compared": 1862,
+      "masks_compared": 1862,
+      "n_label_mismatches": 0,
+      "n_mask_mismatches": 0
+    },
+    "3_statistical": {
+      "build_totals": {
+        "boxes": 127843,
+        "pairs": 125722,
+        "src_instances": 475438,
+        "images_kept": 1862,
+        "images_seen": 1869,
+        "images_excluded": 7,
+        "box_pairing_rate": 0.9834093380161605,
+        "instance_pairing_rate": 0.26443405869955705
+      },
+      "build_pairs_per_class": {
+        "plane": 10432,
+        "ship": 36854,
+        "storage-tank": 7757,
+        "baseball-diamond": 627,
+        "tennis-court": 3103,
+        "basketball-court": 616,
+        "ground-track-field": 450,
+        "harbor": 7862,
+        "bridge": 2480,
+        "large-vehicle": 20765,
+        "small-vehicle": 30932,
+        "helicopter": 684,
+        "roundabout": 562,
+        "soccer-ball-field": 451,
+        "swimming-pool": 2147
+      },
+      "reference_pairs_per_class": {
+        "baseball-diamond": 627,
+        "basketball-court": 616,
+        "bridge": 2480,
+        "ground-track-field": 450,
+        "harbor": 7862,
+        "helicopter": 684,
+        "large-vehicle": 20765,
+        "plane": 10432,
+        "roundabout": 562,
+        "ship": 36854,
+        "small-vehicle": 30932,
+        "soccer-ball-field": 451,
+        "storage-tank": 7757,
+        "swimming-pool": 2147,
+        "tennis-court": 3103
+      },
+      "delta_per_class": {
+        "baseball-diamond": 0,
+        "basketball-court": 0,
+        "bridge": 0,
+        "ground-track-field": 0,
+        "harbor": 0,
+        "helicopter": 0,
+        "large-vehicle": 0,
+        "plane": 0,
+        "roundabout": 0,
+        "ship": 0,
+        "small-vehicle": 0,
+        "soccer-ball-field": 0,
+        "storage-tank": 0,
+        "swimming-pool": 0,
+        "tennis-court": 0
+      },
+      "total_delta": 0
+    }
+  },
+  "passed": true
+}

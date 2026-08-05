@@ -1,0 +1,119 @@
+{
+  "generated_utc": "2026-08-04T13:38:21Z",
+  "images": 456,
+  "config": {
+    "tile_size": 1024,
+    "overlap": 200,
+    "nms_iou": 0.5,
+    "conf": 0.25,
+    "match_iou": 0.5,
+    "seam_tolerance_px": 3.0
+  },
+  "counts": {
+    "tp_seam": 999,
+    "tp_clear": 22958,
+    "fp_seam": 1291,
+    "fp_clear": 7131,
+    "fn": 4175
+  },
+  "seam_adjacent_detections": 2290,
+  "share_of_detections_seam_adjacent": 0.070724852527873,
+  "fp_rate_seam_adjacent": 0.5637554585152839,
+  "fp_rate_away_from_seams": 0.23699690916946392,
+  "excess_fp_attributable_to_seams": 748.2770780019276,
+  "excess_as_share_of_all_fp": 0.08884790762312131,
+  "precision_measured": 0.7398931406158312,
+  "precision_if_seam_excess_removed": 0.7573965368758213,
+  "per_class": {
+    "9": {
+      "fp_seam": 160,
+      "fp_clear": 960,
+      "tp_seam": 118,
+      "tp_clear": 3345
+    },
+    "10": {
+      "fp_seam": 222,
+      "fp_clear": 3033,
+      "tp_seam": 166,
+      "tp_clear": 3990
+    },
+    "1": {
+      "fp_seam": 371,
+      "fp_clear": 1192,
+      "tp_seam": 359,
+      "tp_clear": 7993
+    },
+    "7": {
+      "fp_seam": 157,
+      "fp_clear": 624,
+      "tp_seam": 93,
+      "tp_clear": 1652
+    },
+    "3": {
+      "fp_seam": 7,
+      "fp_clear": 85,
+      "tp_seam": 9,
+      "tp_clear": 156
+    },
+    "6": {
+      "fp_seam": 12,
+      "fp_clear": 71,
+      "tp_seam": 4,
+      "tp_clear": 84
+    },
+    "13": {
+      "fp_seam": 29,
+      "fp_clear": 83,
+      "tp_seam": 4,
+      "tp_clear": 88
+    },
+    "14": {
+      "fp_seam": 5,
+      "fp_clear": 13,
+      "tp_seam": 0,
+      "tp_clear": 16
+    },
+    "12": {
+      "fp_seam": 7,
+      "fp_clear": 76,
+      "tp_seam": 4,
+      "tp_clear": 109
+    },
+    "4": {
+      "fp_seam": 40,
+      "fp_clear": 63,
+      "tp_seam": 23,
+      "tp_clear": 683
+    },
+    "5": {
+      "fp_seam": 13,
+      "fp_clear": 61,
+      "tp_seam": 0,
+      "tp_clear": 92
+    },
+    "0": {
+      "fp_seam": 137,
+      "fp_clear": 235,
+      "tp_seam": 109,
+      "tp_clear": 2234
+    },
+    "2": {
+      "fp_seam": 100,
+      "fp_clear": 339,
+      "tp_seam": 94,
+      "tp_clear": 2181
+    },
+    "11": {
+      "fp_seam": 2,
+      "fp_clear": 8,
+      "tp_seam": 1,
+      "tp_clear": 52
+    },
+    "8": {
+      "fp_seam": 29,
+      "fp_clear": 288,
+      "tp_seam": 15,
+      "tp_clear": 283
+    }
+  }
+}

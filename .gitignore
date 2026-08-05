@@ -48,6 +48,16 @@ results/**
 !results/**/*manifest.json
 !results/**/*_audit.json
 !results/**/dataset_statistics.json
+# Sources for numbers that appear in paper prose. The rule is that no
+# experimental number is written unless it exists in results/ — which is
+# hollow if results/ lives only on one machine. AerialFuseCV_v1 was deleted
+# while the draft still cited divergence numbers measured from it, leaving
+# Tables 5-6 with no surviving source. Small artefacts only; the bulk
+# (per_pair.jsonl at 24 MB, the figure PNGs) stays out.
+!results/**/figure_values.json
+!results/**/discrepancy_summary.json
+!results/**/deposit_verification.json
+!results/**/*_report.json
 # Reports and findings are the prose that interprets the metrics beside them.
 # They were previously tracked only because individual files had been
 # force-added, which meant a new report silently stayed out of git.

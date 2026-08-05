@@ -1,0 +1,74 @@
+{
+  "released_masks_from": "dataset\\AerialFuseCV\\val",
+  "raw_masks_from": "D:\\AI_Datasets\\iSAID",
+  "split": "val",
+  "scanned_images": 300,
+  "cases": [
+    {
+      "kind": "extent",
+      "figure": "F4a_source_divergence_extent.png",
+      "image_id": "P0491",
+      "class_name": "baseball-diamond",
+      "excess_px": 28844,
+      "released_px": 52920,
+      "raw_px": 81764,
+      "idx": 5,
+      "pieces": 1
+    },
+    {
+      "kind": "extent",
+      "figure": "F4a_source_divergence_extent.png",
+      "image_id": "P0936",
+      "class_name": "bridge",
+      "excess_px": 26055,
+      "released_px": 26502,
+      "raw_px": 52557,
+      "idx": 31,
+      "pieces": 1
+    },
+    {
+      "kind": "split",
+      "figure": "F4b_source_divergence_split.png",
+      "image_id": "P0897",
+      "class_name": "harbor",
+      "excess_px": 59375,
+      "released_px": 56482,
+      "raw_px": 115857,
+      "idx": 1324,
+      "pieces": 43
+    },
+    {
+      "kind": "split",
+      "figure": "F4b_source_divergence_split.png",
+      "image_id": "P0128",
+      "class_name": "ship",
+      "excess_px": 850,
+      "released_px": 9071,
+      "raw_px": 9921,
+      "idx": 66,
+      "pieces": 2
+    },
+    {
+      "kind": "foreign",
+      "figure": "F4c_source_divergence_foreign.png",
+      "image_id": "P1463",
+      "class_name": "ground-track-field",
+      "excess_px": 7546,
+      "released_px": 409050,
+      "raw_px": 416596,
+      "idx": 7,
+      "foreign_px": 388703
+    },
+    {
+      "kind": "foreign",
+      "figure": "F4c_source_divergence_foreign.png",
+      "image_id": "P0047",
+      "class_name": "soccer-ball-field",
+      "excess_px": 253,
+      "released_px": 38772,
+      "raw_px": 39025,
+      "idx": 4,
+      "foreign_px": 41752
+    }
+  ]
+}

@@ -95,9 +95,15 @@ def main() -> int:
     fig_hist(ious, "Box–mask matching IoU", "IoU (oriented polygon vs instance)",
              figs / "F5_matching_iou.png")
     fig_area_by_class(pairs, figs / "F6_area_by_class.png")
-    if gsd:
-        fig_hist(np.array(list(gsd.values())), "Ground sample distance", "GSD (m/px)",
+    # DOTA does not state a GSD for every image; the mapping records those as
+    # null rather than inventing a value, so they are skipped here instead of
+    # being silently counted as zero.
+    gsd_values = np.array([v for v in gsd.values() if v is not None], dtype=float)
+    if gsd_values.size:
+        fig_hist(gsd_values, "Ground sample distance", "GSD (m/px)",
                  figs / "F7_gsd.png", bins=40, colour="#5a8a5a")
+        print(f"  GSD: {gsd_values.size:,} images with a stated value, "
+              f"{len(gsd) - gsd_values.size:,} without")
 
     # ---- report ----
     L = []
@@ -162,12 +168,16 @@ def main() -> int:
     A(f"Instance area spans {areas.min():,} to {areas.max():,} px "
       f"(median {int(np.median(areas)):,}).\n")
     A(f"![area by class](figures/F6_area_by_class.png)\n")
-    if gsd:
-        g = np.array(list(gsd.values()))
+    if gsd_values.size:
+        g = gsd_values
         A(f"## Ground sample distance\n")
-        A(f"{len(gsd):,} images carry a GSD value, {g.min():.3f}–{g.max():.3f} m/px "
-          f"(median {np.median(g):.3f}). Images whose DOTA header records "
-          f"`gsd:null` carry none.\n")
+        # Count only the images that actually state a value. Counting the whole
+        # mapping described images with `gsd:null` as carrying a GSD, in the
+        # same sentence that says they do not.
+        A(f"{g.size:,} of {len(gsd):,} images carry a GSD value, "
+          f"{g.min():.3f}–{g.max():.3f} m/px (median {np.median(g):.3f}). "
+          f"The remaining {len(gsd) - g.size:,} record `gsd:null` in their "
+          f"DOTA header and carry none.\n")
         A(f"![gsd](figures/F7_gsd.png)\n")
 
     A("## Objects not paired\n")

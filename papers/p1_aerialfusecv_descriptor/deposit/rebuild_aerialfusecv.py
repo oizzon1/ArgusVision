@@ -321,6 +321,11 @@ def rebuild_image(img_id, split, records, dota, isaid, out, image_mode):
 
     h, w = ins.shape[:2]
     keys = pack_rgb(ins)                       # packed once per image, not per pair
+    # Every instance's full (unclipped) area in one pass. Counting each
+    # instance separately would reintroduce the per-pair full-image scan this
+    # script exists to avoid.
+    uniq, counts = np.unique(keys, return_counts=True)
+    area_of = dict(zip(uniq.tolist(), counts.tolist()))
     sem_out = np.zeros((h, w, 3), np.uint8)
     ins_out = np.zeros((h, w, 3), np.uint8)
     obb_rows, hbb_rows, resolved = [], [], []
@@ -369,13 +374,21 @@ def rebuild_image(img_id, split, records, dota, isaid, out, image_mode):
 
         obb_rows.append((corners, cls, diff))
         hbb_rows.append((hull_corners(corners), cls, diff))
+        # Field names follow the original build's pairs.jsonl exactly. Tools
+        # that read this file filter on `instance_area_px`; emitting a
+        # differently named field left them with nothing to plot, and the one
+        # that computed a default instead of failing would have reported an
+        # area range of 0 to 0 into the data article.
         resolved.append({
             "image_id": img_id, "split": split, "class_name": cls,
-            "box_index": idx, "difficulty": diff,
             "obb": [round(v, 1) for v in corners],
             "hbb": [round(v, 1) for v in hull_corners(corners)],
+            "difficulty": diff, "iou": rec.get("iou"),
             "instance_rgb": list(rec["instance_rgb"]),
-            "iou": rec.get("iou"), "mask_px": n_px,
+            "instance_area_px": int(area_of.get(key, 0)),
+            # additions, not replacements: released mask area and the index
+            # this pair resolved through
+            "released_mask_px": n_px, "box_index": idx,
         })
 
     write_labels(out / split / "labels_obb" / f"{img_id}.txt", obb_rows, gsd, imagesource)

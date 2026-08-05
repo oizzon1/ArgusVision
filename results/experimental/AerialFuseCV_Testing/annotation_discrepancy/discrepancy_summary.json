@@ -1,0 +1,356 @@
+{
+  "generated_utc": "2026-08-05T16:09:37Z",
+  "dataset": "dataset\\AerialFuseCV",
+  "pairs_measured": 125722,
+  "elapsed_s": 5554.0,
+  "agreement": {
+    "mean": 0.9161459382049283,
+    "median": 0.9454315,
+    "p05": 0.7274295000000001,
+    "pct_identical_gt_099": 21.3661888929543,
+    "pct_below_090": 31.214902721878428,
+    "pct_below_070": 3.7185218179793513
+  },
+  "disagreement_decomposition_px": {
+    "missing_extent": 15270258,
+    "extra_foreign_instance": 2396467,
+    "extra_unlabelled": 0,
+    "share_missing": 0.8643513724247137,
+    "share_foreign": 0.1356486275752863,
+    "share_unlabelled": 0.0
+  },
+  "contamination_incidence": {
+    "pairs_with_any_foreign_pixel": 22294,
+    "pct_pairs_with_foreign": 17.732775488776824,
+    "mean_foreign_fraction_of_instance": 0.01376373053396707
+  },
+  "multi_piece_instances": {
+    "count": 3283,
+    "pct_of_pairs": 2.611317032818441,
+    "worst": [
+      {
+        "image_id": "P1794",
+        "split": "train",
+        "class_name": "soccer-ball-field",
+        "pieces": 158,
+        "pixels": 152580
+      },
+      {
+        "image_id": "P2770",
+        "split": "train",
+        "class_name": "harbor",
+        "pieces": 134,
+        "pixels": 11993
+      },
+      {
+        "image_id": "P0713",
+        "split": "train",
+        "class_name": "harbor",
+        "pieces": 71,
+        "pixels": 13034
+      },
+      {
+        "image_id": "P0713",
+        "split": "train",
+        "class_name": "harbor",
+        "pieces": 67,
+        "pixels": 16646
+      },
+      {
+        "image_id": "P0839",
+        "split": "val",
+        "class_name": "harbor",
+        "pieces": 66,
+        "pixels": 10618
+      },
+      {
+        "image_id": "P0713",
+        "split": "train",
+        "class_name": "harbor",
+        "pieces": 63,
+        "pixels": 14609
+      },
+      {
+        "image_id": "P0839",
+        "split": "val",
+        "class_name": "harbor",
+        "pieces": 62,
+        "pixels": 24017
+      },
+      {
+        "image_id": "P0899",
+        "split": "train",
+        "class_name": "harbor",
+        "pieces": 59,
+        "pixels": 26534
+      },
+      {
+        "image_id": "P0673",
+        "split": "val",
+        "class_name": "ground-track-field",
+        "pieces": 59,
+        "pixels": 115509
+      },
+      {
+        "image_id": "P0713",
+        "split": "train",
+        "class_name": "harbor",
+        "pieces": 57,
+        "pixels": 20970
+      },
+      {
+        "image_id": "P0839",
+        "split": "val",
+        "class_name": "harbor",
+        "pieces": 54,
+        "pixels": 16526
+      },
+      {
+        "image_id": "P0897",
+        "split": "val",
+        "class_name": "harbor",
+        "pieces": 53,
+        "pixels": 3322
+      },
+      {
+        "image_id": "P0897",
+        "split": "val",
+        "class_name": "harbor",
+        "pieces": 48,
+        "pixels": 3982
+      },
+      {
+        "image_id": "P0897",
+        "split": "val",
+        "class_name": "harbor",
+        "pieces": 46,
+        "pixels": 102934
+      },
+      {
+        "image_id": "P0696",
+        "split": "val",
+        "class_name": "harbor",
+        "pieces": 45,
+        "pixels": 25252
+      },
+      {
+        "image_id": "P0897",
+        "split": "val",
+        "class_name": "harbor",
+        "pieces": 44,
+        "pixels": 79068
+      },
+      {
+        "image_id": "P0897",
+        "split": "val",
+        "class_name": "harbor",
+        "pieces": 43,
+        "pixels": 115857
+      },
+      {
+        "image_id": "P0713",
+        "split": "train",
+        "class_name": "harbor",
+        "pieces": 42,
+        "pixels": 7331
+      },
+      {
+        "image_id": "P0757",
+        "split": "train",
+        "class_name": "harbor",
+        "pieces": 42,
+        "pixels": 9467
+      },
+      {
+        "image_id": "P0696",
+        "split": "val",
+        "class_name": "harbor",
+        "pieces": 41,
+        "pixels": 14604
+      }
+    ]
+  },
+  "per_class": {
+    "baseball-diamond": {
+      "n": 627,
+      "mean_agreement": 0.9366954449760767,
+      "median_agreement": 0.992896,
+      "pct_identical_gt_099": 52.312599681020735,
+      "pct_with_foreign_pixels": 0.4784688995215311,
+      "mean_missing_px": 1303.5550239234449,
+      "mean_foreign_px": 12.717703349282298,
+      "mean_unlabelled_px": 0.0,
+      "disagreement_share_missing": 0.9903380940091093,
+      "disagreement_share_foreign": 0.009661905990890618
+    },
+    "basketball-court": {
+      "n": 616,
+      "mean_agreement": 0.9568600373376623,
+      "median_agreement": 0.9780314999999999,
+      "pct_identical_gt_099": 34.9025974025974,
+      "pct_with_foreign_pixels": 11.03896103896104,
+      "mean_missing_px": 460.1266233766234,
+      "mean_foreign_px": 15.917207792207792,
+      "mean_unlabelled_px": 0.0,
+      "disagreement_share_missing": 0.9665635667347559,
+      "disagreement_share_foreign": 0.03343643326524418
+    },
+    "bridge": {
+      "n": 2480,
+      "mean_agreement": 0.9071795685483871,
+      "median_agreement": 0.9376424999999999,
+      "pct_identical_gt_099": 26.895161290322584,
+      "pct_with_foreign_pixels": 2.741935483870968,
+      "mean_missing_px": 122.21290322580646,
+      "mean_foreign_px": 4.057258064516129,
+      "mean_unlabelled_px": 0.0,
+      "disagreement_share_missing": 0.9678684336579914,
+      "disagreement_share_foreign": 0.03213156634200862
+    },
+    "ground-track-field": {
+      "n": 450,
+      "mean_agreement": 0.9628479888888889,
+      "median_agreement": 0.9856035,
+      "pct_identical_gt_099": 46.44444444444444,
+      "pct_with_foreign_pixels": 2.0,
+      "mean_missing_px": 1319.868888888889,
+      "mean_foreign_px": 189.76666666666668,
+      "mean_unlabelled_px": 0.0,
+      "disagreement_share_missing": 0.8742963717512394,
+      "disagreement_share_foreign": 0.12570362824876055
+    },
+    "harbor": {
+      "n": 7862,
+      "mean_agreement": 0.9198046993131519,
+      "median_agreement": 0.9556439999999999,
+      "pct_identical_gt_099": 20.694479776138387,
+      "pct_with_foreign_pixels": 2.1622996692953445,
+      "mean_missing_px": 431.4605698295599,
+      "mean_foreign_px": 9.470490969219028,
+      "mean_unlabelled_px": 0.0,
+      "disagreement_share_missing": 0.9785216061847343,
+      "disagreement_share_foreign": 0.02147839381526568
+    },
+    "helicopter": {
+      "n": 684,
+      "mean_agreement": 0.984779543859649,
+      "median_agreement": 0.998537,
+      "pct_identical_gt_099": 64.61988304093568,
+      "pct_with_foreign_pixels": 21.637426900584796,
+      "mean_missing_px": 18.698830409356724,
+      "mean_foreign_px": 3.91812865497076,
+      "mean_unlabelled_px": 0.0,
+      "disagreement_share_missing": 0.8267614738202973,
+      "disagreement_share_foreign": 0.17323852617970265
+    },
+    "large-vehicle": {
+      "n": 20765,
+      "mean_agreement": 0.9094306342403081,
+      "median_agreement": 0.930909,
+      "pct_identical_gt_099": 14.033228991090777,
+      "pct_with_foreign_pixels": 15.477967734168072,
+      "mean_missing_px": 106.33190464724295,
+      "mean_foreign_px": 10.356802311581989,
+      "mean_unlabelled_px": 0.0,
+      "disagreement_share_missing": 0.911244176223184,
+      "disagreement_share_foreign": 0.088755823776816
+    },
+    "plane": {
+      "n": 10432,
+      "mean_agreement": 0.9618797327453988,
+      "median_agreement": 0.9898935,
+      "pct_identical_gt_099": 49.82745398773007,
+      "pct_with_foreign_pixels": 25.661426380368095,
+      "mean_missing_px": 21.72881518404908,
+      "mean_foreign_px": 83.01850076687117,
+      "mean_unlabelled_px": 0.0,
+      "disagreement_share_missing": 0.20744030514567266,
+      "disagreement_share_foreign": 0.7925596948543273
+    },
+    "roundabout": {
+      "n": 562,
+      "mean_agreement": 0.9803718843416369,
+      "median_agreement": 1.0,
+      "pct_identical_gt_099": 82.38434163701068,
+      "pct_with_foreign_pixels": 0.5338078291814947,
+      "mean_missing_px": 25.18683274021352,
+      "mean_foreign_px": 0.7170818505338078,
+      "mean_unlabelled_px": 0.0,
+      "disagreement_share_missing": 0.972317626047534,
+      "disagreement_share_foreign": 0.027682373952465998
+    },
+    "ship": {
+      "n": 36854,
+      "mean_agreement": 0.9230336595756228,
+      "median_agreement": 0.941281,
+      "pct_identical_gt_099": 14.869484994844523,
+      "pct_with_foreign_pixels": 21.620448255277584,
+      "mean_missing_px": 64.49096434579693,
+      "mean_foreign_px": 15.699924024529224,
+      "mean_unlabelled_px": 0.0,
+      "disagreement_share_missing": 0.8042181057774785,
+      "disagreement_share_foreign": 0.19578189422252149
+    },
+    "small-vehicle": {
+      "n": 30932,
+      "mean_agreement": 0.8976730756821415,
+      "median_agreement": 0.9240295000000001,
+      "pct_identical_gt_099": 16.74317858528385,
+      "pct_with_foreign_pixels": 18.13009181430234,
+      "mean_missing_px": 47.889240915556705,
+      "mean_foreign_px": 3.9270334928229667,
+      "mean_unlabelled_px": 0.0,
+      "disagreement_share_missing": 0.924212353403241,
+      "disagreement_share_foreign": 0.075787646596759
+    },
+    "soccer-ball-field": {
+      "n": 451,
+      "mean_agreement": 0.9579742638580931,
+      "median_agreement": 0.981665,
+      "pct_identical_gt_099": 40.57649667405765,
+      "pct_with_foreign_pixels": 3.9911308203991127,
+      "mean_missing_px": 3539.9977827051,
+      "mean_foreign_px": 509.38580931263857,
+      "mean_unlabelled_px": 0.0,
+      "disagreement_share_missing": 0.8742065803998528,
+      "disagreement_share_foreign": 0.12579341960014717
+    },
+    "storage-tank": {
+      "n": 7757,
+      "mean_agreement": 0.8555254316101585,
+      "median_agreement": 0.9,
+      "pct_identical_gt_099": 20.587856129947145,
+      "pct_with_foreign_pixels": 29.75377078767565,
+      "mean_missing_px": 136.09746035838597,
+      "mean_foreign_px": 24.063942245713548,
+      "mean_unlabelled_px": 0.0,
+      "disagreement_share_missing": 0.8497519261541632,
+      "disagreement_share_foreign": 0.15024807384583683
+    },
+    "swimming-pool": {
+      "n": 2147,
+      "mean_agreement": 0.97201282906381,
+      "median_agreement": 1.0,
+      "pct_identical_gt_099": 67.62925011644154,
+      "pct_with_foreign_pixels": 0.5589194224499302,
+      "mean_missing_px": 28.29855612482534,
+      "mean_foreign_px": 0.6581276199347927,
+      "mean_unlabelled_px": 0.0,
+      "disagreement_share_missing": 0.9772719961396171,
+      "disagreement_share_foreign": 0.02272800386038282
+    },
+    "tennis-court": {
+      "n": 3103,
+      "mean_agreement": 0.9686061453432163,
+      "median_agreement": 0.979789,
+      "pct_identical_gt_099": 29.26200451176281,
+      "pct_with_foreign_pixels": 0.6445375443119562,
+      "mean_missing_px": 273.1720915243313,
+      "mean_foreign_px": 2.1582339671285853,
+      "mean_unlabelled_px": 0.0,
+      "disagreement_share_missing": 0.9921612922104524,
+      "disagreement_share_foreign": 0.00783870778954761
+    }
+  },
+  "errors": []
+}
