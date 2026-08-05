@@ -148,7 +148,30 @@ work was committed.
 **Rule:** `WORK_LOG.md` is updated *during* the session — every ~30 min of work,
 ~20 min idle — and carries a `TODO SEQUENCE (restore point)`.
 
-**D6. In a shipped script, pathological slowness is a correctness defect.**
+**F1. A file one tool writes and another reads is a schema contract.** ⚠ REPEATED
+The rebuild script emitted `mask_px`; every consumer filters on
+`instance_area_px`. One consumer crashed. The line beside it did
+`r.get("instance_area_px", 0)` and would have written an instance area range of
+*0 to 0 px* into the data article, sourced to `results/`. The crash was luck,
+not detection. The same shape of failure produced the GSD sentence that
+asserted 1,862 images carry a value and, in its next clause, that some do not.
+**Rule:** when writing a file another tool reads, the field names are copied
+from the existing producer, not invented — and every consumer is grepped for
+the keys it reads before the first run, not after the first crash.
+
+**F2. Arithmetic identities catch what crashes do not.**
+Three wrong numbers were stopped in one day. None was caught by code reporting
+a problem: two by unrelated crashes, one because `released + excess` did not
+equal `raw` and an excess of 306% of a raw area is impossible. That last one —
+figure captions describing a different object than their panel — would have
+survived any amount of code review, because every line was individually
+correct.
+**Rule:** wherever quantities must satisfy an identity (parts summing to a
+whole, a subset no larger than its superset, rates within [0,1]), assert it in
+the code that emits them and fail loudly. A number that cannot be wrong is
+worth more than a number that is merely checked.
+
+**D6. In any code that iterates over pairs, pathological slowness is a defect.** ⚠ REPEATED
 The deposit's rebuild script scans the full instance mask once per pair, so cost
 is pairs x pixels. On the second-densest image (1,718 pairs) it produced no
 output for over eleven minutes. It was computing correctly the whole time — but
@@ -156,9 +179,20 @@ a stranger running the deposit would have concluded it had hung and killed it,
 and a reproduction script that appears to freeze is a reproducibility claim in
 name only. I diagnosed it only by sampling the CPU counter and checking pair
 density.
-**Rule:** anything shipped to a stranger is profiled on the *worst* input in the
-dataset, not the median one, and reports progress often enough that working and
-wedged are distinguishable from outside.
+**Recurrence, 2026-08-05.** The divergence scan reproduced the identical
+pattern — `ik == key` plus `ndimage.label` plus `fillPoly`, all full-image, all
+per pair — in code written *hours after this lesson was recorded*. Its
+throughput halved each window until 200 images took 46 minutes; rewritten to
+locate instances once per image and work inside each object's own window, 300
+images took 90 seconds.
+**Why the rule failed:** it said *shipped*. The scan is an internal tool, so
+the rule did not bind, and the cost pattern does not care who runs the code.
+**Corrected rule:** any loop over pairs, instances or detections works inside
+the object's own bounding window — never the whole image — and full-image
+allocation inside such a loop is treated as a defect on sight. Profile on the
+*worst* input, not the median. Report progress often enough that working and
+wedged are distinguishable from outside. This applies to internal tools too;
+the hours lost are the same hours.
 
 **D5. Never close a log entry over a running job.**
 A closed entry asserts the session's work finished. Today three long jobs
