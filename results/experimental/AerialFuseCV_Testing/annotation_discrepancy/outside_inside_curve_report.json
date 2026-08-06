@@ -1,0 +1,56 @@
+{
+  "generated_utc": "2026-08-06T10:39:30Z",
+  "source": "results/experimental/AerialFuseCV_Testing/annotation_discrepancy/per_pair.jsonl",
+  "definition": "ratio = instance pixels outside the oriented box / instance pixels inside it (missing_px / clip_px)",
+  "note": "Backs Table 5 of the P1 data article. The released mask is the instance clipped to its box, so this counts OBJECTS whose mask disagrees with its box, not disagreeing pixels.",
+  "objects_measured": 125722,
+  "objects_with_nothing_outside": 17870,
+  "pct_with_nothing_outside": 14.21,
+  "median_ratio": 0.0463,
+  "mean_ratio": 0.0903,
+  "curve": [
+    {
+      "threshold": 0.02,
+      "label": "1/50",
+      "objects": 83167,
+      "share_pct": 66.15
+    },
+    {
+      "threshold": 0.05,
+      "label": "1/20",
+      "objects": 60491,
+      "share_pct": 48.11
+    },
+    {
+      "threshold": 0.1,
+      "label": "1/10",
+      "objects": 36963,
+      "share_pct": 29.4
+    },
+    {
+      "threshold": 0.2,
+      "label": "1/5",
+      "objects": 15326,
+      "share_pct": 12.19
+    },
+    {
+      "threshold": 0.333333,
+      "label": "1/3",
+      "objects": 5850,
+      "share_pct": 4.65
+    },
+    {
+      "threshold": 0.5,
+      "label": "1/2",
+      "objects": 2280,
+      "share_pct": 1.81
+    },
+    {
+      "threshold": 1.0,
+      "label": "1/1",
+      "objects": 309,
+      "share_pct": 0.25
+    }
+  ],
+  "git_sha": "676c19adb1bf3da27b944e5c5c1ecf1937959885"
+}

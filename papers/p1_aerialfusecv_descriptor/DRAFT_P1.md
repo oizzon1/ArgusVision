@@ -74,11 +74,11 @@ annotates many objects DOTA does not. Every unpaired box and instance is
 recorded with its reason, and pairs plus discards equal each source population
 exactly.
 
-Two candidate mask definitions were compared over all 125,722 pairs. Mean
-agreement is 0.918; of the disagreeing pixels 90.0% arise because iSAID
-annotates a larger extent than the box delimits and 10.0% because a
-neighbouring instance intrudes. The released mask is the matched instance
-clipped to its own oriented box.
+The released mask is the matched instance clipped to its oriented box. Against
+the unclipped instance over 125,722 pairs, mean agreement is 0.916, and for
+95.35% of objects the area outside the box is under a third of that within. Of
+the disagreeing pixels, 86.4% arise because iSAID annotates a larger extent
+than the box delimits, 13.6% because a neighbouring instance intrudes.
 
 Neither source permits redistribution of its annotations, so the deposit
 publishes the correspondence by reference — image, category, box index within
@@ -385,52 +385,88 @@ both sides.
 
 ### Divergence between the two source protocols
 
-Two candidate definitions of a pair's mask were compared over all 125,722 pairs
-of the build recorded in `discrepancy_summary.json`, before the released
-definition was fixed: the category-coloured mask clipped by the oriented box, and the exact
-iSAID instance. Mean agreement is 0.918 and median 0.946; the two definitions
-coincide (agreement above 0.99) for 21.7% of objects, and agreement falls below
-0.70 for 3.5%.
+Every released mask is its iSAID instance clipped to the DOTA oriented box, so
+the box is the anchor and pixels beyond it are not part of the dataset. What
+matters to a user is therefore not how many pixels the two sources disagree
+about in total, but how many **objects** carry a mask reaching past its box far
+enough to signal a real annotation problem rather than a boundary difference.
+The measurements below cover all 125,722 pairs of the released build, comparing
+the released mask against the exact, unclipped iSAID instance; both are read
+from the official iSAID distribution, and the records are in
+`results/experimental/AerialFuseCV_Testing/annotation_discrepancy/`.
 
-**Table 5.** Decomposition of the disagreeing pixels.
+The reported ratio is **outside ÷ inside**: instance pixels beyond the box,
+divided by instance pixels within it. 17,870 objects (14.21%) have nothing
+outside their box at all, and the median object sits at 0.046.
+
+**Table 5.** Objects whose mask extends beyond its box, by ratio of outside to
+inside area. The full curve is given so the operating point is a choice the
+reader makes rather than one made for them.
+
+| Mask outside ÷ inside greater than | Objects | Share |
+|---|---|---|
+| 1/50 | 83,167 | 66.15% |
+| 1/20 | 60,491 | 48.11% |
+| 1/10 | 36,963 | 29.40% |
+| 1/5 | 15,326 | 12.19% |
+| **1/3** | **5,850** | **4.65%** |
+| 1/2 | 2,280 | 1.81% |
+| 1/1 | 309 | 0.25% |
+
+Taking one third as the point beyond which a mask disagrees with its box
+materially, **5,850 objects (4.65%) diverge and 95.35% do not**. The
+distribution is smooth, with no gap separating a rounding difference from an
+annotation error, so no threshold is derivable from the shape of the data. The
+curve is reported in full for the same reason Table 3 reports the acceptance
+threshold in full.
+
+Treated as overlap rather than as a ratio, mean agreement between the two
+definitions is 0.916 and median 0.945. They coincide, above 0.99 agreement, for
+21.37% of objects, and agreement falls below 0.70 for 3.72%.
+
+**Table 6.** Decomposition of the disagreeing pixels. This describes the two
+source protocols, not the released dataset: extent pixels lie outside the box
+and are therefore absent from every released mask.
 
 | Cause | Pixels | Share |
 |---|---|---|
-| Extent — iSAID annotates beyond the oriented box | 15,270,258 | 90.0% |
-| Foreign — a neighbouring instance's pixels fall inside the box | 1,689,081 | 10.0% |
+| Extent — iSAID annotates beyond the oriented box | 15,270,258 | 86.4% |
+| Foreign — a neighbouring instance's pixels fall inside the box | 2,396,467 | 13.6% |
 | Unlabelled — category-coloured pixels belonging to no instance | 0 | 0.0% |
 
-20,489 pairs (16.3%) contain at least one foreign pixel; averaged over pairs,
-foreign pixels make up 1.1% of an instance.
+22,294 pairs (17.73%) contain at least one foreign pixel; averaged over pairs,
+foreign pixels make up 1.4% of an instance.
 
-**Table 6.** Agreement per category, incidence of foreign pixels, and the share
+**Table 7.** Agreement per category, incidence of foreign pixels, and the share
 of each category's disagreement attributable to extent.
 
 | Category | Agreement | Pairs with foreign px | Disagreement that is extent |
 |---|---|---|---|
-| storage-tank | 0.857 | 27.6% | 85.5% |
-| small-vehicle | 0.899 | 16.9% | 93.2% |
-| bridge | 0.908 | 2.3% | 97.9% |
-| large-vehicle | 0.912 | 14.1% | 93.5% |
-| harbor | 0.920 | 1.5% | 99.5% |
-| ship | 0.925 | 19.4% | 85.6% |
-| baseball-diamond | 0.937 | 0.2% | 100.0% |
-| basketball-court | 0.957 | 8.9% | 97.1% |
-| soccer-ball-field | 0.960 | 0.9% | 99.9% |
-| plane | 0.963 | 25.2% | 21.8% |
-| ground-track-field | 0.967 | 0.2% | 100.0% |
-| tennis-court | 0.969 | 0.4% | 100.0% |
-| swimming-pool | 0.972 | 0.2% | 99.7% |
-| roundabout | 0.982 | 0.0% | 100.0% |
+| storage-tank | 0.856 | 29.8% | 85.0% |
+| small-vehicle | 0.898 | 18.1% | 92.4% |
+| bridge | 0.907 | 2.7% | 96.8% |
+| large-vehicle | 0.909 | 15.5% | 91.1% |
+| harbor | 0.920 | 2.2% | 97.9% |
+| ship | 0.923 | 21.6% | 80.4% |
+| baseball-diamond | 0.937 | 0.5% | 99.0% |
+| basketball-court | 0.957 | 11.0% | 96.7% |
+| soccer-ball-field | 0.958 | 4.0% | 87.4% |
+| plane | 0.962 | 25.7% | 20.7% |
+| ground-track-field | 0.963 | 2.0% | 87.4% |
+| tennis-court | 0.969 | 0.6% | 99.2% |
+| swimming-pool | 0.972 | 0.6% | 97.7% |
+| roundabout | 0.980 | 0.5% | 97.2% |
 | helicopter | 0.985 | 21.6% | 82.7% |
 
-The two components separate by category. Extent accounts for essentially all
-disagreement in the sports fields, roundabout, tennis-court, harbor and bridge,
-where the protocols delimit a different portion of the same object —
-baseball-diamond, for example, is boxed at the infield by DOTA and annotated as
-the whole field by iSAID. Foreign pixels concentrate where objects are densely
-packed: storage-tank 27.6%, plane 25.2%, helicopter 21.6%, ship 19.4%. plane is
-the one category whose disagreement is mostly contamination rather than extent.
+The two components separate by category. Extent accounts for more than 96% of
+the disagreement in tennis-court, baseball-diamond, harbor, swimming-pool,
+roundabout, bridge and basketball-court, where the protocols delimit a
+different portion of the same object — baseball-diamond, for example, is boxed
+at the infield by DOTA and annotated as the whole field by iSAID. Foreign
+pixels concentrate where objects are densely packed: storage-tank 29.8%, plane
+25.7%, helicopter 21.6%, ship 21.6%. plane is the one category whose
+disagreement is mostly contamination rather than extent, its extent share
+falling to 20.7%.
 
 The released mask definition addresses each component by a different mechanism,
 described under Methods.
