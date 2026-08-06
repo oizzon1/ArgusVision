@@ -189,11 +189,32 @@ def prompt_path(question, must_exist=True, default=None):
         return p
 
 
+# Objects expected in each source directory, from the official distributions.
+EXPECTED = {"train": 1411, "val": 458}
+
+# DOTA-v1.5 adds this category. Its annotations sit in `labelTxt-v1.5` beside
+# the v1.0 set in the same download folder, so taking the wrong one is easy and
+# the resulting failure — a box index that does not resolve, hundreds of images
+# in — looks like a broken deposit rather than a wrong download.
+V15_ONLY_CLASS = "container-crane"
+
+
+def case_variant(parent, name):
+    """Find a directory differing only in case, e.g. iSAID's `Instance_masks`."""
+    if not parent.is_dir():
+        return None
+    for child in parent.iterdir():
+        if child.is_dir() and child.name.lower() == name.lower() and child.name != name:
+            return child.name
+    return None
+
+
 def describe_sources(dota, isaid):
     """Check the source layout. Returns (ok, lines) — lines are always shown.
 
     Fails loudly and specifically before any work starts, rather than part way
-    through a multi-hour run.
+    through a multi-hour run. Every failure names the directory and, where the
+    cause is guessable, says what to do about it.
     """
     lines, ok = [], True
     for label, root, patterns in (("DOTA", dota, REQUIRED["dota"]),
@@ -201,14 +222,50 @@ def describe_sources(dota, isaid):
         lines.append(f"{label}: {root}")
         for split in SPLITS:
             for pat in patterns:
-                sub = root / pat.format(split=split)
+                rel = pat.format(split=split)
+                sub = root / rel
                 if not sub.is_dir():
-                    lines.append(f"   MISSING  {pat.format(split=split)}")
+                    variant = case_variant(root / split, Path(rel).name)
+                    hint = (f"  -> found '{variant}'; rename it to "
+                            f"'{Path(rel).name}' (lowercase)" if variant else "")
+                    lines.append(f"   MISSING  {rel}{hint}")
                     ok = False
                     continue
                 n = sum(1 for _ in sub.iterdir())
-                lines.append(f"   ok       {pat.format(split=split):<26} {n:>7,} files")
+                want = EXPECTED.get(split)
+                if want and n != want:
+                    lines.append(f"   COUNT    {rel:<26} {n:>7,} files "
+                                 f"(expected {want:,}) — extraction may be incomplete")
+                else:
+                    lines.append(f"   ok       {rel:<26} {n:>7,} files")
     return ok, lines
+
+
+def detect_label_version(dota):
+    """Return a warning if the DOTA annotations look like v1.5 rather than v1.0.
+
+    Sampling a few files is enough: `container-crane` exists only in v1.5, and
+    an image containing one is common enough to surface quickly.
+    """
+    for split in SPLITS:
+        d = dota / split / "labels"
+        if not d.is_dir():
+            continue
+        for n, path in enumerate(sorted(d.glob("*.txt"))):
+            if n >= 400:
+                break
+            try:
+                if V15_ONLY_CLASS in path.read_text(encoding="utf-8", errors="ignore"):
+                    return (f"'{V15_ONLY_CLASS}' appears in {split}/labels/{path.name}. "
+                            "That category exists only in DOTA-v1.5, so these are "
+                            "v1.5 annotations.\n"
+                            "   The correspondence was built against v1.0 and will not "
+                            "resolve against them.\n"
+                            "   Re-download 'labelTxt-v1.0' — it sits beside "
+                            "'labelTxt-v1.5' in the same folder. See SETUP.md.")
+            except OSError:
+                continue
+    return None
 
 
 def cross_check(by_image, dota, isaid):
@@ -473,6 +530,11 @@ def main():
     if not ok:
         print("\nThe layout above does not match what this script expects.")
         print("See SETUP.md for the required folder structure.")
+        return 2
+
+    warning = detect_label_version(args.dota)
+    if warning:
+        print(f"\n  WRONG ANNOTATION VERSION\n   {warning}")
         return 2
 
     print("\n  reading correspondence ...", end=" ", flush=True)

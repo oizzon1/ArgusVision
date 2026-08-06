@@ -335,23 +335,3 @@ Nothing here overrides the parent datasets' terms: **non-commercial research
 and academic use only**.
 
 ---
-
-## Contact and issues
-
-Questions, suspected errors in the correspondence, or problems rebuilding:
-
-**[[PLACEHOLDER: corresponding author's institutional email — the same address
-used in the data article. An institutional address is required by the journal
-and is the right one here too; a personal address in a public deposit collects
-spam indefinitely.]]**
-
-Useful things to include in a report:
-
-- the failing message, verbatim;
-- `build_manifest.json` from your output folder — it records your Python,
-  numpy and OpenCV versions, the correspondence checksum, and how far the
-  rebuild got;
-- the file counts from step 4.
-
-If verification fails, please say so even if you work around it. A checksum
-mismatch that nobody reports is a defect that stays in the deposit.

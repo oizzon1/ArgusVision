@@ -105,3 +105,34 @@ what the manuscript must say; that is the operative standard.
   matching the deposit's stated terms to the manuscript's.
 
 This is an engineering decision about where to stop, not a legal opinion.
+
+## Decision — 2026-08-06, Zenodo condition i (user directive)
+
+**No clarifying reply to the editor. The divergence is stated in the
+manuscript instead.**
+
+This supersedes the recommendation above to write to Abha before submitting.
+
+The condition asks that the script *"download"* via official source URLs/APIs.
+It does not, and cannot: both parent datasets are distributed through Baidu
+Drive and Google Drive folders — confirmed on both official pages, 2026-08-06 —
+neither of which offers a programmatic interface, and automated fetching would
+sit badly with terms that restrict use to academic purposes.
+
+Stating it in the paper is the stronger option. It is permanent, it reaches
+every reviewer and reader rather than one inbox, and it removes a
+correspondence round-trip from the critical path. An emailed clarification that
+never reaches the reviewers would leave exactly the impression we are trying to
+avoid.
+
+What the manuscript must therefore say plainly:
+
+- the sources are distributed via Drive folders with no API;
+- the script verifies the sources and fails with named diagnostics rather than
+  fetching them;
+- `SETUP.md` documents the download and extraction precisely;
+- the deposited checksums are what make the result verifiable, which is the
+  substance the condition is protecting.
+
+The obligation this creates: the verification path has to be genuinely good,
+because it is now the answer to the condition rather than a workaround for it.

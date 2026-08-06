@@ -99,7 +99,7 @@ user's own downloads.
 | Type of data | **Deposited:** correspondence records (JSONL) — one per paired object, naming an image, a category, the index of the box within that image's own DOTA annotation file, the matched iSAID instance identity and the achieved overlap; discard records (JSONL); per-category statistics (JSON); verification checksums (text); rebuild script (Python). **Regenerated locally by that script, not deposited:** annotation files in DOTA format (oriented and axis-aligned) and instance-identity and category-coloured masks (PNG). Processed and analysed, derived from public source datasets whose annotations may not be redistributed. |
 | Data collection | Derived by reconciling two existing annotation sets over the same aerial imagery: oriented bounding boxes from DOTA v1.0 and colour-encoded instance masks from iSAID. iSAID instances were decoded by exact colour match against the published class-colour table, then assigned to DOTA boxes of the same category by an optimal one-to-one assignment maximising total intersection-over-union between the rasterised oriented quadrilateral and the instance, accepting matches from 0.1. The released mask for each pair is the matched instance clipped to its oriented box. Seven images retaining no pair were excluded. No new imagery was collected and no imagery was modified. |
 | Data source location | Source datasets: DOTA v1.0 (<https://captain-whu.github.io/DOTA/dataset.html>) and iSAID (<https://captain-whu.github.io/iSAID/dataset.html>), official public distributions. **Source licensing constraints:** both state that *"All images and their associated annotations … can be used for academic purposes only, but any commercial use is prohibited"*, and both additionally require that use of the Google Earth imagery respect Google's geospatial terms of use. Neither declares a redistribution policy or a formal licence. **AerialFuseCV is therefore intended for non-commercial research and academic use only, in accordance with the licences of both parent datasets.** Deposit: Zenodo. Institution: National Technical University of Athens, Athens, Greece. |
-| Data accessibility | Repository name: Zenodo · Data identification number: [[PLACEHOLDER: DOI — arrives with the deposit]] · Direct URL: [[PLACEHOLDER: arrives with the deposit]] · Instructions: the correspondence, discard records, statistics, checksums and rebuild script download directly. Both parent datasets restrict use to academic purposes and prohibit commercial use, and neither declares a redistribution policy, so **no source annotation, mask or image is deposited**. The user obtains both source datasets from their official distributions, under those datasets' own terms, and runs the included script, which resolves the correspondence against them and writes the annotation files and masks locally; the deposited checksums then verify that regenerated output file by file. Use of the resulting dataset remains bound by the parent licences: **non-commercial research and academic use only**. |
+| Data accessibility | Repository name: Zenodo · Data identification number: [[PLACEHOLDER: DOI — arrives with the deposit]] · Direct URL: [[PLACEHOLDER: arrives with the deposit]] · Instructions: the correspondence, discard records, statistics, checksums and rebuild script download directly. Both parent datasets restrict use to academic purposes and prohibit commercial use, and neither declares a redistribution policy, so **no source annotation, mask or image is deposited**. The user obtains both source datasets from their official distributions, under those datasets' own terms, and runs the included script, which resolves the correspondence against them and writes the annotation files and masks locally; the deposited checksums then verify that regenerated output file by file. The script does not fetch the sources — both are distributed through Drive folders with no programmatic interface — so it validates them and reports what is missing by name instead; `SETUP.md` in the deposit documents the download and extraction step by step. Use of the resulting dataset remains bound by the parent licences: **non-commercial research and academic use only**. |
 | Related research article | None. This data article is not related to a research article. |
 
 ---
@@ -599,6 +599,28 @@ pairs plus discarded boxes equal the source boxes and that pairs plus discarded
 instances equal the source instances. SHA-256 checksums are written for every
 non-image file, so a rebuild from the official downloads can be verified
 against the deposit.
+
+**Obtaining the sources.** The rebuild script does not download DOTA v1.0 or
+iSAID. Both are distributed through Baidu Drive and Google Drive folders, which
+expose no programmatic interface, and automated retrieval would in any case sit
+poorly with terms restricting use to academic purposes. The user downloads both
+from the official pages cited in [1] and [2], under those datasets' own terms,
+and the script's role begins there. Before writing anything it validates the
+source layout per split, confirms that every image, annotation file and mask
+the correspondence refers to is present, and reports what is missing by name
+rather than failing part way through a multi-hour run. `SETUP.md`, included in
+the deposit, documents the download and extraction step by step, including the
+two ways the download is most often got wrong: taking DOTA's `labelTxt-v1.5`
+annotations, which sit beside the v1.0 set in the same folder, and iSAID's
+capitalised mask directories, which are read correctly on Windows and reported
+missing on case-sensitive filesystems.
+
+Reproducibility therefore rests on verification rather than on automated
+retrieval. Every regenerated annotation and mask file is checked against a
+published SHA-256 checksum — 7,448 files — so a rebuild either matches the
+deposited dataset exactly or is reported as differing, file by file. A run of
+the deposited script against the official distributions reproduced all 7,448
+files with no mismatch, resolving 125,722 of 125,722 correspondence records.
 
 ---
 
