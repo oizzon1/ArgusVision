@@ -148,6 +148,39 @@ work was committed.
 **Rule:** `WORK_LOG.md` is updated *during* the session — every ~30 min of work,
 ~20 min idle — and carries a `TODO SEQUENCE (restore point)`.
 
+**G1. Prose that describes an artefact rots silently when the artefact is rebuilt.**
+Figure 4's caption still described a "+2,346 px baseball-diamond" and a
+boat+dock+boat ship from `AerialFuseCV_v1` — a build deleted days earlier, whose
+figure had been regenerated twice since. Nothing failed; the caption was
+grammatical, specific and confident, and would have gone to a journal describing
+a panel that showed something else. The same day, the Limitations section
+carried a self-reported `> 182 words (cap 200)` while actually holding 203.
+**Rule:** regenerating an artefact makes every sentence that describes it
+unverified. Captions and counts are re-checked against the new artefact, and
+self-reported counts are recomputed rather than believed — a number the document
+asserts about itself is still a number needing a source.
+
+**G2. A guard tested only where its failure cannot occur is untested.**
+The preflight check that catches iSAID's capitalised `Instance_masks` passed
+cleanly on Windows — because Windows is case-insensitive, so the directory
+resolved and the guard never ran. Testing it there would have demonstrated
+nothing while looking like a pass. It had to be exercised on ext4, where the
+failure it exists for is possible.
+**Rule:** a test for a platform-specific failure runs on a platform where that
+failure can happen. Ask what condition the guard detects, then construct that
+condition — a green result under conditions that cannot trigger the guard is
+evidence about the test, not the code.
+
+**G3. Piping a cross-boundary command into `head` orphans the far side.** ⚠ REPEATED
+A preflight test was piped to `head -30`. The pipe closed on the WSL side, but
+the Windows `python.exe` kept running and wrote 305 files into the scratch
+output while `rm` was failing against it. This is E2 again from the opposite
+direction: yesterday a finished process looked alive, today a live one looked
+finished, and both times the WSL-side handle was the thing being consulted.
+**Rule:** never truncate the output of a cross-boundary command with `head` or
+an early-closing pipe. Redirect to a file and read the file. Before concluding
+any such command has ended, check `tasklist`.
+
 **F1. A file one tool writes and another reads is a schema contract.** ⚠ REPEATED
 The rebuild script emitted `mask_px`; every consumer filters on
 `instance_area_px`. One consumer crashed. The line beside it did
