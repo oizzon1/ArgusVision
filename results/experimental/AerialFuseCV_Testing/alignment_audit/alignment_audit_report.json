@@ -1,0 +1,188 @@
+{
+  "scored_utc": "2026-08-06T14:34:16Z",
+  "results_file": "results/experimental/AerialFuseCV_Testing/alignment_audit/alignment_audit_results.json",
+  "sample_manifest": "results/experimental/AerialFuseCV_Testing/alignment_audit/sample_manifest.json",
+  "seed": 20260806,
+  "per_band": [
+    {
+      "band": "0.10\u20130.20",
+      "n": 40,
+      "population": 1701,
+      "population_share": 0.01353,
+      "same": 40,
+      "wrong": 0,
+      "ambiguous": 0,
+      "wrong_rate": 0.0,
+      "wrong_ci95": [
+        0.0,
+        0.0876
+      ],
+      "ambiguous_rate": 0.0,
+      "agreement_rate": 1.0
+    },
+    {
+      "band": "0.20\u20130.30",
+      "n": 40,
+      "population": 6096,
+      "population_share": 0.048488,
+      "same": 40,
+      "wrong": 0,
+      "ambiguous": 0,
+      "wrong_rate": 0.0,
+      "wrong_ci95": [
+        0.0,
+        0.0876
+      ],
+      "ambiguous_rate": 0.0,
+      "agreement_rate": 1.0
+    },
+    {
+      "band": "0.30\u20130.50",
+      "n": 40,
+      "population": 12549,
+      "population_share": 0.099815,
+      "same": 38,
+      "wrong": 0,
+      "ambiguous": 2,
+      "wrong_rate": 0.0,
+      "wrong_ci95": [
+        0.0,
+        0.0876
+      ],
+      "ambiguous_rate": 0.05,
+      "agreement_rate": 0.95
+    },
+    {
+      "band": "0.50\u20130.70",
+      "n": 40,
+      "population": 36855,
+      "population_share": 0.293147,
+      "same": 40,
+      "wrong": 0,
+      "ambiguous": 0,
+      "wrong_rate": 0.0,
+      "wrong_ci95": [
+        0.0,
+        0.0876
+      ],
+      "ambiguous_rate": 0.0,
+      "agreement_rate": 1.0
+    },
+    {
+      "band": "0.70\u20131.01",
+      "n": 40,
+      "population": 68521,
+      "population_share": 0.54502,
+      "same": 40,
+      "wrong": 0,
+      "ambiguous": 0,
+      "wrong_rate": 0.0,
+      "wrong_ci95": [
+        0.0,
+        0.0876
+      ],
+      "ambiguous_rate": 0.0,
+      "agreement_rate": 1.0
+    }
+  ],
+  "pairs_judged": 200,
+  "pairs_sampled": 200,
+  "population_total": 125722,
+  "method": "Stratified by achieved IoU, equal allocation per band, presentation order shuffled and IoU withheld from the reviewer. Per-band rates are direct observations; the population estimate re-weights each band by its share of the full pair population. Intervals are Wilson score intervals at 95%.",
+  "population_weighted": {
+    "wrong_rate": 0.0,
+    "wrong_ci95": [
+      0.0,
+      0.0876
+    ],
+    "ambiguous_rate": 0.005,
+    "agreement_rate": 0.995
+  },
+  "pooled": {
+    "n": 200,
+    "same": 198,
+    "wrong": 0,
+    "ambiguous": 2,
+    "wrong_rate": 0.0,
+    "wrong_ci95": [
+      0.0,
+      0.0188
+    ],
+    "ambiguous_rate": 0.01,
+    "ambiguous_ci95": [
+      0.0027,
+      0.0357
+    ]
+  },
+  "categories_represented": [
+    "bridge",
+    "harbor",
+    "helicopter",
+    "large-vehicle",
+    "plane",
+    "roundabout",
+    "ship",
+    "small-vehicle",
+    "storage-tank",
+    "swimming-pool",
+    "tennis-court"
+  ],
+  "per_class": {
+    "plane": {
+      "same": 76,
+      "wrong": 0,
+      "ambiguous": 0
+    },
+    "small-vehicle": {
+      "same": 34,
+      "wrong": 0,
+      "ambiguous": 0
+    },
+    "ship": {
+      "same": 24,
+      "wrong": 0,
+      "ambiguous": 0
+    },
+    "large-vehicle": {
+      "same": 16,
+      "wrong": 0,
+      "ambiguous": 2
+    },
+    "harbor": {
+      "same": 28,
+      "wrong": 0,
+      "ambiguous": 0
+    },
+    "swimming-pool": {
+      "same": 5,
+      "wrong": 0,
+      "ambiguous": 0
+    },
+    "storage-tank": {
+      "same": 5,
+      "wrong": 0,
+      "ambiguous": 0
+    },
+    "roundabout": {
+      "same": 1,
+      "wrong": 0,
+      "ambiguous": 0
+    },
+    "helicopter": {
+      "same": 5,
+      "wrong": 0,
+      "ambiguous": 0
+    },
+    "bridge": {
+      "same": 3,
+      "wrong": 0,
+      "ambiguous": 0
+    },
+    "tennis-court": {
+      "same": 1,
+      "wrong": 0,
+      "ambiguous": 0
+    }
+  },
+  "git_sha": "12d611ded0c88c9a88c1bcf2282c66c9575df8b2"
+}

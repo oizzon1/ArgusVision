@@ -588,6 +588,61 @@ The matched instance's colour identity is preserved in `pairs.jsonl`, so the
 clip is reversible: the unclipped iSAID instance can always be recovered from
 the user's own iSAID download.
 
+**Alignment verification.** The matching rule accepts a pair from an
+intersection-over-union of 0.1 under a globally optimal one-to-one assignment,
+but an acceptance rule is not evidence of identity: a pair can satisfy the rule
+and still link a box to a neighbouring object's mask. Pair correctness was
+therefore audited directly.
+
+200 pairs were drawn, stratified by achieved IoU into five bands with 40 pairs
+each, under a fixed random seed recorded in the released audit artefact.
+Stratification is necessary because the population is heavily skewed — 54.5% of
+pairs exceed IoU 0.70 and only 1.4% fall in 0.10–0.20 — so a simple random
+sample of this size would contain roughly three pairs from the band where a
+wrong match is most likely, and would estimate nothing about it. Equal
+allocation gives each band comparable precision irrespective of its rarity.
+
+Each sampled pair was rendered as its source image with the DOTA box alone
+beside the same view with the released mask overlaid, and judged as *same
+object*, *wrong object* or *ambiguous*. The reviewer was not shown the achieved
+IoU, the band, or any statistic, and pairs were presented in shuffled rather
+than banded order, so that an expectation set by a low score could not be
+mistaken for an observation. A three-way outcome was used because occlusion,
+adjacent identical objects and unclear source annotation produce cases with no
+honest binary answer.
+
+**Table 8.** Alignment audit, by IoU band. Rates within a band are direct
+observations; the population estimate re-weights each band by its share of the
+125,722 pairs, because equal allocation deliberately over-represents the
+low-overlap bands.
+
+| IoU band | Sampled | Same | Wrong | Ambiguous | Wrong rate (95% CI) | Share of pairs |
+|---|---|---|---|---|---|---|
+| 0.10–0.20 | 40 | 40 | 0 | 0 | 0.0% (0.0–8.8) | 1.4% |
+| 0.20–0.30 | 40 | 40 | 0 | 0 | 0.0% (0.0–8.8) | 4.8% |
+| 0.30–0.50 | 40 | 38 | 0 | 2 | 0.0% (0.0–8.8) | 10.0% |
+| 0.50–0.70 | 40 | 40 | 0 | 0 | 0.0% (0.0–8.8) | 29.3% |
+| 0.70–1.00 | 40 | 40 | 0 | 0 | 0.0% (0.0–8.8) | 54.5% |
+| **All** | **200** | **198** | **0** | **2** | **0.0% (0.0–1.9)** | **100%** |
+
+**No wrong match was found in any band.** Two pairs were judged ambiguous, both
+large vehicles in the same validation image, adjacent and near-identical, where
+either assignment is defensible. Population-weighted, this gives a wrong-match
+rate of 0.0% and an ambiguous rate of 0.5%.
+
+Zero observed errors is not a zero error rate. Pooled over the 200 judgements
+the result is consistent with a true wrong-match rate as high as **1.9%**, and
+as high as 8.8% within any individual band once the strata are weighted
+separately; the audit bounds the rate, it does not establish that none exist.
+Three further limits apply. The sample was stratified by overlap rather than by
+category, so 11 of the 15 categories appear in it and four do not. The
+judgements are the authors' own, which is verification rather than independent
+adjudication. And the audit tests whether a box and its mask denote the same
+object; it does not test whether either source annotated that object correctly,
+which remains bounded by the sources as described under Limitations. The sample,
+the individual judgements and the scoring are released in
+`results/experimental/AerialFuseCV_Testing/alignment_audit/`.
+
 **Output and verification.** For every image retaining at least one pair, the
 script writes the image unchanged, the two label files containing only paired
 objects, and the two mask encodings containing only paired instances. Images

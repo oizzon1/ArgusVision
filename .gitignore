@@ -58,6 +58,11 @@ results/**
 !results/**/discrepancy_summary.json
 !results/**/deposit_verification.json
 !results/**/*_report.json
+# The raw human judgements behind the alignment audit. Without these the
+# reported rate cannot be recomputed or challenged, which is the whole point of
+# publishing an audit rather than asserting one.
+!results/**/alignment_audit_results.json
+!results/**/sample_manifest.json
 # Reports and findings are the prose that interprets the metrics beside them.
 # They were previously tracked only because individual files had been
 # force-added, which meant a new report silently stayed out of git.

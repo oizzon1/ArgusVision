@@ -1,0 +1,1640 @@
+{
+  "generated_utc": "2026-08-06T14:19:49Z",
+  "dataset": "dataset\\AerialFuseCV",
+  "seed": 20260806,
+  "per_band": 40,
+  "bands": [
+    [
+      0.1,
+      0.2
+    ],
+    [
+      0.2,
+      0.3
+    ],
+    [
+      0.3,
+      0.5
+    ],
+    [
+      0.5,
+      0.7
+    ],
+    [
+      0.7,
+      1.01
+    ]
+  ],
+  "population_per_band": {
+    "0": 1701,
+    "1": 6096,
+    "2": 12549,
+    "3": 36855,
+    "4": 68521
+  },
+  "population_total": 125722,
+  "sampled": 200,
+  "skipped": 0,
+  "items": [
+    {
+      "id": "val:P1854:116710",
+      "band": 0,
+      "split": "val",
+      "image_id": "P1854",
+      "class_name": "plane",
+      "iou": 0.186022
+    },
+    {
+      "id": "train:P0870:26223",
+      "band": 3,
+      "split": "train",
+      "image_id": "P0870",
+      "class_name": "small-vehicle",
+      "iou": 0.681507
+    },
+    {
+      "id": "train:P2030:74117",
+      "band": 0,
+      "split": "train",
+      "image_id": "P2030",
+      "class_name": "plane",
+      "iou": 0.195259
+    },
+    {
+      "id": "val:P0897:108235",
+      "band": 4,
+      "split": "val",
+      "image_id": "P0897",
+      "class_name": "ship",
+      "iou": 0.77943
+    },
+    {
+      "id": "val:P1973:117954",
+      "band": 2,
+      "split": "val",
+      "image_id": "P1973",
+      "class_name": "large-vehicle",
+      "iou": 0.471171
+    },
+    {
+      "id": "train:P0022:1332",
+      "band": 4,
+      "split": "train",
+      "image_id": "P0022",
+      "class_name": "small-vehicle",
+      "iou": 0.811816
+    },
+    {
+      "id": "train:P0940:33954",
+      "band": 2,
+      "split": "train",
+      "image_id": "P0940",
+      "class_name": "harbor",
+      "iou": 0.495327
+    },
+    {
+      "id": "train:P1845:59556",
+      "band": 4,
+      "split": "train",
+      "image_id": "P1845",
+      "class_name": "small-vehicle",
+      "iou": 0.827262
+    },
+    {
+      "id": "val:P1397:113230",
+      "band": 2,
+      "split": "val",
+      "image_id": "P1397",
+      "class_name": "plane",
+      "iou": 0.362424
+    },
+    {
+      "id": "train:P1388:44413",
+      "band": 3,
+      "split": "train",
+      "image_id": "P1388",
+      "class_name": "ship",
+      "iou": 0.552254
+    },
+    {
+      "id": "train:P1071:36540",
+      "band": 2,
+      "split": "train",
+      "image_id": "P1071",
+      "class_name": "harbor",
+      "iou": 0.456944
+    },
+    {
+      "id": "train:P1119:37534",
+      "band": 1,
+      "split": "train",
+      "image_id": "P1119",
+      "class_name": "plane",
+      "iou": 0.269103
+    },
+    {
+      "id": "train:P0928:33731",
+      "band": 4,
+      "split": "train",
+      "image_id": "P0928",
+      "class_name": "large-vehicle",
+      "iou": 0.737247
+    },
+    {
+      "id": "train:P0011:797",
+      "band": 4,
+      "split": "train",
+      "image_id": "P0011",
+      "class_name": "small-vehicle",
+      "iou": 0.82473
+    },
+    {
+      "id": "train:P1164:38025",
+      "band": 1,
+      "split": "train",
+      "image_id": "P1164",
+      "class_name": "plane",
+      "iou": 0.232093
+    },
+    {
+      "id": "train:P1193:39110",
+      "band": 3,
+      "split": "train",
+      "image_id": "P1193",
+      "class_name": "small-vehicle",
+      "iou": 0.566787
+    },
+    {
+      "id": "train:P1871:62488",
+      "band": 1,
+      "split": "train",
+      "image_id": "P1871",
+      "class_name": "plane",
+      "iou": 0.24293
+    },
+    {
+      "id": "train:P1867:62025",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1867",
+      "class_name": "plane",
+      "iou": 0.187755
+    },
+    {
+      "id": "val:P1184:111109",
+      "band": 2,
+      "split": "val",
+      "image_id": "P1184",
+      "class_name": "plane",
+      "iou": 0.382138
+    },
+    {
+      "id": "train:P2057:75654",
+      "band": 2,
+      "split": "train",
+      "image_id": "P2057",
+      "class_name": "large-vehicle",
+      "iou": 0.483796
+    },
+    {
+      "id": "val:P2726:124033",
+      "band": 3,
+      "split": "val",
+      "image_id": "P2726",
+      "class_name": "ship",
+      "iou": 0.692898
+    },
+    {
+      "id": "train:P1493:53685",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1493",
+      "class_name": "plane",
+      "iou": 0.163527
+    },
+    {
+      "id": "train:P1869:62358",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1869",
+      "class_name": "plane",
+      "iou": 0.189679
+    },
+    {
+      "id": "train:P2014:71449",
+      "band": 4,
+      "split": "train",
+      "image_id": "P2014",
+      "class_name": "large-vehicle",
+      "iou": 0.719858
+    },
+    {
+      "id": "train:P1193:39010",
+      "band": 4,
+      "split": "train",
+      "image_id": "P1193",
+      "class_name": "large-vehicle",
+      "iou": 0.735683
+    },
+    {
+      "id": "train:P0109:4989",
+      "band": 4,
+      "split": "train",
+      "image_id": "P0109",
+      "class_name": "small-vehicle",
+      "iou": 0.763889
+    },
+    {
+      "id": "train:P0064:2941",
+      "band": 3,
+      "split": "train",
+      "image_id": "P0064",
+      "class_name": "swimming-pool",
+      "iou": 0.559091
+    },
+    {
+      "id": "train:P2702:91590",
+      "band": 3,
+      "split": "train",
+      "image_id": "P2702",
+      "class_name": "storage-tank",
+      "iou": 0.557069
+    },
+    {
+      "id": "train:P2735:93479",
+      "band": 4,
+      "split": "train",
+      "image_id": "P2735",
+      "class_name": "storage-tank",
+      "iou": 0.78934
+    },
+    {
+      "id": "train:P0713:16314",
+      "band": 3,
+      "split": "train",
+      "image_id": "P0713",
+      "class_name": "ship",
+      "iou": 0.672897
+    },
+    {
+      "id": "train:P2232:81083",
+      "band": 1,
+      "split": "train",
+      "image_id": "P2232",
+      "class_name": "plane",
+      "iou": 0.287234
+    },
+    {
+      "id": "train:P2237:81196",
+      "band": 1,
+      "split": "train",
+      "image_id": "P2237",
+      "class_name": "plane",
+      "iou": 0.246161
+    },
+    {
+      "id": "val:P1029:110061",
+      "band": 2,
+      "split": "val",
+      "image_id": "P1029",
+      "class_name": "harbor",
+      "iou": 0.474201
+    },
+    {
+      "id": "train:P1164:37980",
+      "band": 1,
+      "split": "train",
+      "image_id": "P1164",
+      "class_name": "plane",
+      "iou": 0.277747
+    },
+    {
+      "id": "train:P1868:62202",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1868",
+      "class_name": "plane",
+      "iou": 0.167707
+    },
+    {
+      "id": "val:P0990:109360",
+      "band": 2,
+      "split": "val",
+      "image_id": "P0990",
+      "class_name": "harbor",
+      "iou": 0.357712
+    },
+    {
+      "id": "train:P2627:85916",
+      "band": 4,
+      "split": "train",
+      "image_id": "P2627",
+      "class_name": "small-vehicle",
+      "iou": 0.786174
+    },
+    {
+      "id": "train:P1609:54327",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1609",
+      "class_name": "roundabout",
+      "iou": 0.166379
+    },
+    {
+      "id": "train:P2080:77346",
+      "band": 4,
+      "split": "train",
+      "image_id": "P2080",
+      "class_name": "large-vehicle",
+      "iou": 0.734043
+    },
+    {
+      "id": "train:P1391:45972",
+      "band": 1,
+      "split": "train",
+      "image_id": "P1391",
+      "class_name": "plane",
+      "iou": 0.261981
+    },
+    {
+      "id": "train:P1562:54030",
+      "band": 1,
+      "split": "train",
+      "image_id": "P1562",
+      "class_name": "plane",
+      "iou": 0.24037
+    },
+    {
+      "id": "train:P2138:78799",
+      "band": 1,
+      "split": "train",
+      "image_id": "P2138",
+      "class_name": "plane",
+      "iou": 0.255926
+    },
+    {
+      "id": "train:P1780:56097",
+      "band": 4,
+      "split": "train",
+      "image_id": "P1780",
+      "class_name": "small-vehicle",
+      "iou": 0.841762
+    },
+    {
+      "id": "val:P2124:120127",
+      "band": 4,
+      "split": "val",
+      "image_id": "P2124",
+      "class_name": "large-vehicle",
+      "iou": 0.894464
+    },
+    {
+      "id": "val:P1390:112905",
+      "band": 1,
+      "split": "val",
+      "image_id": "P1390",
+      "class_name": "plane",
+      "iou": 0.288206
+    },
+    {
+      "id": "train:P2033:74304",
+      "band": 3,
+      "split": "train",
+      "image_id": "P2033",
+      "class_name": "small-vehicle",
+      "iou": 0.612319
+    },
+    {
+      "id": "train:P1443:50402",
+      "band": 1,
+      "split": "train",
+      "image_id": "P1443",
+      "class_name": "plane",
+      "iou": 0.26063
+    },
+    {
+      "id": "train:P1455:51702",
+      "band": 3,
+      "split": "train",
+      "image_id": "P1455",
+      "class_name": "small-vehicle",
+      "iou": 0.581477
+    },
+    {
+      "id": "train:P2080:77355",
+      "band": 4,
+      "split": "train",
+      "image_id": "P2080",
+      "class_name": "large-vehicle",
+      "iou": 0.827751
+    },
+    {
+      "id": "train:P0167:6769",
+      "band": 0,
+      "split": "train",
+      "image_id": "P0167",
+      "class_name": "plane",
+      "iou": 0.192093
+    },
+    {
+      "id": "train:P1392:46815",
+      "band": 2,
+      "split": "train",
+      "image_id": "P1392",
+      "class_name": "plane",
+      "iou": 0.31637
+    },
+    {
+      "id": "train:P1872:62579",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1872",
+      "class_name": "plane",
+      "iou": 0.190843
+    },
+    {
+      "id": "train:P0908:33051",
+      "band": 2,
+      "split": "train",
+      "image_id": "P0908",
+      "class_name": "harbor",
+      "iou": 0.428418
+    },
+    {
+      "id": "train:P2210:80394",
+      "band": 2,
+      "split": "train",
+      "image_id": "P2210",
+      "class_name": "plane",
+      "iou": 0.383553
+    },
+    {
+      "id": "train:P0171:6946",
+      "band": 1,
+      "split": "train",
+      "image_id": "P0171",
+      "class_name": "plane",
+      "iou": 0.229507
+    },
+    {
+      "id": "train:P1707:54776",
+      "band": 1,
+      "split": "train",
+      "image_id": "P1707",
+      "class_name": "plane",
+      "iou": 0.237685
+    },
+    {
+      "id": "train:P2676:88968",
+      "band": 1,
+      "split": "train",
+      "image_id": "P2676",
+      "class_name": "harbor",
+      "iou": 0.208909
+    },
+    {
+      "id": "train:P1724:54882",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1724",
+      "class_name": "plane",
+      "iou": 0.150943
+    },
+    {
+      "id": "train:P1069:36445",
+      "band": 4,
+      "split": "train",
+      "image_id": "P1069",
+      "class_name": "harbor",
+      "iou": 0.71853
+    },
+    {
+      "id": "train:P0900:31653",
+      "band": 4,
+      "split": "train",
+      "image_id": "P0900",
+      "class_name": "ship",
+      "iou": 0.871838
+    },
+    {
+      "id": "train:P0064:2992",
+      "band": 2,
+      "split": "train",
+      "image_id": "P0064",
+      "class_name": "swimming-pool",
+      "iou": 0.398899
+    },
+    {
+      "id": "train:P0294:9686",
+      "band": 1,
+      "split": "train",
+      "image_id": "P0294",
+      "class_name": "plane",
+      "iou": 0.216297
+    },
+    {
+      "id": "train:P1388:44175",
+      "band": 2,
+      "split": "train",
+      "image_id": "P1388",
+      "class_name": "ship",
+      "iou": 0.491363
+    },
+    {
+      "id": "train:P1392:46621",
+      "band": 2,
+      "split": "train",
+      "image_id": "P1392",
+      "class_name": "plane",
+      "iou": 0.329609
+    },
+    {
+      "id": "train:P1167:38272",
+      "band": 1,
+      "split": "train",
+      "image_id": "P1167",
+      "class_name": "plane",
+      "iou": 0.281481
+    },
+    {
+      "id": "train:P1455:51740",
+      "band": 3,
+      "split": "train",
+      "image_id": "P1455",
+      "class_name": "small-vehicle",
+      "iou": 0.637024
+    },
+    {
+      "id": "train:P1387:43520",
+      "band": 3,
+      "split": "train",
+      "image_id": "P1387",
+      "class_name": "ship",
+      "iou": 0.531191
+    },
+    {
+      "id": "val:P1960:117912",
+      "band": 3,
+      "split": "val",
+      "image_id": "P1960",
+      "class_name": "small-vehicle",
+      "iou": 0.617438
+    },
+    {
+      "id": "val:P0837:105049",
+      "band": 3,
+      "split": "val",
+      "image_id": "P0837",
+      "class_name": "ship",
+      "iou": 0.661832
+    },
+    {
+      "id": "train:P1167:38271",
+      "band": 1,
+      "split": "train",
+      "image_id": "P1167",
+      "class_name": "plane",
+      "iou": 0.262195
+    },
+    {
+      "id": "train:P1994:69961",
+      "band": 4,
+      "split": "train",
+      "image_id": "P1994",
+      "class_name": "large-vehicle",
+      "iou": 0.800206
+    },
+    {
+      "id": "train:P0129:5666",
+      "band": 0,
+      "split": "train",
+      "image_id": "P0129",
+      "class_name": "harbor",
+      "iou": 0.19714
+    },
+    {
+      "id": "train:P2618:85605",
+      "band": 4,
+      "split": "train",
+      "image_id": "P2618",
+      "class_name": "small-vehicle",
+      "iou": 0.863378
+    },
+    {
+      "id": "train:P2629:86071",
+      "band": 4,
+      "split": "train",
+      "image_id": "P2629",
+      "class_name": "small-vehicle",
+      "iou": 0.823155
+    },
+    {
+      "id": "train:P1182:38544",
+      "band": 4,
+      "split": "train",
+      "image_id": "P1182",
+      "class_name": "small-vehicle",
+      "iou": 0.721498
+    },
+    {
+      "id": "train:P2142:78932",
+      "band": 4,
+      "split": "train",
+      "image_id": "P2142",
+      "class_name": "large-vehicle",
+      "iou": 0.775876
+    },
+    {
+      "id": "train:P2552:83322",
+      "band": 1,
+      "split": "train",
+      "image_id": "P2552",
+      "class_name": "plane",
+      "iou": 0.224831
+    },
+    {
+      "id": "train:P1131:37560",
+      "band": 1,
+      "split": "train",
+      "image_id": "P1131",
+      "class_name": "helicopter",
+      "iou": 0.200838
+    },
+    {
+      "id": "train:P2045:74676",
+      "band": 3,
+      "split": "train",
+      "image_id": "P2045",
+      "class_name": "small-vehicle",
+      "iou": 0.662338
+    },
+    {
+      "id": "train:P2553:83397",
+      "band": 1,
+      "split": "train",
+      "image_id": "P2553",
+      "class_name": "plane",
+      "iou": 0.287126
+    },
+    {
+      "id": "val:P0123:98563",
+      "band": 3,
+      "split": "val",
+      "image_id": "P0123",
+      "class_name": "small-vehicle",
+      "iou": 0.577586
+    },
+    {
+      "id": "train:P0475:12589",
+      "band": 3,
+      "split": "train",
+      "image_id": "P0475",
+      "class_name": "small-vehicle",
+      "iou": 0.610136
+    },
+    {
+      "id": "train:P2553:83381",
+      "band": 0,
+      "split": "train",
+      "image_id": "P2553",
+      "class_name": "plane",
+      "iou": 0.166995
+    },
+    {
+      "id": "train:P1387:43913",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1387",
+      "class_name": "harbor",
+      "iou": 0.160607
+    },
+    {
+      "id": "val:P1342:111982",
+      "band": 4,
+      "split": "val",
+      "image_id": "P1342",
+      "class_name": "bridge",
+      "iou": 0.774648
+    },
+    {
+      "id": "val:P2608:121583",
+      "band": 3,
+      "split": "val",
+      "image_id": "P2608",
+      "class_name": "small-vehicle",
+      "iou": 0.667984
+    },
+    {
+      "id": "train:P0066:3382",
+      "band": 4,
+      "split": "train",
+      "image_id": "P0066",
+      "class_name": "large-vehicle",
+      "iou": 0.769368
+    },
+    {
+      "id": "train:P0828:23266",
+      "band": 3,
+      "split": "train",
+      "image_id": "P0828",
+      "class_name": "ship",
+      "iou": 0.611529
+    },
+    {
+      "id": "train:P0790:21211",
+      "band": 3,
+      "split": "train",
+      "image_id": "P0790",
+      "class_name": "ship",
+      "iou": 0.55848
+    },
+    {
+      "id": "train:P2249:81548",
+      "band": 2,
+      "split": "train",
+      "image_id": "P2249",
+      "class_name": "plane",
+      "iou": 0.425249
+    },
+    {
+      "id": "train:P1387:43998",
+      "band": 2,
+      "split": "train",
+      "image_id": "P1387",
+      "class_name": "swimming-pool",
+      "iou": 0.316164
+    },
+    {
+      "id": "train:P1392:46501",
+      "band": 2,
+      "split": "train",
+      "image_id": "P1392",
+      "class_name": "plane",
+      "iou": 0.344805
+    },
+    {
+      "id": "train:P1497:53718",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1497",
+      "class_name": "plane",
+      "iou": 0.181653
+    },
+    {
+      "id": "train:P0041:2107",
+      "band": 2,
+      "split": "train",
+      "image_id": "P0041",
+      "class_name": "plane",
+      "iou": 0.327286
+    },
+    {
+      "id": "val:P1598:115746",
+      "band": 0,
+      "split": "val",
+      "image_id": "P1598",
+      "class_name": "plane",
+      "iou": 0.141329
+    },
+    {
+      "id": "val:P2778:125139",
+      "band": 0,
+      "split": "val",
+      "image_id": "P2778",
+      "class_name": "plane",
+      "iou": 0.167106
+    },
+    {
+      "id": "val:P1770:116247",
+      "band": 2,
+      "split": "val",
+      "image_id": "P1770",
+      "class_name": "storage-tank",
+      "iou": 0.46798
+    },
+    {
+      "id": "train:P2805:97582",
+      "band": 0,
+      "split": "train",
+      "image_id": "P2805",
+      "class_name": "plane",
+      "iou": 0.172695
+    },
+    {
+      "id": "train:P1010:34775",
+      "band": 2,
+      "split": "train",
+      "image_id": "P1010",
+      "class_name": "harbor",
+      "iou": 0.421507
+    },
+    {
+      "id": "train:P2053:75385",
+      "band": 4,
+      "split": "train",
+      "image_id": "P2053",
+      "class_name": "large-vehicle",
+      "iou": 0.894133
+    },
+    {
+      "id": "train:P1166:38200",
+      "band": 1,
+      "split": "train",
+      "image_id": "P1166",
+      "class_name": "plane",
+      "iou": 0.258303
+    },
+    {
+      "id": "train:P0906:32722",
+      "band": 1,
+      "split": "train",
+      "image_id": "P0906",
+      "class_name": "harbor",
+      "iou": 0.238716
+    },
+    {
+      "id": "train:P1164:38037",
+      "band": 1,
+      "split": "train",
+      "image_id": "P1164",
+      "class_name": "plane",
+      "iou": 0.29084
+    },
+    {
+      "id": "val:P1474:113909",
+      "band": 1,
+      "split": "val",
+      "image_id": "P1474",
+      "class_name": "plane",
+      "iou": 0.256415
+    },
+    {
+      "id": "val:P0838:105303",
+      "band": 4,
+      "split": "val",
+      "image_id": "P0838",
+      "class_name": "ship",
+      "iou": 0.760917
+    },
+    {
+      "id": "train:P2632:86299",
+      "band": 3,
+      "split": "train",
+      "image_id": "P2632",
+      "class_name": "small-vehicle",
+      "iou": 0.697368
+    },
+    {
+      "id": "val:P0128:98731",
+      "band": 0,
+      "split": "val",
+      "image_id": "P0128",
+      "class_name": "harbor",
+      "iou": 0.124691
+    },
+    {
+      "id": "train:P1927:65508",
+      "band": 2,
+      "split": "train",
+      "image_id": "P1927",
+      "class_name": "ship",
+      "iou": 0.496403
+    },
+    {
+      "id": "train:P0159:6029",
+      "band": 3,
+      "split": "train",
+      "image_id": "P0159",
+      "class_name": "small-vehicle",
+      "iou": 0.575
+    },
+    {
+      "id": "train:P1455:51726",
+      "band": 3,
+      "split": "train",
+      "image_id": "P1455",
+      "class_name": "small-vehicle",
+      "iou": 0.589268
+    },
+    {
+      "id": "train:P1875:62788",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1875",
+      "class_name": "plane",
+      "iou": 0.191035
+    },
+    {
+      "id": "train:P0775:19939",
+      "band": 4,
+      "split": "train",
+      "image_id": "P0775",
+      "class_name": "ship",
+      "iou": 0.80363
+    },
+    {
+      "id": "val:P2778:125136",
+      "band": 0,
+      "split": "val",
+      "image_id": "P2778",
+      "class_name": "plane",
+      "iou": 0.161064
+    },
+    {
+      "id": "train:P0002:229",
+      "band": 4,
+      "split": "train",
+      "image_id": "P0002",
+      "class_name": "large-vehicle",
+      "iou": 0.851865
+    },
+    {
+      "id": "train:P1812:58101",
+      "band": 4,
+      "split": "train",
+      "image_id": "P1812",
+      "class_name": "large-vehicle",
+      "iou": 0.754432
+    },
+    {
+      "id": "train:P1351:41239",
+      "band": 4,
+      "split": "train",
+      "image_id": "P1351",
+      "class_name": "bridge",
+      "iou": 0.821549
+    },
+    {
+      "id": "train:P0906:32728",
+      "band": 1,
+      "split": "train",
+      "image_id": "P0906",
+      "class_name": "harbor",
+      "iou": 0.297897
+    },
+    {
+      "id": "train:P1866:61675",
+      "band": 3,
+      "split": "train",
+      "image_id": "P1866",
+      "class_name": "ship",
+      "iou": 0.564103
+    },
+    {
+      "id": "train:P1027:35763",
+      "band": 3,
+      "split": "train",
+      "image_id": "P1027",
+      "class_name": "harbor",
+      "iou": 0.508423
+    },
+    {
+      "id": "train:P1305:40262",
+      "band": 2,
+      "split": "train",
+      "image_id": "P1305",
+      "class_name": "storage-tank",
+      "iou": 0.472222
+    },
+    {
+      "id": "train:P1401:48509",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1401",
+      "class_name": "helicopter",
+      "iou": 0.109243
+    },
+    {
+      "id": "train:P1929:66196",
+      "band": 3,
+      "split": "train",
+      "image_id": "P1929",
+      "class_name": "ship",
+      "iou": 0.655824
+    },
+    {
+      "id": "train:P1617:54359",
+      "band": 1,
+      "split": "train",
+      "image_id": "P1617",
+      "class_name": "plane",
+      "iou": 0.232468
+    },
+    {
+      "id": "train:P0036:1886",
+      "band": 0,
+      "split": "train",
+      "image_id": "P0036",
+      "class_name": "plane",
+      "iou": 0.171823
+    },
+    {
+      "id": "train:P0113:5141",
+      "band": 0,
+      "split": "train",
+      "image_id": "P0113",
+      "class_name": "plane",
+      "iou": 0.19552
+    },
+    {
+      "id": "train:P1867:62000",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1867",
+      "class_name": "plane",
+      "iou": 0.199506
+    },
+    {
+      "id": "train:P0317:10005",
+      "band": 3,
+      "split": "train",
+      "image_id": "P0317",
+      "class_name": "small-vehicle",
+      "iou": 0.675787
+    },
+    {
+      "id": "train:P2221:80715",
+      "band": 3,
+      "split": "train",
+      "image_id": "P2221",
+      "class_name": "small-vehicle",
+      "iou": 0.617978
+    },
+    {
+      "id": "train:P2014:72818",
+      "band": 4,
+      "split": "train",
+      "image_id": "P2014",
+      "class_name": "small-vehicle",
+      "iou": 0.70977
+    },
+    {
+      "id": "train:P2226:80905",
+      "band": 2,
+      "split": "train",
+      "image_id": "P2226",
+      "class_name": "plane",
+      "iou": 0.380553
+    },
+    {
+      "id": "train:P0732:18288",
+      "band": 2,
+      "split": "train",
+      "image_id": "P0732",
+      "class_name": "harbor",
+      "iou": 0.404937
+    },
+    {
+      "id": "train:P1164:38021",
+      "band": 2,
+      "split": "train",
+      "image_id": "P1164",
+      "class_name": "plane",
+      "iou": 0.431535
+    },
+    {
+      "id": "train:P1388:45556",
+      "band": 1,
+      "split": "train",
+      "image_id": "P1388",
+      "class_name": "swimming-pool",
+      "iou": 0.262125
+    },
+    {
+      "id": "train:P1148:37764",
+      "band": 1,
+      "split": "train",
+      "image_id": "P1148",
+      "class_name": "plane",
+      "iou": 0.252322
+    },
+    {
+      "id": "train:P1142:37757",
+      "band": 1,
+      "split": "train",
+      "image_id": "P1142",
+      "class_name": "plane",
+      "iou": 0.252265
+    },
+    {
+      "id": "val:P1973:117956",
+      "band": 2,
+      "split": "val",
+      "image_id": "P1973",
+      "class_name": "large-vehicle",
+      "iou": 0.480931
+    },
+    {
+      "id": "val:P1384:112417",
+      "band": 2,
+      "split": "val",
+      "image_id": "P1384",
+      "class_name": "plane",
+      "iou": 0.406383
+    },
+    {
+      "id": "train:P2225:80897",
+      "band": 2,
+      "split": "train",
+      "image_id": "P2225",
+      "class_name": "plane",
+      "iou": 0.357737
+    },
+    {
+      "id": "val:P1854:116654",
+      "band": 0,
+      "split": "val",
+      "image_id": "P1854",
+      "class_name": "plane",
+      "iou": 0.180755
+    },
+    {
+      "id": "train:P2708:91933",
+      "band": 3,
+      "split": "train",
+      "image_id": "P2708",
+      "class_name": "storage-tank",
+      "iou": 0.558502
+    },
+    {
+      "id": "train:P0995:34622",
+      "band": 2,
+      "split": "train",
+      "image_id": "P0995",
+      "class_name": "harbor",
+      "iou": 0.419753
+    },
+    {
+      "id": "train:P0288:9602",
+      "band": 3,
+      "split": "train",
+      "image_id": "P0288",
+      "class_name": "small-vehicle",
+      "iou": 0.699752
+    },
+    {
+      "id": "train:P2014:71473",
+      "band": 4,
+      "split": "train",
+      "image_id": "P2014",
+      "class_name": "large-vehicle",
+      "iou": 0.804196
+    },
+    {
+      "id": "train:P0190:7399",
+      "band": 1,
+      "split": "train",
+      "image_id": "P0190",
+      "class_name": "plane",
+      "iou": 0.286373
+    },
+    {
+      "id": "train:P0861:25282",
+      "band": 3,
+      "split": "train",
+      "image_id": "P0861",
+      "class_name": "ship",
+      "iou": 0.629907
+    },
+    {
+      "id": "val:P2645:122360",
+      "band": 2,
+      "split": "val",
+      "image_id": "P2645",
+      "class_name": "harbor",
+      "iou": 0.485754
+    },
+    {
+      "id": "val:P1508:115373",
+      "band": 0,
+      "split": "val",
+      "image_id": "P1508",
+      "class_name": "helicopter",
+      "iou": 0.139512
+    },
+    {
+      "id": "val:P1390:112937",
+      "band": 1,
+      "split": "val",
+      "image_id": "P1390",
+      "class_name": "plane",
+      "iou": 0.282565
+    },
+    {
+      "id": "train:P1497:53703",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1497",
+      "class_name": "plane",
+      "iou": 0.189614
+    },
+    {
+      "id": "train:P0987:34568",
+      "band": 1,
+      "split": "train",
+      "image_id": "P0987",
+      "class_name": "harbor",
+      "iou": 0.245377
+    },
+    {
+      "id": "val:P1397:113124",
+      "band": 2,
+      "split": "val",
+      "image_id": "P1397",
+      "class_name": "plane",
+      "iou": 0.374417
+    },
+    {
+      "id": "train:P0827:22725",
+      "band": 3,
+      "split": "train",
+      "image_id": "P0827",
+      "class_name": "ship",
+      "iou": 0.686353
+    },
+    {
+      "id": "train:P2288:82586",
+      "band": 1,
+      "split": "train",
+      "image_id": "P2288",
+      "class_name": "plane",
+      "iou": 0.274119
+    },
+    {
+      "id": "train:P1493:53671",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1493",
+      "class_name": "plane",
+      "iou": 0.158118
+    },
+    {
+      "id": "train:P1795:57478",
+      "band": 4,
+      "split": "train",
+      "image_id": "P1795",
+      "class_name": "small-vehicle",
+      "iou": 0.708226
+    },
+    {
+      "id": "train:P0738:18752",
+      "band": 4,
+      "split": "train",
+      "image_id": "P0738",
+      "class_name": "ship",
+      "iou": 0.799755
+    },
+    {
+      "id": "train:P1927:64980",
+      "band": 3,
+      "split": "train",
+      "image_id": "P1927",
+      "class_name": "ship",
+      "iou": 0.673152
+    },
+    {
+      "id": "train:P1387:42770",
+      "band": 2,
+      "split": "train",
+      "image_id": "P1387",
+      "class_name": "ship",
+      "iou": 0.490526
+    },
+    {
+      "id": "train:P1868:62181",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1868",
+      "class_name": "plane",
+      "iou": 0.198973
+    },
+    {
+      "id": "val:P1179:111007",
+      "band": 2,
+      "split": "val",
+      "image_id": "P1179",
+      "class_name": "plane",
+      "iou": 0.373425
+    },
+    {
+      "id": "train:P1020:35579",
+      "band": 2,
+      "split": "train",
+      "image_id": "P1020",
+      "class_name": "harbor",
+      "iou": 0.385149
+    },
+    {
+      "id": "train:P2014:72602",
+      "band": 3,
+      "split": "train",
+      "image_id": "P2014",
+      "class_name": "small-vehicle",
+      "iou": 0.65928
+    },
+    {
+      "id": "val:P0696:101958",
+      "band": 3,
+      "split": "val",
+      "image_id": "P0696",
+      "class_name": "ship",
+      "iou": 0.610656
+    },
+    {
+      "id": "train:P1934:67264",
+      "band": 4,
+      "split": "train",
+      "image_id": "P1934",
+      "class_name": "small-vehicle",
+      "iou": 0.729258
+    },
+    {
+      "id": "train:P0823:22451",
+      "band": 0,
+      "split": "train",
+      "image_id": "P0823",
+      "class_name": "harbor",
+      "iou": 0.186135
+    },
+    {
+      "id": "val:P1478:115187",
+      "band": 3,
+      "split": "val",
+      "image_id": "P1478",
+      "class_name": "small-vehicle",
+      "iou": 0.684492
+    },
+    {
+      "id": "train:P2686:89694",
+      "band": 4,
+      "split": "train",
+      "image_id": "P2686",
+      "class_name": "large-vehicle",
+      "iou": 0.765644
+    },
+    {
+      "id": "val:P0168:98908",
+      "band": 0,
+      "split": "val",
+      "image_id": "P0168",
+      "class_name": "helicopter",
+      "iou": 0.196712
+    },
+    {
+      "id": "train:P2196:80037",
+      "band": 2,
+      "split": "train",
+      "image_id": "P2196",
+      "class_name": "swimming-pool",
+      "iou": 0.495985
+    },
+    {
+      "id": "train:P2805:97587",
+      "band": 0,
+      "split": "train",
+      "image_id": "P2805",
+      "class_name": "plane",
+      "iou": 0.172325
+    },
+    {
+      "id": "train:P1908:64052",
+      "band": 3,
+      "split": "train",
+      "image_id": "P1908",
+      "class_name": "small-vehicle",
+      "iou": 0.628319
+    },
+    {
+      "id": "train:P1609:54324",
+      "band": 4,
+      "split": "train",
+      "image_id": "P1609",
+      "class_name": "bridge",
+      "iou": 0.81133
+    },
+    {
+      "id": "train:P0455:12214",
+      "band": 3,
+      "split": "train",
+      "image_id": "P0455",
+      "class_name": "small-vehicle",
+      "iou": 0.59854
+    },
+    {
+      "id": "val:P0199:99252",
+      "band": 4,
+      "split": "val",
+      "image_id": "P0199",
+      "class_name": "tennis-court",
+      "iou": 0.964133
+    },
+    {
+      "id": "val:P1854:116675",
+      "band": 1,
+      "split": "val",
+      "image_id": "P1854",
+      "class_name": "plane",
+      "iou": 0.202148
+    },
+    {
+      "id": "train:P1867:62054",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1867",
+      "class_name": "plane",
+      "iou": 0.165778
+    },
+    {
+      "id": "train:P1927:65731",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1927",
+      "class_name": "harbor",
+      "iou": 0.141455
+    },
+    {
+      "id": "train:P0248:8492",
+      "band": 2,
+      "split": "train",
+      "image_id": "P0248",
+      "class_name": "plane",
+      "iou": 0.386633
+    },
+    {
+      "id": "val:P1992:118653",
+      "band": 4,
+      "split": "val",
+      "image_id": "P1992",
+      "class_name": "large-vehicle",
+      "iou": 0.791842
+    },
+    {
+      "id": "train:P2792:97193",
+      "band": 3,
+      "split": "train",
+      "image_id": "P2792",
+      "class_name": "ship",
+      "iou": 0.614625
+    },
+    {
+      "id": "train:P0581:13571",
+      "band": 1,
+      "split": "train",
+      "image_id": "P0581",
+      "class_name": "harbor",
+      "iou": 0.255004
+    },
+    {
+      "id": "train:P1869:62375",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1869",
+      "class_name": "plane",
+      "iou": 0.174316
+    },
+    {
+      "id": "train:P2741:93806",
+      "band": 4,
+      "split": "train",
+      "image_id": "P2741",
+      "class_name": "ship",
+      "iou": 0.766234
+    },
+    {
+      "id": "train:P1972:69014",
+      "band": 1,
+      "split": "train",
+      "image_id": "P1972",
+      "class_name": "plane",
+      "iou": 0.230167
+    },
+    {
+      "id": "train:P0167:6762",
+      "band": 0,
+      "split": "train",
+      "image_id": "P0167",
+      "class_name": "plane",
+      "iou": 0.159377
+    },
+    {
+      "id": "train:P2007:71003",
+      "band": 1,
+      "split": "train",
+      "image_id": "P2007",
+      "class_name": "harbor",
+      "iou": 0.279994
+    },
+    {
+      "id": "val:P2242:120967",
+      "band": 0,
+      "split": "val",
+      "image_id": "P2242",
+      "class_name": "helicopter",
+      "iou": 0.15604
+    },
+    {
+      "id": "train:P1006:34708",
+      "band": 2,
+      "split": "train",
+      "image_id": "P1006",
+      "class_name": "harbor",
+      "iou": 0.365442
+    },
+    {
+      "id": "train:P1495:53688",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1495",
+      "class_name": "plane",
+      "iou": 0.184211
+    },
+    {
+      "id": "val:P2230:120685",
+      "band": 1,
+      "split": "val",
+      "image_id": "P2230",
+      "class_name": "plane",
+      "iou": 0.243702
+    },
+    {
+      "id": "train:P1076:36823",
+      "band": 1,
+      "split": "train",
+      "image_id": "P1076",
+      "class_name": "harbor",
+      "iou": 0.229887
+    },
+    {
+      "id": "train:P1872:62610",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1872",
+      "class_name": "plane",
+      "iou": 0.194792
+    },
+    {
+      "id": "train:P1006:34716",
+      "band": 2,
+      "split": "train",
+      "image_id": "P1006",
+      "class_name": "harbor",
+      "iou": 0.317199
+    },
+    {
+      "id": "train:P1387:43914",
+      "band": 0,
+      "split": "train",
+      "image_id": "P1387",
+      "class_name": "harbor",
+      "iou": 0.125029
+    },
+    {
+      "id": "train:P2250:81888",
+      "band": 3,
+      "split": "train",
+      "image_id": "P2250",
+      "class_name": "ship",
+      "iou": 0.576812
+    },
+    {
+      "id": "train:P1174:38428",
+      "band": 2,
+      "split": "train",
+      "image_id": "P1174",
+      "class_name": "plane",
+      "iou": 0.318617
+    },
+    {
+      "id": "train:P1019:35087",
+      "band": 2,
+      "split": "train",
+      "image_id": "P1019",
+      "class_name": "harbor",
+      "iou": 0.477408
+    },
+    {
+      "id": "train:P1991:69718",
+      "band": 3,
+      "split": "train",
+      "image_id": "P1991",
+      "class_name": "small-vehicle",
+      "iou": 0.61165
+    },
+    {
+      "id": "val:P1397:113062",
+      "band": 1,
+      "split": "val",
+      "image_id": "P1397",
+      "class_name": "plane",
+      "iou": 0.272261
+    },
+    {
+      "id": "train:P1466:53303",
+      "band": 4,
+      "split": "train",
+      "image_id": "P1466",
+      "class_name": "small-vehicle",
+      "iou": 0.796386
+    }
+  ]
+}
