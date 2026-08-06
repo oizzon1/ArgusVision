@@ -272,11 +272,12 @@ applicable and object scale varies by orders of magnitude across the
 collection. Instance areas span 10 to 1,080,673 px, median 631 px. Ground
 sample distance is recorded for 1,861 of the 1,862 retained images; the
 remaining image carries `gsd:null` in its DOTA header. Values are inherited
-verbatim from those headers and are not corrected here. 21 images carry an
-implausibly small value of 1.34e-06 m/px — at this imagery's resolution that
-would imply sub-micrometre ground sampling, so it is best read as a source
-metadata defect rather than a measurement. Excluding those, the range is
-0.092–4.496 m/px with a median of 0.260. Users filtering on ground sample
+verbatim from those headers and are not corrected here. 21 images carry
+implausibly small values spanning 1.34e-06 to 2.15e-05 m/px, twelve of them at
+1.34e-06 — at this imagery's resolution any of these would imply
+sub-micrometre ground sampling, so they are best read as a source metadata
+defect rather than a measurement. Excluding those 21, the range is 0.092–4.496
+m/px over 1,840 images, with a median of 0.260. Users filtering on ground sample
 distance should screen for the degenerate values.
 
 ### Scale and pairing outcome

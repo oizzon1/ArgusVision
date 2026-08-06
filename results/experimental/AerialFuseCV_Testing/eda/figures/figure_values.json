@@ -69,6 +69,66 @@
       "raw_px": 39025,
       "idx": 4,
       "foreign_px": 41752
+    },
+    {
+      "kind": "gallery",
+      "figure": "G1_harbor_P1429.png",
+      "image_id": "P1429",
+      "class_name": "harbor",
+      "excess_px": 139097,
+      "released_px": 55465,
+      "raw_px": 194562,
+      "idx": 21,
+      "pieces": 1,
+      "outside_over_inside": 2.5078
+    },
+    {
+      "kind": "gallery",
+      "figure": "G2_ship_P0259.png",
+      "image_id": "P0259",
+      "class_name": "ship",
+      "excess_px": 120154,
+      "released_px": 120990,
+      "raw_px": 241144,
+      "idx": 11,
+      "pieces": 1,
+      "outside_over_inside": 0.9931
+    },
+    {
+      "kind": "gallery",
+      "figure": "G3_soccer-ball-field_P0466.png",
+      "image_id": "P0466",
+      "class_name": "soccer-ball-field",
+      "excess_px": 47379,
+      "released_px": 133988,
+      "raw_px": 181367,
+      "idx": 14,
+      "pieces": 1,
+      "outside_over_inside": 0.3536
+    },
+    {
+      "kind": "gallery",
+      "figure": "G4_baseball-diamond_P0491.png",
+      "image_id": "P0491",
+      "class_name": "baseball-diamond",
+      "excess_px": 28844,
+      "released_px": 52920,
+      "raw_px": 81764,
+      "idx": 5,
+      "pieces": 1,
+      "outside_over_inside": 0.545
+    },
+    {
+      "kind": "gallery",
+      "figure": "G5_bridge_P0936.png",
+      "image_id": "P0936",
+      "class_name": "bridge",
+      "excess_px": 26055,
+      "released_px": 26502,
+      "raw_px": 52557,
+      "idx": 31,
+      "pieces": 1,
+      "outside_over_inside": 0.9831
     }
   ]
 }

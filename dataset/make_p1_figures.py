@@ -133,10 +133,12 @@ KIND_TITLE = {
     "extent": "Extent — the sources annotate different amounts of the same object",
     "split": "Source error — one iSAID instance spans several physical objects",
     "foreign": "Contamination — a neighbour's pixels fall inside the box",
+    "gallery": "Box and mask disagree",
 }
 
 
-def pick_divergence_cases(d, pairs, isaid: Path, split: str, scan: int, top: int):
+def pick_divergence_cases(d, pairs, isaid: Path, split: str, scan: int, top: int,
+                          gallery: int = 5):
     """Choose cases by measured property rather than by hand, one set per kind.
 
     Hand-picking drifted once already: a case chosen from an earlier build
@@ -157,7 +159,7 @@ def pick_divergence_cases(d, pairs, isaid: Path, split: str, scan: int, top: int
       foreign  pixels inside the box carry a DIFFERENT instance identity — a
                neighbour bleeding into the clip, concentrated in dense scenes
     """
-    found = {k: [] for k in divergence_kinds}
+    found = {k: [] for k in divergence_kinds + ("gallery",)}
     for n, img_id in enumerate(list(pairs)[:scan], 1):
         recs = pairs[img_id]
         ins = cv2.cvtColor(cv2.imread(str(isaid / split / "instance_masks" /
@@ -222,6 +224,20 @@ def pick_divergence_cases(d, pairs, isaid: Path, split: str, scan: int, top: int
             if foreign > 0:
                 found["foreign"].append((foreign, rec["class_name"], img_id,
                                          {"idx": rec_idx, "foreign_px": foreign}))
+
+            # Gallery: candidates for hand-composing a divergence figure.
+            # Ranked by absolute excess so the disagreement is large enough to
+            # read at figure size, but gated on the ratio so a huge object with
+            # a proportionally trivial overhang does not crowd out a small one
+            # that is plainly wrong.
+            inside = int(rel.sum())
+            if inside > 0 and excess > 0:
+                ratio = excess / inside
+                if ratio >= 0.20:
+                    found["gallery"].append(
+                        (excess, rec["class_name"], img_id,
+                         {"idx": rec_idx, "pieces": int(pieces),
+                          "outside_over_inside": round(ratio, 4)}))
         if n % 20 == 0:
             print(f"  scanning {n}/{scan}", flush=True)
 
@@ -240,6 +256,20 @@ def pick_divergence_cases(d, pairs, isaid: Path, split: str, scan: int, top: int
                 break
         chosen[kind] = picked
         print(f"  {kind:8} cases: {[(c, i) for c, i, _ in picked]}", flush=True)
+
+    # Gallery picks independently of the three figures and may reuse their
+    # classes — it exists to give the widest choice for hand-composition, not
+    # to illustrate a taxonomy. One case per class still, for variety.
+    found["gallery"].sort(key=lambda t: -t[0])
+    gal, seen = [], set()
+    for _, cls, img_id, extra in found["gallery"]:
+        if cls in seen:
+            continue
+        gal.append((cls, img_id, extra)); seen.add(cls)
+        if len(gal) == gallery:
+            break
+    chosen["gallery"] = gal
+    print(f"  gallery  cases: {[(c, i) for c, i, _ in gal]}", flush=True)
     return chosen
 
 
@@ -328,6 +358,10 @@ def main() -> int:
                          "compete for candidates, and split cases are rare "
                          "(~0.5%% of pairs), so this is wider than it was")
     ap.add_argument("--top", type=int, default=2)
+    ap.add_argument("--gallery", type=int, default=5,
+                    help="extra single-case panels of large box/mask "
+                         "disagreement, written one file each for "
+                         "hand-composition into a figure")
     ap.add_argument("--out", type=Path,
                     default=Path("results/experimental/AerialFuseCV_Testing/eda/figures"))
     args = ap.parse_args()
@@ -339,7 +373,7 @@ def main() -> int:
 
     figure_1(d, pairs, args.out, args.split)
     cases = pick_divergence_cases(d, pairs, args.isaid, args.split,
-                                  args.scan, args.top)
+                                  args.scan, args.top, args.gallery)
 
     # Three candidate divergence figures, one per measured kind, so the best
     # can be chosen for the article rather than settled on by whichever was
@@ -354,6 +388,16 @@ def main() -> int:
             continue
         all_measurements += figure_4(d, pairs, args.isaid, args.out, args.split,
                                      cases[kind], kind, files[kind])
+
+    # One file per gallery case, so they can be arranged by hand rather than
+    # accepting whatever layout this script happens to stack.
+    gal_dir = args.out / "divergence_gallery"
+    for n, case in enumerate(cases.get("gallery", []), 1):
+        cls, img, _ = case
+        gal_dir.mkdir(parents=True, exist_ok=True)
+        all_measurements += figure_4(
+            d, pairs, args.isaid, gal_dir, args.split, [case],
+            "gallery", f"G{n}_{cls}_{img}.png")
 
     if all_measurements:
         (args.out / "figure_values.json").write_text(
