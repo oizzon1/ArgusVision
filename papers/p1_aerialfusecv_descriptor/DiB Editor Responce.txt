@@ -1,0 +1,35 @@
+Dear Dr. Fragkos,
+
+Thank you for writing to the editorial office of Data in Brief. I have discussed your query with our Executive Editor, who has shared the following notes -
+
+The proposed dataset structure(a correspondence-plus-script deposit) and manuscript are completely within scope of Data in Brief, and satisfy our data availability requirements, provided specific standard conditions are met. The dataset should be publicly accessible, reproducible, and reusable. When third-party license restrictions or copyright policies prohibit direct redistribution of raw images or annotations, a reproducibility pipeline deposit (correspondence metadata, discard logs, and an automated build script) is fully compliant.
+
+Be that as it may, the author(s) should ensure that their Zenodo repository includes:
+
+        i.            Script(s) which must run without error, using official source URLs/APIs to download, pair, process, and output the final AerialFuseCV dataset.
+
+      ii.            Clear index/identifier correspondence files and full discard accounting log files.
+
+    iii.            Step-by-step documentation that details the prerequisites, environmental setup, source download locations, and execution commands.
+
+     iv.            A static and accessible Zenodo DOI.
+
+Data articles describing novel derived, fused, or transformed datasets are fully within the scope. The proposed dataset adds clear value through instance-level paired alignment and quality filtering. The creation approach constitutes valuable data descriptor research.
+
+The authors should do the following when preparing their manuscript:
+
+        i.            Clearly indicate the licensing constraints of DOTA v1.0 and iSAID in the Specifications Table and Value of the Data sections. State clearly that AerialFuseCV is intended for non-commercial research/academic use in accordance with the underlying source licenses.
+
+      ii.            Show the pairing logic, alignment verification, discard criteria, and filtering statistics in the Experimental Design, Materials and Methods section so reviewers can evaluate the technical rigor of the dataset construction.
+
+    iii.            Provide direct citations and working URLs to the official download pages for both parent datasets.
+
+I hope this helps, and I look forward to receiving your manuscript.
+
+Best wishes,
+Abha.
+
+Arunabha Bose, PhD 
+Scientific Editor 
+
+Data in Brief journal, Elsevier 

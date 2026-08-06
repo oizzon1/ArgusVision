@@ -98,8 +98,8 @@ user's own downloads.
 | Specific subject area | Instance-level paired object detection and segmentation annotations for aerial and satellite imagery *(100 chars incl. spaces; limit 150)* |
 | Type of data | **Deposited:** correspondence records (JSONL) — one per paired object, naming an image, a category, the index of the box within that image's own DOTA annotation file, the matched iSAID instance identity and the achieved overlap; discard records (JSONL); per-category statistics (JSON); verification checksums (text); rebuild script (Python). **Regenerated locally by that script, not deposited:** annotation files in DOTA format (oriented and axis-aligned) and instance-identity and category-coloured masks (PNG). Processed and analysed, derived from public source datasets whose annotations may not be redistributed. |
 | Data collection | Derived by reconciling two existing annotation sets over the same aerial imagery: oriented bounding boxes from DOTA v1.0 and colour-encoded instance masks from iSAID. iSAID instances were decoded by exact colour match against the published class-colour table, then assigned to DOTA boxes of the same category by an optimal one-to-one assignment maximising total intersection-over-union between the rasterised oriented quadrilateral and the instance, accepting matches from 0.1. The released mask for each pair is the matched instance clipped to its oriented box. Seven images retaining no pair were excluded. No new imagery was collected and no imagery was modified. |
-| Data source location | Source datasets: DOTA v1.0 and iSAID, official public distributions. Deposit: Zenodo. Institution: National Technical University of Athens, Athens, Greece. |
-| Data accessibility | Repository name: Zenodo · Data identification number: [[PLACEHOLDER: DOI — arrives with the deposit]] · Direct URL: [[PLACEHOLDER: arrives with the deposit]] · Instructions: the correspondence, discard records, statistics, checksums and rebuild script download directly. Neither DOTA v1.0 nor iSAID permits redistribution of its annotations or imagery, so **no source annotation, mask or image is deposited**. The user obtains both source datasets from their official distributions and runs the included script, which resolves the correspondence against them and writes the annotation files and masks locally; the deposited checksums then verify that regenerated output file by file. |
+| Data source location | Source datasets: DOTA v1.0 (<https://captain-whu.github.io/DOTA/dataset.html>) and iSAID (<https://captain-whu.github.io/iSAID/dataset.html>), official public distributions. **Source licensing constraints:** both state that *"All images and their associated annotations … can be used for academic purposes only, but any commercial use is prohibited"*, and both additionally require that use of the Google Earth imagery respect Google's geospatial terms of use. Neither declares a redistribution policy or a formal licence. **AerialFuseCV is therefore intended for non-commercial research and academic use only, in accordance with the licences of both parent datasets.** Deposit: Zenodo. Institution: National Technical University of Athens, Athens, Greece. |
+| Data accessibility | Repository name: Zenodo · Data identification number: [[PLACEHOLDER: DOI — arrives with the deposit]] · Direct URL: [[PLACEHOLDER: arrives with the deposit]] · Instructions: the correspondence, discard records, statistics, checksums and rebuild script download directly. Both parent datasets restrict use to academic purposes and prohibit commercial use, and neither declares a redistribution policy, so **no source annotation, mask or image is deposited**. The user obtains both source datasets from their official distributions, under those datasets' own terms, and runs the included script, which resolves the correspondence against them and writes the annotation files and masks locally; the deposited checksums then verify that regenerated output file by file. Use of the resulting dataset remains bound by the parent licences: **non-commercial research and academic use only**. |
 | Related research article | None. This data article is not related to a research article. |
 
 ---
@@ -134,6 +134,13 @@ user's own downloads.
 - The construction script and checksums regenerate the dataset from the
   official distributions, and the reconciliation procedure transfers to other
   box-annotated / mask-annotated dataset pairs that share source imagery.
+- Reuse conditions are unambiguous and inherited rather than invented. DOTA
+  v1.0 and iSAID both permit academic use only and prohibit commercial use, and
+  neither declares a redistribution policy; the deposit therefore publishes
+  only the correspondence this work computed and never source annotations or
+  imagery. **AerialFuseCV is for non-commercial research and academic use only,
+  in accordance with both parent licences**, and users obtain the sources
+  themselves under those datasets' own terms.
 
 ---
 
@@ -679,12 +686,16 @@ in this paper.
 [1] G.-S. Xia, X. Bai, J. Ding, Z. Zhu, S. Belongie, J. Luo, M. Datcu,
 M. Pelillo, L. Zhang, DOTA: A large-scale dataset for object detection in
 aerial images, in: Proc. IEEE/CVF Conf. Computer Vision and Pattern Recognition
-(CVPR), 2018, pp. 3974–3983. [[VERIFY pages/DOI]]
+(CVPR), 2018, pp. 3974–3983. Official download page:
+<https://captain-whu.github.io/DOTA/dataset.html> (accessed 6 August 2026).
+[[VERIFY pages/DOI]]
 
 [2] S. Waqas Zamir, A. Arora, A. Gupta, S. Khan, G. Sun, F. Shahbaz Khan,
 F. Zhu, L. Shao, G.-S. Xia, X. Bai, iSAID: A large-scale dataset for instance
 segmentation in aerial images, in: Proc. IEEE/CVF Conf. Computer Vision and
-Pattern Recognition Workshops (CVPRW), 2019, pp. 28–37. [[VERIFY pages/DOI]]
+Pattern Recognition Workshops (CVPRW), 2019, pp. 28–37. Official download page:
+<https://captain-whu.github.io/iSAID/dataset.html> (accessed 6 August 2026).
+[[VERIFY pages/DOI]]
 
 [3] A. Kirillov, E. Mintun, N. Ravi, H. Mao, C. Rolland, L. Gustafson, T. Xiao,
 S. Whitehead, A.C. Berg, W.-Y. Lo, P. Dollár, R. Girshick, Segment Anything,

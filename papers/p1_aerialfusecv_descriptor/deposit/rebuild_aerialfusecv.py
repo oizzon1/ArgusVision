@@ -8,9 +8,15 @@ iSAID and are not redistributed here — this script reconstructs the full
 dataset on your machine from your own copies of those datasets.
 
 WHAT YOU NEED
-    DOTA v1.0   train/val images and labelTxt   https://captain-whu.github.io/DOTA/
-    iSAID       train/val instance + semantic masks   https://captain-whu.github.io/iSAID/
+    DOTA v1.0   train/val images and labelTxt
+                https://captain-whu.github.io/DOTA/dataset.html
+    iSAID       train/val instance + semantic masks
+                https://captain-whu.github.io/iSAID/dataset.html
     (iSAID's masks are downloaded directly; its images come from DOTA.)
+
+    Both sources state that their images and annotations may be used for
+    academic purposes only, and prohibit commercial use. AerialFuseCV inherits
+    those terms: non-commercial research and academic use only.
 
     See SETUP.md for step-by-step download and extraction instructions.
 
