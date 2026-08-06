@@ -1,0 +1,76 @@
+{
+  "package": "AerialFuseCV v1.0",
+  "assembled_utc": "2026-08-06T14:43:06Z",
+  "files": 9,
+  "total_bytes": 86031908,
+  "total_size": "82.0 MB",
+  "pairs": 125722,
+  "images": 1862,
+  "released": false,
+  "release_policy": "Held until the data article is submitted, so the dataset is never public with no paper claiming it.",
+  "inventory": [
+    {
+      "file": "correspondence.jsonl",
+      "bytes": 16845840,
+      "size": "16.1 MB",
+      "sha256": "49c1cf358f5fd609912739603f35cb65f3cb680c98bbe876f8fc6b5bbc7f037c",
+      "description": "One record per paired object: image, split, category, the index of the box within that image's own DOTA annotation file, the matched iSAID instance identity, and the achieved overlap."
+    },
+    {
+      "file": "discarded.jsonl",
+      "bytes": 68352956,
+      "size": "65.2 MB",
+      "sha256": "dbb346f9b62dd9f7c4e88188470473cc7267587c89e87490b0c4ee8de72890b7",
+      "description": "One record per unpaired box or instance, with the reason it was dropped and the best overlap it achieved."
+    },
+    {
+      "file": "dataset_statistics.json",
+      "bytes": 9294,
+      "size": "9.1 KB",
+      "sha256": "4fe565a6a13a2d0dc90a333f43f085c9e59793edff0c4328efa4659515c8e882",
+      "description": "Totals, per split, per category, and every discard reason with its count."
+    },
+    {
+      "file": "checksums.sha256",
+      "bytes": 776530,
+      "size": "758.3 KB",
+      "sha256": "fbf16c57f5e330610b24a882f4d64e38737c0d891dc1c0954f7a8586a1996412",
+      "description": "Expected SHA-256 of every annotation and mask file the rebuild produces (7,448 files)."
+    },
+    {
+      "file": "deposit_manifest.json",
+      "bytes": 405,
+      "size": "405 B",
+      "sha256": "4a0a5f1a565f1cb28ab2fa56ba75c45ae6f7caba618e06a34fa9eba537bdaad7",
+      "description": "Build identity: version, generation date, pair and image counts, source dataset references."
+    },
+    {
+      "file": "rebuild_aerialfusecv.py",
+      "bytes": 29450,
+      "size": "28.8 KB",
+      "sha256": "c855e3ec8e5e532368dd5301fa703190557b256e4eec41868eefdd3dbfadbd62",
+      "description": "The rebuild script. Validates your DOTA and iSAID copies, resolves the correspondence against them, writes the dataset, and verifies it."
+    },
+    {
+      "file": "SETUP.md",
+      "bytes": 12161,
+      "size": "11.9 KB",
+      "sha256": "03e6ece00fed770c809883b7acfc411d4e044b00253ac8e794754f275cd6f60c",
+      "description": "Step-by-step: prerequisites, downloads, extraction layout, execution, troubleshooting, citation."
+    },
+    {
+      "file": "LICENSE.txt",
+      "bytes": 1953,
+      "size": "1.9 KB",
+      "sha256": "8a6e23628fba1a8a8f9283b92a45863872d1f56d980a008211d4cf3177ab4ee5",
+      "description": "Deposit licence."
+    },
+    {
+      "file": "README.md",
+      "bytes": 3319,
+      "size": "3.2 KB",
+      "sha256": "c4010151a3d9bd2a18e203dac23d3fac070a84f21595e867183722ccfb28eccf",
+      "description": "Deposit landing description and file inventory."
+    }
+  ]
+}

@@ -80,8 +80,8 @@ the unclipped instance over 125,722 pairs, mean agreement is 0.916, and for
 the disagreeing pixels, 86.4% arise because iSAID annotates a larger extent
 than the box delimits, 13.6% because a neighbouring instance intrudes.
 
-Neither source permits redistribution of its annotations, so the deposit
-publishes the correspondence by reference — image, category, box index within
+Neither source declares a redistribution policy, so the deposit publishes
+the correspondence by reference — image, category, box index within
 the user's own DOTA file, matched instance identity, overlap — with the discard
 record, statistics, checksums and a script that regenerates the dataset from the
 user's own downloads.
@@ -481,13 +481,28 @@ described under Methods.
 
 ### Deposit contents
 
-[[PLACEHOLDER: file-by-file inventory of the Zenodo deposit, with sizes and
-per-file checksums — arrives with the deposit. It will list the annotation
-files, the two mask encodings, `pairs.jsonl`, `discarded.jsonl`,
-`dataset_statistics.json`, `images_gsd_mapping.json`, `build_manifest.json`,
-`checksums.sha256`, the construction script and the licence. Source imagery is
-not redistributable, so the deposit ships everything except the images, plus
-the rebuild path that regenerates them into place.]]
+The deposit is nine files totalling 82.0 MB. It carries no imagery, no source
+annotation and no source mask; the dataset itself is produced by the included
+script from the user's own copies of DOTA v1.0 and iSAID.
+
+**Table 9.** Deposit contents. SHA-256 digests are given to sixteen characters
+for reference; the full digests accompany the record.
+
+| File | Size | Contents | SHA-256 (first 16) |
+|---|---|---|---|
+| `correspondence.jsonl` | 16.1 MB | One record per paired object: image, split, category, the index of the box within that image's own DOTA annotation file, the matched iSAID instance identity, the achieved overlap | `49c1cf358f5fd609` |
+| `discarded.jsonl` | 65.2 MB | One record per unpaired box or instance, with the reason it was dropped and its best achieved overlap | `dbb346f9b62dd9f7` |
+| `dataset_statistics.json` | 9.1 KB | Totals, per split, per category, and every discard reason with its count | `4fe565a6a13a2d0d` |
+| `checksums.sha256` | 758.3 KB | Expected digest of each of the 7,448 annotation and mask files the rebuild produces | `fbf16c57f5e33061` |
+| `deposit_manifest.json` | 405 B | Build identity: version, generation date, pair and image counts, source references | `4a0a5f1a565f1cb2` |
+| `rebuild_aerialfusecv.py` | 28.8 KB | Rebuild script: validates the sources, resolves the correspondence, writes the dataset, verifies it | `c855e3ec8e5e5323` |
+| `SETUP.md` | 11.9 KB | Prerequisites, download locations, extraction layout, execution, troubleshooting, citation | `03e6ece00fed770c` |
+| `LICENSE.txt` | 1.9 KB | Deposit licence and the parent datasets' terms | `8a6e23628fba1a8a` |
+| `README.md` | 3.2 KB | Landing description and this inventory | `c4010151a3d9bd2a` |
+
+Running the script against the official distributions produces the dataset
+tree described under Organisation, whose 7,448 annotation and mask files are
+then verified against `checksums.sha256`.
 
 ### Figures
 
@@ -501,13 +516,23 @@ the rebuild path that regenerates them into place.]]
   the oriented polygon, two discard streams out. Every figure on the diagram
   is read from `dataset_statistics.json`, so it cannot drift from the build.
   `results/experimental/AerialFuseCV_Testing/eda/figures/F3_construction_pipeline.png`
-- **Figure 4.** Why reconciliation is needed, in two kinds. A baseball-diamond
-  where the sources differ by *convention* (DOTA annotates the infield, iSAID
-  the whole field, +2,346 px), and a ship where a single iSAID instance
-  spans a boat, the dock it is moored to and a second boat — verified as one
-  colour forming one connected component, so it is a documented annotation
-  error rather than an artefact of our extraction.
-  `results/experimental/AerialFuseCV_Testing/eda/figures/F4_source_divergence.png`
+- **Figure 4.** Why reconciliation is needed: two objects where the sources
+  delimit different extents of the same thing. A baseball-diamond in P0491,
+  boxed by DOTA at the infield and annotated by iSAID as the whole field
+  (instance 81,764 px, released 52,920 px, 28,844 px outside the box), and a
+  bridge in P0936 where half the span falls outside (52,557 px, released
+  26,502 px, 26,055 px outside). Each panel shows the DOTA box, the raw iSAID
+  instance, and the released mask. Both cases were selected by measured excess
+  rather than by eye, and both are single connected components, so neither is
+  an artefact of our extraction.
+  `results/experimental/AerialFuseCV_Testing/eda/figures/F4a_source_divergence_extent.png`
+- **Figure 5.** The alignment-audit review interface. One sampled pair per
+  screen: the DOTA box alone, then the same view with the released mask
+  overlaid, and three outcomes. Shown here on a plane in P1397 at an achieved
+  overlap of 0.36 — a dense row of parked aircraft, where a box could
+  plausibly have been matched to a neighbour. The reviewer is shown neither the
+  overlap nor the stratum.
+  `results/experimental/AerialFuseCV_Testing/eda/figures/F8_alignment_audit_interface.png`
 
 ---
 
@@ -609,7 +634,7 @@ IoU, the band, or any statistic, and pairs were presented in shuffled rather
 than banded order, so that an expectation set by a low score could not be
 mistaken for an observation. A three-way outcome was used because occlusion,
 adjacent identical objects and unclear source annotation produce cases with no
-honest binary answer.
+honest binary answer. Figure 5 shows the review interface on a sampled pair.
 
 **Table 8.** Alignment audit, by IoU band. Rates within a band are direct
 observations; the population estimate re-weights each band by its share of the
@@ -699,12 +724,12 @@ not remove it.
 Annotation quality is bounded by the sources, and their errors propagate into
 the pairs. Categories are severely imbalanced: three supply 70.4% of pairs,
 six under 0.6% each. Only the training and validation splits are covered, as
-iSAID publishes no test-split masks. Neither source permits redistribution of its imagery *or* its annotations, so the
-deposit provides only the correspondence this work computed, together with the
-records, statistics, checksums and the script that regenerates the dataset from
-a user's own copies of the sources.
+iSAID publishes no test-split masks. Neither source declares a redistribution
+policy and both restrict use to academic purposes, so the deposit provides only
+the correspondence computed here, with the records, statistics, checksums and
+the rebuild script.
 
-> 182 words (cap 200).
+> 188 words (cap 200).
 
 ---
 
