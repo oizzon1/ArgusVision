@@ -77,15 +77,20 @@ def main():
         placed += 1
 
     # ---- header for the reviewer ---------------------------------------
-    ph = re.findall(r"\[\[PLACEHOLDER:([^\]]+)\]\]", text, re.S)
-    note = ["# AerialFuseCV — data article draft\n",
+    ph = [re.sub(r"\s+", " ", p).strip()
+          for p in re.findall(r"\[\[PLACEHOLDER:([^\]]+)\]\]", text, re.S)]
+    # the conventions legend at the top of the draft is an example of the
+    # notation, not an outstanding item; counting it overstates what is open
+    ph = [p for p in ph if p not in ("…", "...") and len(p) > 6]
+    note = ["# AerialFuseCV — data article draft\n\n",
             "*Draft for supervisor review. Not the submission file: Data in Brief "
             "mandates its own template, into which this content is transferred at "
-            "submission.*\n",
-            f"\n**{len(ph)} items still unresolved**, marked `[[PLACEHOLDER: …]]` "
-            "in place. They are decisions or values that cannot be settled here:\n"]
+            "submission.*\n\n",
+            f"**{len(ph)} items still unresolved**, marked `[[PLACEHOLDER: …]]` "
+            "at the point each applies. Each is a decision or a value that cannot "
+            "be settled from the data:\n\n"]
     for p in ph:
-        note.append(f"- {re.sub(r'\\s+', ' ', p).strip()[:150]}\n")
+        note.append(f"- {p[:160]}\n")
     note.append("\n---\n\n")
     text = "".join(note) + text
 
