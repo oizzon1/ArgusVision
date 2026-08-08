@@ -35,6 +35,11 @@ SHIP = [
                                 "reason with its count."),
     ("checksums.sha256", "Expected SHA-256 of every annotation and mask file the "
                          "rebuild produces (7,448 files)."),
+    ("source_pin.json", "SHA-256 of each DOTA label file the correspondence indexes "
+                        "into. Digests only — no annotation content. The rebuild "
+                        "checks these first, because a different DOTA copy can "
+                        "resolve a box index to a different object with no error "
+                        "raised."),
     ("deposit_manifest.json", "Build identity: version, generation date, pair and "
                               "image counts, source dataset references."),
     ("rebuild_aerialfusecv.py", "The rebuild script. Validates your DOTA and iSAID "

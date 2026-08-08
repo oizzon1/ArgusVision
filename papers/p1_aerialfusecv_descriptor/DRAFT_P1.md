@@ -70,9 +70,8 @@ matches from an intersection-over-union of 0.1. Across the 1,869 shared images,
 127,843 boxes and 475,438 mask instances yielded 125,722 pairs
 over 1,862 retained images: box pairing 98.34%, instance pairing 26.44%, the
 difference arising because pairing is anchored on the boxes while iSAID
-annotates many objects DOTA does not. Every unpaired box and instance is
-recorded with its reason; pairs plus discards equal each source population
-exactly.
+annotates many objects DOTA does not. Every unpaired box and instance is recorded with its
+reason, and pairs plus discards equal each source population exactly.
 
 The released mask is the matched instance clipped to its oriented box. Against
 the unclipped instance over 125,722 pairs, mean agreement is 0.916; the area
@@ -81,13 +80,13 @@ under a tenth for 70.60%. Of
 the disagreeing pixels, 86.4% arise because iSAID annotates a larger extent
 than the box delimits, 13.6% because a neighbouring instance intrudes.
 
-Neither source declares a redistribution policy, so the deposit publishes
-the correspondence by reference — image, category, box index within
-the user's own DOTA file, matched instance identity, overlap — with the discard
-record, statistics, checksums and a script that regenerates the dataset from the
-user's own downloads.
+Neither source declares a redistribution policy, so the deposit publishes the
+correspondence by reference — image, category, box index within the user's own
+DOTA file, matched instance identity, overlap — with the discard record,
+statistics, checksums and a script that rebuilds the dataset locally.
 
-> 250 words (guide limit 250).
+> 247 words by whitespace count, 245 treating em-dashes as breaks (guide
+> limit 250; the template itself allows 100–500). Recount in Word at transfer.
 
 ---
 
@@ -97,7 +96,7 @@ user's own downloads.
 |---|---|
 | Subject | [[PLACEHOLDER: select from the template dropdown — "Computer Vision and Pattern Recognition" expected; confirm the available options in the .docx]] |
 | Specific subject area | Instance-level paired object detection and segmentation annotations for aerial and satellite imagery *(100 chars incl. spaces; limit 150)* |
-| Type of data | **Deposited:** correspondence records (JSONL) — one per paired object, naming an image, a category, the index of the box within that image's own DOTA annotation file, the matched iSAID instance identity and the achieved overlap; discard records (JSONL); per-category statistics (JSON); verification checksums (text); rebuild script (Python); setup guide, licence and landing README (Markdown/text) — nine files in all. **Regenerated locally by that script, not deposited:** annotation files in DOTA format (oriented and axis-aligned) and instance-identity and category-coloured masks (PNG). Processed and analysed, derived from public source datasets whose annotations may not be redistributed. |
+| Type of data | **Deposited:** correspondence records (JSONL) — one per paired object, naming an image, a category, the index of the box within that image's own DOTA annotation file, the matched iSAID instance identity and the achieved overlap; discard records (JSONL); per-category statistics (JSON); verification checksums (text); rebuild script (Python); source pin, setup guide, licence and landing README (JSON/Markdown/text) — ten files in all. **Regenerated locally by that script, not deposited:** annotation files in DOTA format (oriented and axis-aligned) and instance-identity and category-coloured masks (PNG). Processed and analysed, derived from public source datasets whose annotations may not be redistributed. |
 | Data collection | Derived by reconciling two existing annotation sets over the same aerial imagery: oriented bounding boxes from DOTA v1.0 and colour-encoded instance masks from iSAID. iSAID instances were decoded by exact colour match against the published class-colour table, then assigned to DOTA boxes of the same category by an optimal one-to-one assignment maximising total intersection-over-union between the rasterised oriented quadrilateral and the instance, accepting matches from 0.1. The released mask for each pair is the matched instance clipped to its oriented box. Seven images retaining no pair were excluded. No new imagery was collected and no imagery was modified. |
 | Data source location | Source datasets: DOTA v1.0 (<https://captain-whu.github.io/DOTA/dataset.html>) and iSAID (<https://captain-whu.github.io/iSAID/dataset.html>), official public distributions. **Source licensing constraints:** both state that *"All images and their associated annotations … can be used for academic purposes only, but any commercial use is prohibited"*, and both additionally require that use of the Google Earth imagery respect Google's geospatial terms of use. Neither declares a redistribution policy or a formal licence. **AerialFuseCV is therefore intended for non-commercial research and academic use only, in accordance with the licences of both parent datasets.** Deposit: Zenodo. Institution: National Technical University of Athens, Athens, Greece. |
 | Data accessibility | Repository name: Zenodo · Data identification number: [[PLACEHOLDER: DOI — arrives with the deposit]] · Direct URL: [[PLACEHOLDER: arrives with the deposit]] · Instructions: the correspondence, discard records, statistics, checksums and rebuild script download directly. Both parent datasets restrict use to academic purposes and prohibit commercial use, and neither declares a redistribution policy, so **no source annotation, mask or image is deposited**. The user obtains both source datasets from their official distributions, under those datasets' own terms, and runs the included script, which resolves the correspondence against them and writes the annotation files and masks locally; the deposited checksums then verify that regenerated output file by file. The script does not fetch the sources — both are distributed through Drive folders with no programmatic interface — so it validates them and reports what is missing by name instead; `SETUP.md` in the deposit documents the download and extraction step by step. Use of the resulting dataset remains bound by the parent licences: **non-commercial research and academic use only**. |
@@ -214,6 +213,7 @@ deposit/                            what the DOI points to
 ├── discarded.jsonl                 one record per unpaired box or instance
 ├── dataset_statistics.json         totals, per split, per category, discards
 ├── checksums.sha256                expected hash of every regenerated file
+├── source_pin.json                 digests of the DOTA labels indexed into
 ├── deposit_manifest.json           build identity and deposit contents
 ├── rebuild_aerialfusecv.py         resolves the correspondence, writes the dataset
 ├── SETUP.md                        prerequisites, downloads, layout, commands
@@ -282,7 +282,7 @@ assignment per image and category. `discarded.jsonl` is the same kind of
 artefact in the negative, recording why each of the 2,121 unmatched boxes and
 349,716 unmatched instances was dropped and the best overlap it reached. The
 statistics, the checksums, the deposit manifest and the rebuild script were
-likewise written for this work. All nine deposited files were produced by the
+likewise written for this work. All ten deposited files were produced by the
 author at the National Technical University of Athens.
 
 The two sources remain with their owners and are used as inputs under their
@@ -495,16 +495,15 @@ roundabout, bridge and basketball-court, where the protocols delimit a
 different portion of the same object — baseball-diamond, for example, is boxed
 at the infield by DOTA and annotated as the whole field by iSAID. Foreign
 pixels concentrate where objects are densely packed: storage-tank 29.8%, plane
-25.7%, helicopter 21.6%, ship 21.6%. plane is the one category whose
-disagreement is mostly contamination rather than extent, its extent share
-falling to 20.7%.
+25.7%, helicopter 21.6%, ship 21.6%. Only for plane is the disagreement mostly
+contamination rather than extent, its extent share falling to 20.7%.
 
 The released mask definition addresses each component by a different mechanism,
 described under Methods.
 
 ### Deposit contents
 
-The deposit [18] is nine files totalling 82.0 MB. It carries no imagery, no
+The deposit [18] is ten files totalling 82.2 MB. It carries no imagery, no
 source annotation and no source mask; the dataset itself is produced by the
 included script from the user's own copies of DOTA v1.0 and iSAID.
 
@@ -517,11 +516,12 @@ for reference; the full digests accompany the record.
 | `discarded.jsonl` | 65.2 MB | One record per unpaired box or instance, with the reason it was dropped and its best achieved overlap | `dbb346f9b62dd9f7` |
 | `dataset_statistics.json` | 9.1 KB | Totals, per split, per category, and every discard reason with its count | `4fe565a6a13a2d0d` |
 | `checksums.sha256` | 758.3 KB | Expected digest of each of the 7,448 annotation and mask files the rebuild produces | `fbf16c57f5e33061` |
+| `source_pin.json` | 165.2 KB | SHA-256 of each DOTA label file the correspondence indexes into; digests only, no annotation content | `d4aa6762b5ea4e6c` |
 | `deposit_manifest.json` | 676 B | Build identity: version, generation date, pair and image counts, source references | `3659eb4a61a6987a` |
-| `rebuild_aerialfusecv.py` | 28.8 KB | Rebuild script: validates the sources, resolves the correspondence, writes the dataset, verifies it | `c855e3ec8e5e5323` |
-| `SETUP.md` | 11.9 KB | Prerequisites, download locations, extraction layout, execution, troubleshooting, citation | `03e6ece00fed770c` |
+| `rebuild_aerialfusecv.py` | 30.6 KB | Rebuild script: validates the sources, resolves the correspondence, writes the dataset, verifies it | `2ac6034774d71287` |
+| `SETUP.md` | 12.5 KB | Prerequisites, download locations, extraction layout, execution, troubleshooting, citation | `b53eba3411ed4dcd` |
 | `LICENSE.txt` | 1.9 KB | Deposit licence and the parent datasets' terms | `8a6e23628fba1a8a` |
-| `README.md` | 3.2 KB | Landing description and this inventory | `c71492b7d815964e` |
+| `README.md` | 3.5 KB | Landing description and this inventory | `6bf4dec8522d9154` |
 
 Running the script against the official distributions produces the dataset
 tree described under Organisation, whose 7,448 annotation and mask files are
@@ -670,8 +670,11 @@ low-overlap bands.
 | 0.20–0.30 | 40 | 40 | 0 | 0 | 0.0% (0.0–8.8) | 4.8% |
 | 0.30–0.50 | 40 | 38 | 0 | 2 | 0.0% (0.0–8.8) | 10.0% |
 | 0.50–0.70 | 40 | 40 | 0 | 0 | 0.0% (0.0–8.8) | 29.3% |
-| 0.70–1.00 | 40 | 40 | 0 | 0 | 0.0% (0.0–8.8) | 54.5% |
+| 0.70–1.00† | 40 | 40 | 0 | 0 | 0.0% (0.0–8.8) | 54.5% |
 | **All** | **200** | **198** | **0** | **2** | **0.0% (0.0–1.9)** | **100%** |
+
+† Closed at the upper end: pairs achieving an overlap of exactly 1.00 fall in
+this band.
 
 **No wrong match was found in any band.** Two pairs were judged ambiguous, both
 large vehicles in the same validation image, adjacent and near-identical, where
@@ -719,7 +722,14 @@ capitalised mask directories, which are read correctly on Windows and reported
 missing on case-sensitive filesystems.
 
 Reproducibility therefore rests on verification rather than on automated
-retrieval. Every regenerated annotation and mask file is checked against a
+retrieval, and on both sides of the rebuild. The deposit pins its input: a
+SHA-256 of each DOTA label file the correspondence indexes into is published,
+and checked before any work begins. This matters because a box is identified by
+its ordinal position within the user's own annotation file, so a different copy
+of DOTA can resolve an index to a different object of the same category without
+any error being raised — the class check passes and the output remains
+internally consistent. Digests carry no annotation content, so pinning
+redistributes nothing. Every regenerated annotation and mask file is checked against a
 published SHA-256 checksum — 7,448 files — so a rebuild either matches the
 deposited dataset exactly or is reported as differing, file by file. A run of
 the deposited script against the official distributions reproduced all 7,448
@@ -762,10 +772,12 @@ The authors have read and follow the ethical requirements for publication in
 Data in Brief. The work involved no human subjects, no animal experiments and
 no data collected from social media platforms. The dataset is derived entirely
 from publicly released aerial imagery benchmarks used under their academic
-terms; neither their imagery nor their annotations are redistributed. The
-deposited data — the object-level correspondence, the discard records, the
-statistics, the checksums and the rebuild script — was produced by the author
-and is the author's own work, as set out under Provenance and ownership.
+terms; neither their imagery nor their annotations are redistributed. All ten
+deposited files — the object-level correspondence, the discard records, the
+statistics, the checksums, the source pin, the build manifest, the rebuild
+script, the setup guide, the licence and the landing README — were produced by
+the author and are
+the author's own work, as set out under Provenance and ownership.
 
 ## CRediT Author Statement
 
@@ -908,9 +920,9 @@ annotation pairs for aerial imagery [dataset], Zenodo, 2026.
 - [ ] Official DiB `.docx` template filled; instructional text deleted.
 - [ ] Reference details verified against publisher records (six entries still
       carry a `VERIFY` note); 18 of a maximum 20 used.
-- [ ] Pin the DOTA source: publish per-file checksums of the label files the
-      correspondence indexes into, so `box_index` resolution is verifiable
-      against a specific copy rather than assumed.
+- [x] Pin the DOTA source: `source_pin.json` publishes a SHA-256 per label file
+      the correspondence indexes into, and the rebuild verifies it before doing
+      any work. Digests only, so no source content is redistributed.
 - [ ] Confirm the current APC.
 - [ ] Re-verify every number against the build that the deposit actually ships,
       if a further build is made after this draft.

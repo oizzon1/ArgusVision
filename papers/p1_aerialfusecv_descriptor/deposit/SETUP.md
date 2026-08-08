@@ -239,6 +239,15 @@ right but the download is incomplete. The message reports how many of each kind
 are missing with examples. The usual cause is DOTA's multi-part training images
 where not every archive was extracted.
 
+**"SOURCE ANNOTATIONS DO NOT MATCH THE PUBLISHED PIN"** — your DOTA label
+files differ from the ones the correspondence was built against. The deposit
+carries `source_pin.json`, a SHA-256 of each label file it indexes into, and the
+script checks it before doing any work. This matters more than it looks: the
+correspondence identifies a box by its *position* in your label file, so a
+different DOTA copy can resolve an index to a different object of the same class
+with nothing reporting an error. The message names the files that differ. Almost
+always the cause is `labelTxt-v1.5` rather than `labelTxt-v1.0`.
+
 **"box_index out of range"** or **"class mismatch"** — your DOTA annotations
 differ from those the correspondence was built against. **In almost every case
 this is `labelTxt-v1.5` extracted instead of `labelTxt-v1.0`**, since the two

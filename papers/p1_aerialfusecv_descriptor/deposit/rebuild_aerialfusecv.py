@@ -241,6 +241,31 @@ def describe_sources(dota, isaid):
     return ok, lines
 
 
+def check_source_pin(dota, pin_path):
+    """Compare the user's DOTA label files against the published digests.
+
+    The correspondence identifies a box by its ordinal position in the user's
+    own annotation file. A different DOTA copy can therefore resolve an index
+    to a different object of the same class, with no error raised anywhere: the
+    class check passes, the rebuild completes, and the output checksums are
+    self-consistent. This is the only check that catches it.
+
+    Returns (checked, mismatched, missing). A pin file that is absent is not an
+    error — older deposits do not carry one.
+    """
+    if not pin_path.exists():
+        return 0, [], []
+    pin = json.loads(pin_path.read_text(encoding="utf-8"))
+    mismatched, missing = [], []
+    for rel, want in pin.get("label_sha256", {}).items():
+        p = dota / rel.split("/")[0] / "labels" / rel.split("/")[1]
+        if not p.exists():
+            missing.append(rel)
+        elif sha256(p) != want:
+            mismatched.append(rel)
+    return len(pin.get("label_sha256", {})), mismatched, missing
+
+
 def detect_label_version(dota):
     """Return a warning if the DOTA annotations look like v1.5 rather than v1.0.
 
@@ -536,6 +561,20 @@ def main():
     if warning:
         print(f"\n  WRONG ANNOTATION VERSION\n   {warning}")
         return 2
+
+    n_pinned, bad_pin, missing_pin = check_source_pin(args.dota, here / "source_pin.json")
+    if n_pinned:
+        if bad_pin or missing_pin:
+            print(f"\n  SOURCE ANNOTATIONS DO NOT MATCH THE PUBLISHED PIN")
+            if missing_pin:
+                print(f"   {len(missing_pin)} missing, e.g. {', '.join(missing_pin[:3])}")
+            if bad_pin:
+                print(f"   {len(bad_pin)} differ, e.g. {', '.join(bad_pin[:3])}")
+            print("   The correspondence indexes boxes by position within each label")
+            print("   file, so different labels can resolve to different objects with")
+            print("   no error raised. Re-download DOTA v1.0 'labelTxt-v1.0'; see SETUP.md.")
+            return 2
+        print(f"  source pin verified: {n_pinned:,}/{n_pinned:,} DOTA label files match")
 
     print("\n  reading correspondence ...", end=" ", flush=True)
     by_image = defaultdict(list)

@@ -1,9 +1,9 @@
 {
   "package": "AerialFuseCV v1.0",
-  "assembled_utc": "2026-08-08T16:40:31Z",
-  "files": 9,
-  "total_bytes": 86032179,
-  "total_size": "82.0 MB",
+  "assembled_utc": "2026-08-08T17:09:32Z",
+  "files": 10,
+  "total_bytes": 86204190,
+  "total_size": "82.2 MB",
   "pairs": 125722,
   "images": 1862,
   "released": false,
@@ -38,6 +38,13 @@
       "description": "Expected SHA-256 of every annotation and mask file the rebuild produces (7,448 files)."
     },
     {
+      "file": "source_pin.json",
+      "bytes": 169214,
+      "size": "165.2 KB",
+      "sha256": "d4aa6762b5ea4e6c60b1611cfc09862a7c26c4959205623379c27c8e72c4fa26",
+      "description": "SHA-256 of each DOTA label file the correspondence indexes into. Digests only \u2014 no annotation content. The rebuild checks these first, because a different DOTA copy can resolve a box index to a different object with no error raised."
+    },
+    {
       "file": "deposit_manifest.json",
       "bytes": 676,
       "size": "676 B",
@@ -46,16 +53,16 @@
     },
     {
       "file": "rebuild_aerialfusecv.py",
-      "bytes": 29450,
-      "size": "28.8 KB",
-      "sha256": "c855e3ec8e5e532368dd5301fa703190557b256e4eec41868eefdd3dbfadbd62",
+      "bytes": 31363,
+      "size": "30.6 KB",
+      "sha256": "2ac6034774d712874539fce5e19b2b29d2f1fc7d7a3e1ad33fdb98f83bb66c5d",
       "description": "The rebuild script. Validates your DOTA and iSAID copies, resolves the correspondence against them, writes the dataset, and verifies it."
     },
     {
       "file": "SETUP.md",
-      "bytes": 12161,
-      "size": "11.9 KB",
-      "sha256": "03e6ece00fed770c809883b7acfc411d4e044b00253ac8e794754f275cd6f60c",
+      "bytes": 12775,
+      "size": "12.5 KB",
+      "sha256": "b53eba3411ed4dcdafb49547e0d6abc41fea6d2ede5c543fb1a4a2fc8647c571",
       "description": "Step-by-step: prerequisites, downloads, extraction layout, execution, troubleshooting, citation."
     },
     {
@@ -67,9 +74,9 @@
     },
     {
       "file": "README.md",
-      "bytes": 3319,
-      "size": "3.2 KB",
-      "sha256": "c71492b7d815964eb5c6b3a90afcbc3658d347c4aa4f57cfa9a92321f73f8a0a",
+      "bytes": 3589,
+      "size": "3.5 KB",
+      "sha256": "6bf4dec8522d9154784683aa1fd752f9227c253b5d8f3cd62d66a075b3e770ed",
       "description": "Deposit landing description and file inventory."
     }
   ]
