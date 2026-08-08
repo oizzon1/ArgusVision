@@ -1,8 +1,8 @@
 {
   "package": "AerialFuseCV v1.0",
-  "assembled_utc": "2026-08-06T14:43:06Z",
+  "assembled_utc": "2026-08-08T16:40:31Z",
   "files": 9,
-  "total_bytes": 86031908,
+  "total_bytes": 86032179,
   "total_size": "82.0 MB",
   "pairs": 125722,
   "images": 1862,
@@ -39,9 +39,9 @@
     },
     {
       "file": "deposit_manifest.json",
-      "bytes": 405,
-      "size": "405 B",
-      "sha256": "4a0a5f1a565f1cb28ab2fa56ba75c45ae6f7caba618e06a34fa9eba537bdaad7",
+      "bytes": 676,
+      "size": "676 B",
+      "sha256": "3659eb4a61a6987adc472505558c3edadc8e6e73a3c5607d832a7ede1c0a03f5",
       "description": "Build identity: version, generation date, pair and image counts, source dataset references."
     },
     {
@@ -69,7 +69,7 @@
       "file": "README.md",
       "bytes": 3319,
       "size": "3.2 KB",
-      "sha256": "c4010151a3d9bd2a18e203dac23d3fac070a84f21595e867183722ccfb28eccf",
+      "sha256": "c71492b7d815964eb5c6b3a90afcbc3658d347c4aa4f57cfa9a92321f73f8a0a",
       "description": "Deposit landing description and file inventory."
     }
   ]
