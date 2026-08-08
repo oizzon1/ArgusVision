@@ -1,8 +1,6 @@
-% master.bib — union bibliography for all ArgusVision papers.
-% Copy needed entries into each paper's references.bib (papers are isolated).
-% Entries added 2026-07-29 from established knowledge; VERIFY DOI/pages at
-% review-section time — the WTF-P citation check must confirm each against
-% the publisher record before any submission.
+% Extracted from papers/shared/master.bib — 18 entries.
+% Papers are isolated: this file holds only what this manuscript cites.
+% Re-check with: python papers/shared/bib_tool.py audit papers/p1_aerialfusecv_descriptor
 
 @inproceedings{xia2018dota,
   author    = {Xia, Gui-Song and Bai, Xiang and Ding, Jian and Zhu, Zhen and Belongie, Serge and Luo, Jiebo and Datcu, Mihai and Pelillo, Marcello and Zhang, Liangpei},
@@ -17,6 +15,81 @@
                can be used for academic purposes only, but any commercial use
                is prohibited.'' Google Earth terms of use additionally apply to
                the imagery. VERIFY pages/DOI}
+}
+
+@article{ding2021object,
+  author  = {Ding, Jian and Xue, Nan and Xia, Gui-Song and Bai, Xiang and Yang, Wen and Yang, Michael Ying and Belongie, Serge and Luo, Jiebo and Datcu, Mihai and Pelillo, Marcello and Zhang, Liangpei},
+  title   = {Object Detection in Aerial Images: A Large-Scale Benchmark and Challenges},
+  journal = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  year    = {2022},
+  volume  = {44},
+  number  = {11},
+  pages   = {7778--7796},
+  note    = {VERIFY volume/pages/DOI}
+}
+
+@article{sun_fair1m_2022,
+	title = {{FAIR1M}: {A} benchmark dataset for fine-grained object recognition in high-resolution remote sensing imagery},
+	volume = {184},
+	issn = {09242716},
+	shorttitle = {{FAIR1M}},
+	url = {https://linkinghub.elsevier.com/retrieve/pii/S0924271621003269},
+	doi = {10.1016/j.isprsjprs.2021.12.004},
+	language = {en},
+	urldate = {2026-05-13},
+	journal = {ISPRS Journal of Photogrammetry and Remote Sensing},
+	author = {Sun, Xian and Wang, Peijin and Yan, Zhiyuan and Xu, Feng and Wang, Ruiping and Diao, Wenhui and Chen, Jin and Li, Jihao and Feng, Yingchao and Xu, Tao and Weinmann, Martin and Hinz, Stefan and Wang, Cheng and Fu, Kun},
+	month = feb,
+	year = {2022},
+	pages = {116--130},
+}
+
+@misc{van_etten_spacenet_2018,
+	title = {{SpaceNet}: {A} {Remote} {Sensing} {Dataset} and {Challenge} {Series}},
+	shorttitle = {{SpaceNet}},
+	url = {https://arxiv.org/abs/1807.01232},
+	doi = {10.48550/ARXIV.1807.01232},
+	urldate = {2026-05-13},
+	publisher = {arXiv},
+	author = {Van Etten, Adam and Lindenbaum, Dave and Bacastow, Todd M.},
+	year = {2018},
+	note = {Version Number: 3},
+}
+
+@misc{wang_loveda_2021,
+	title = {{LoveDA}: {A} {Remote} {Sensing} {Land}-{Cover} {Dataset} for {Domain} {Adaptive} {Semantic} {Segmentation}},
+	shorttitle = {{LoveDA}},
+	url = {https://arxiv.org/abs/2110.08733},
+	doi = {10.48550/ARXIV.2110.08733},
+	urldate = {2026-05-13},
+	publisher = {arXiv},
+	author = {Wang, Junjue and Zheng, Zhuo and Ma, Ailong and Lu, Xiaoyan and Zhong, Yanfei},
+	year = {2021},
+	note = {Version Number: 6},
+}
+
+@misc{xia_openearthmap_2022,
+	title = {{OpenEarthMap}: {A} {Benchmark} {Dataset} for {Global} {High}-{Resolution} {Land} {Cover} {Mapping}},
+	shorttitle = {{OpenEarthMap}},
+	url = {https://arxiv.org/abs/2210.10732},
+	doi = {10.48550/ARXIV.2210.10732},
+	urldate = {2026-05-13},
+	publisher = {arXiv},
+	author = {Xia, Junshi and Yokoya, Naoto and Adriano, Bruno and Broni-Bediako, Clifford},
+	year = {2022},
+	note = {Version Number: 1},
+}
+
+@misc{garioud_flair_2023-1,
+	title = {{FLAIR}: a {Country}-{Scale} {Land} {Cover} {Semantic} {Segmentation} {Dataset} {From} {Multi}-{Source} {Optical} {Imagery}},
+	shorttitle = {{FLAIR}},
+	url = {https://arxiv.org/abs/2310.13336},
+	doi = {10.48550/ARXIV.2310.13336},
+	urldate = {2026-05-13},
+	publisher = {arXiv},
+	author = {Garioud, Anatol and Gonthier, Nicolas and Landrieu, Loic and De Wit, Apolline and Valette, Marion and Poupée, Marc and Giordano, Sébastien and Wattrelos, Boris},
+	year = {2023},
+	note = {Version Number: 1},
 }
 
 @inproceedings{zamir2019isaid,
@@ -34,15 +107,16 @@
                the imagery. VERIFY pages/DOI}
 }
 
-@article{ding2021object,
-  author  = {Ding, Jian and Xue, Nan and Xia, Gui-Song and Bai, Xiang and Yang, Wen and Yang, Michael Ying and Belongie, Serge and Luo, Jiebo and Datcu, Mihai and Pelillo, Marcello and Zhang, Liangpei},
-  title   = {Object Detection in Aerial Images: A Large-Scale Benchmark and Challenges},
-  journal = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
-  year    = {2022},
-  volume  = {44},
-  number  = {11},
-  pages   = {7778--7796},
-  note    = {VERIFY volume/pages/DOI}
+@misc{tian_boxinst_2020,
+	title = {{BoxInst}: {High}-{Performance} {Instance} {Segmentation} with {Box} {Annotations}},
+	shorttitle = {{BoxInst}},
+	url = {https://arxiv.org/abs/2012.02310},
+	doi = {10.48550/ARXIV.2012.02310},
+	urldate = {2026-05-13},
+	publisher = {arXiv},
+	author = {Tian, Zhi and Shen, Chunhua and Wang, Xinlong and Chen, Hao},
+	year = {2020},
+	note = {Version Number: 1},
 }
 
 @inproceedings{kirillov2023sam,
@@ -52,6 +126,68 @@
   year      = {2023},
   pages     = {4015--4026},
   note      = {VERIFY pages/DOI}
+}
+
+@misc{ravi_sam_2024,
+	title = {{SAM} 2: {Segment} {Anything} in {Images} and {Videos}},
+	shorttitle = {{SAM} 2},
+	url = {http://arxiv.org/abs/2408.00714},
+	doi = {10.48550/arXiv.2408.00714},
+	urldate = {2026-02-08},
+	publisher = {arXiv},
+	author = {Ravi, Nikhila and Gabeur, Valentin and Hu, Yuan-Ting and Hu, Ronghang and Ryali, Chaitanya and Ma, Tengyu and Khedr, Haitham and Rädle, Roman and Rolland, Chloe and Gustafson, Laura and Mintun, Eric and Pan, Junting and Alwala, Kalyan Vasudev and Carion, Nicolas and Wu, Chao-Yuan and Girshick, Ross and Dollár, Piotr and Feichtenhofer, Christoph},
+	month = oct,
+	year = {2024},
+	note = {arXiv:2408.00714 [cs]},
+}
+
+@misc{osco_segment_2023,
+	title = {The {Segment} {Anything} {Model} ({SAM}) for {Remote} {Sensing} {Applications}: {From} {Zero} to {One} {Shot}},
+	shorttitle = {The {Segment} {Anything} {Model} ({SAM}) for {Remote} {Sensing} {Applications}},
+	url = {http://arxiv.org/abs/2306.16623},
+	doi = {10.48550/arXiv.2306.16623},
+	urldate = {2025-12-22},
+	publisher = {arXiv},
+	author = {Osco, Lucas Prado and Wu, Qiusheng and Lemos, Eduardo Lopes de and Gonçalves, Wesley Nunes and Ramos, Ana Paula Marques and Li, Jonathan and Junior, José Marcato},
+	month = oct,
+	year = {2023},
+	note = {arXiv:2306.16623 [cs]},
+}
+
+@misc{mumuni_segment_2024,
+	title = {Segment {Anything} {Model} for automated image data annotation: empirical studies using text prompts from {Grounding} {DINO}},
+	shorttitle = {Segment {Anything} {Model} for automated image data annotation},
+	url = {https://arxiv.org/abs/2406.19057},
+	doi = {10.48550/ARXIV.2406.19057},
+	urldate = {2026-05-13},
+	publisher = {arXiv},
+	author = {Mumuni, Fuseini and Mumuni, Alhassan},
+	year = {2024},
+	note = {Version Number: 2},
+}
+
+@misc{chen_rsprompter_2023,
+	title = {{RSPrompter}: {Learning} to {Prompt} for {Remote} {Sensing} {Instance} {Segmentation} based on {Visual} {Foundation} {Model}},
+	shorttitle = {{RSPrompter}},
+	url = {https://arxiv.org/abs/2306.16269},
+	doi = {10.48550/ARXIV.2306.16269},
+	urldate = {2026-05-12},
+	publisher = {arXiv},
+	author = {Chen, Keyan and Liu, Chenyang and Chen, Hao and Zhang, Haotian and Li, Wenyuan and Zou, Zhengxia and Shi, Zhenwei},
+	year = {2023},
+	note = {Version Number: 2},
+}
+
+@misc{wang_samrs_2023,
+	title = {{SAMRS}: {Scaling}-up {Remote} {Sensing} {Segmentation} {Dataset} with {Segment} {Anything} {Model}},
+	shorttitle = {{SAMRS}},
+	url = {https://arxiv.org/abs/2305.02034},
+	doi = {10.48550/ARXIV.2305.02034},
+	urldate = {2026-05-12},
+	publisher = {arXiv},
+	author = {Wang, Di and Zhang, Jing and Du, Bo and Xu, Minqiang and Liu, Lin and Tao, Dacheng and Zhang, Liangpei},
+	year = {2023},
+	note = {Version Number: 4},
 }
 
 @article{kuhn1955hungarian,

@@ -130,10 +130,9 @@ user's own downloads.
 - The disagreement between the two source protocols is measured over every pair
   and decomposed into extent and contamination components, giving a
   quantitative reference for anyone combining independently produced annotation
-  sets over shared imagery.
-- The construction script and checksums regenerate the dataset from the
-  official distributions, and the reconciliation procedure transfers to other
-  box-annotated / mask-annotated dataset pairs that share source imagery.
+  sets over shared imagery; the construction script and checksums regenerate
+  the dataset from the official distributions, and the procedure transfers to
+  other box-annotated / mask-annotated dataset pairs sharing source imagery.
 - Reuse conditions are unambiguous and inherited rather than invented. DOTA
   v1.0 and iSAID both permit academic use only and prohibit commercial use, and
   neither declares a redistribution policy; the deposit therefore publishes
@@ -146,11 +145,19 @@ user's own downloads.
 
 ## Background
 
+Aerial and satellite benchmarks are typically annotated for one task. Detection
+sets such as DOTA [1,2] and FAIR1M [3] provide oriented boxes; land-cover and
+segmentation sets such as SpaceNet [4], LoveDA [5], OpenEarthMap [6] and
+FLAIR [7] provide pixel labels. Where both forms exist over the same imagery
+they are usually produced separately, and the correspondence between an
+individual box and the mask of the same object is not part of either release.
+
 DOTA v1.0 [1] is a widely used benchmark for object detection in aerial
-imagery, annotating objects with oriented bounding boxes across 15 categories.
-iSAID [2] is its segmentation companion: it re-annotates the same imagery and
-the same splits with pixel-level instance masks for the same categories,
-encoded as colour PNGs.
+imagery, annotating objects with oriented bounding boxes across 15 categories;
+its extended benchmark and evaluation protocol are described in [2]. iSAID [8]
+is its segmentation companion: it re-annotates the same imagery and the same
+splits with pixel-level instance masks for the same categories, encoded as
+colour PNGs.
 
 Although the imagery corresponds one to one, the two annotation efforts were
 independent — different teams, different times, separate protocols. Neither
@@ -167,15 +174,31 @@ category-dependent, so it cannot be dismissed as annotation noise or removed by
 a tolerance.
 
 Aerial instance-segmentation research increasingly needs both annotation forms
-attached to the same object at once: to train mask heads on detector outputs,
-to evaluate detection-to-segmentation cascades, and to prompt a promptable
-segmentation model [3] with a detected box while scoring the result against a
-ground-truth mask. Producing such paired supervision by manual re-annotation is
-prohibitively expensive at benchmark scale. AerialFuseCV was compiled to close
-that gap by reconciling the two existing annotation sets at instance level
-under a documented matching rule and a documented mask definition, so that the
+attached to the same object at once. Box-supervised segmentation trains mask
+prediction from box annotations alone [9]; promptable segmentation models
+[10,11] accept a box and return a mask, and their application to remote sensing
+is an active line [12,13]; and prompt-learning approaches for aerial instance
+segmentation build directly on that pairing [14]. Evaluating any of these
+requires knowing which mask corresponds to which box for the same physical
+object — the box supplies the prompt or the supervision, the mask supplies the
+ground truth, and a mismatch between them is indistinguishable from model
+error.
+
+That correspondence is normally obtained by generating masks with a foundation
+model and treating them as labels, as SAMRS does at scale [15]. AerialFuseCV
+takes the opposite route: both annotation forms already exist here, produced
+independently by human annotators, and what is missing is only the link between
+them. Recovering that link preserves two human protocols rather than
+substituting a model's output for one of them, and it makes the disagreement
+between those protocols measurable instead of hidden.
+
+Producing such paired supervision by manual re-annotation is prohibitively
+expensive at benchmark scale. AerialFuseCV was compiled to close that gap by
+reconciling the two existing annotation sets at instance level under a
+documented matching rule and a documented mask definition, so that the
 correspondence itself — not only the source annotations — becomes a released,
-verifiable artefact.
+verifiable artefact. We are not aware of a public release that provides this
+linkage for DOTA and iSAID.
 
 ---
 
@@ -481,9 +504,9 @@ described under Methods.
 
 ### Deposit contents
 
-The deposit is nine files totalling 82.0 MB. It carries no imagery, no source
-annotation and no source mask; the dataset itself is produced by the included
-script from the user's own copies of DOTA v1.0 and iSAID.
+The deposit [18] is nine files totalling 82.0 MB. It carries no imagery, no
+source annotation and no source mask; the dataset itself is produced by the
+included script from the user's own copies of DOTA v1.0 and iSAID.
 
 **Table 9.** Deposit contents. SHA-256 digests are given to sixteen characters
 for reference; the full digests accompany the record.
@@ -576,7 +599,7 @@ For each image and each category independently, an intersection-over-union
 matrix is computed between every box's rasterised oriented quadrilateral and
 every instance of that category, skipping pairs whose bounding rectangles do
 not intersect. An optimal one-to-one assignment maximising the total
-intersection-over-union is then solved on that matrix [4,5], and matches
+intersection-over-union is then solved on that matrix [16,17], and matches
 reaching 0.1 are accepted. The one-to-one constraint means that two boxes
 cannot claim the same instance, so a box that overlapped adequately but lost
 its instance to a better-fitting box is discarded with that reason recorded
@@ -684,7 +707,7 @@ against the deposit.
 iSAID. Both are distributed through Baidu Drive and Google Drive folders, which
 expose no programmatic interface, and automated retrieval would in any case sit
 poorly with terms restricting use to academic purposes. The user downloads both
-from the official pages cited in [1] and [2], under those datasets' own terms,
+from the official pages cited in [1] and [8], under those datasets' own terms,
 and the script's role begins there. Before writing anything it validates the
 source layout per split, confirms that every image, annotation file and mask
 the correspondence refers to is present, and reports what is missing by name
@@ -781,9 +804,9 @@ in this paper.
 ## References
 
 > Template rule: **maximum 20**, numbered, cited as `[n]`; the deposited dataset
-> must itself be cited. Six used; all bibliographic details require
+> must itself be cited. Eighteen used. Bibliographic details require
 > verification against the publisher record before submission (see
-> `references.bib`).
+> `references.bib`); entries carrying a `VERIFY` note are outstanding.
 
 [1] G.-S. Xia, X. Bai, J. Ding, Z. Zhu, S. Belongie, J. Luo, M. Datcu,
 M. Pelillo, L. Zhang, DOTA: A large-scale dataset for object detection in
@@ -792,26 +815,81 @@ aerial images, in: Proc. IEEE/CVF Conf. Computer Vision and Pattern Recognition
 <https://captain-whu.github.io/DOTA/dataset.html> (accessed 6 August 2026).
 [[VERIFY pages/DOI]]
 
-[2] S. Waqas Zamir, A. Arora, A. Gupta, S. Khan, G. Sun, F. Shahbaz Khan,
+[2] J. Ding, N. Xue, G.-S. Xia, X. Bai, W. Yang, M.Y. Yang, S. Belongie, J. Luo,
+M. Datcu, M. Pelillo, L. Zhang, Object detection in aerial images: a large-scale
+benchmark and challenges, IEEE Trans. Pattern Anal. Mach. Intell. 44 (11) (2022)
+7778–7796. [[VERIFY volume/pages/DOI]]
+
+[3] X. Sun, P. Wang, Z. Yan, F. Xu, R. Wang, W. Diao, J. Chen, J. Li, Y. Feng,
+T. Xu, M. Weinmann, S. Hinz, C. Wang, K. Fu, FAIR1M: a benchmark dataset for
+fine-grained object recognition in high-resolution remote sensing imagery, ISPRS
+J. Photogramm. Remote Sens. 184 (2022) 116–130.
+<https://doi.org/10.1016/j.isprsjprs.2021.12.004>
+
+[4] A. Van Etten, D. Lindenbaum, T.M. Bacastow, SpaceNet: a remote sensing
+dataset and challenge series, arXiv:1807.01232 (2018).
+<https://doi.org/10.48550/arXiv.1807.01232>
+
+[5] J. Wang, Z. Zheng, A. Ma, X. Lu, Y. Zhong, LoveDA: a remote sensing
+land-cover dataset for domain adaptive semantic segmentation, arXiv:2110.08733
+(2021). <https://doi.org/10.48550/arXiv.2110.08733>
+
+[6] J. Xia, N. Yokoya, B. Adriano, C. Broni-Bediako, OpenEarthMap: a benchmark
+dataset for global high-resolution land cover mapping, arXiv:2210.10732 (2022).
+<https://doi.org/10.48550/arXiv.2210.10732>
+
+[7] A. Garioud, N. Gonthier, L. Landrieu, A. De Wit, M. Valette, M. Poupée,
+S. Giordano, B. Wattrelos, FLAIR: a country-scale land cover semantic
+segmentation dataset from multi-source optical imagery, arXiv:2310.13336 (2023).
+<https://doi.org/10.48550/arXiv.2310.13336>
+
+[8] S. Waqas Zamir, A. Arora, A. Gupta, S. Khan, G. Sun, F. Shahbaz Khan,
 F. Zhu, L. Shao, G.-S. Xia, X. Bai, iSAID: A large-scale dataset for instance
 segmentation in aerial images, in: Proc. IEEE/CVF Conf. Computer Vision and
 Pattern Recognition Workshops (CVPRW), 2019, pp. 28–37. Official download page:
 <https://captain-whu.github.io/iSAID/dataset.html> (accessed 6 August 2026).
 [[VERIFY pages/DOI]]
 
-[3] A. Kirillov, E. Mintun, N. Ravi, H. Mao, C. Rolland, L. Gustafson, T. Xiao,
+[9] Z. Tian, C. Shen, X. Wang, H. Chen, BoxInst: high-performance instance
+segmentation with box annotations, arXiv:2012.02310 (2020).
+<https://doi.org/10.48550/arXiv.2012.02310>
+
+[10] A. Kirillov, E. Mintun, N. Ravi, H. Mao, C. Rolland, L. Gustafson, T. Xiao,
 S. Whitehead, A.C. Berg, W.-Y. Lo, P. Dollár, R. Girshick, Segment Anything,
 in: Proc. IEEE/CVF Int. Conf. Computer Vision (ICCV), 2023, pp. 4015–4026.
 [[VERIFY pages/DOI]]
 
-[4] H.W. Kuhn, The Hungarian method for the assignment problem, Naval Research
+[11] N. Ravi, V. Gabeur, Y.-T. Hu, R. Hu, C. Ryali, T. Ma, H. Khedr, R. Rädle,
+C. Rolland, L. Gustafson, E. Mintun, J. Pan, K.V. Alwala, N. Carion, C.-Y. Wu,
+R. Girshick, P. Dollár, C. Feichtenhofer, SAM 2: Segment Anything in images and
+videos, arXiv:2408.00714 (2024). <https://doi.org/10.48550/arXiv.2408.00714>
+
+[12] L.P. Osco, Q. Wu, E.L. de Lemos, W.N. Gonçalves, A.P.M. Ramos, J. Li,
+J.M. Junior, The Segment Anything Model (SAM) for remote sensing applications:
+from zero to one shot, arXiv:2306.16623 (2023).
+<https://doi.org/10.48550/arXiv.2306.16623>
+
+[13] A. Mumuni, F. Mumuni, Segment Anything Model for automated image data
+annotation: empirical studies using text prompts from Grounding DINO,
+arXiv:2406.19057 (2024). <https://doi.org/10.48550/arXiv.2406.19057>
+
+[14] K. Chen, C. Liu, H. Chen, H. Zhang, W. Li, Z. Zou, Z. Shi, RSPrompter:
+learning to prompt for remote sensing instance segmentation based on visual
+foundation model, arXiv:2306.16269 (2023).
+<https://doi.org/10.48550/arXiv.2306.16269>
+
+[15] D. Wang, J. Zhang, B. Du, M. Xu, L. Liu, D. Tao, L. Zhang, SAMRS:
+scaling-up remote sensing segmentation dataset with segment anything model,
+arXiv:2305.02034 (2023). <https://doi.org/10.48550/arXiv.2305.02034>
+
+[16] H.W. Kuhn, The Hungarian method for the assignment problem, Naval Research
 Logistics Quarterly 2 (1–2) (1955) 83–97. [[VERIFY DOI]]
 
-[5] P. Virtanen, R. Gommers, T.E. Oliphant, et al., SciPy 1.0: fundamental
+[17] P. Virtanen, R. Gommers, T.E. Oliphant, et al., SciPy 1.0: fundamental
 algorithms for scientific computing in Python, Nature Methods 17 (2020)
 261–272. [[VERIFY author list truncation policy and DOI]]
 
-[6] P. Fragkos, AerialFuseCV: reconciled oriented-box and instance-mask
+[18] P. Fragkos, AerialFuseCV: reconciled oriented-box and instance-mask
 annotation pairs for aerial imagery [dataset], Zenodo, 2026.
 [[PLACEHOLDER: DOI — arrives with the deposit]]
 
